@@ -1,0 +1,296 @@
+<div class="ai-profiling-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading AI profile...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="content-container">
+    <!-- Header -->
+    <mat-card class="header-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>psychology</mat-icon>
+          AI-Powered Learning Profile
+        </mat-card-title>
+        <mat-card-subtitle>
+          Personalized insights based on your learning behavior and patterns
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="simulateProfileGeneration()"
+          [disabled]="isGeneratingProfile">
+          <mat-icon *ngIf="!isGeneratingProfile">refresh</mat-icon>
+          <mat-progress-bar 
+            *ngIf="isGeneratingProfile" 
+            mode="indeterminate" 
+            diameter="20"
+            class="button-progress">
+          </mat-progress-bar>
+          {{isGeneratingProfile ? 'Analyzing...' : 'Update AI Profile'}}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Profile Metrics -->
+    <mat-card class="metrics-card" *ngIf="userProfile">
+      <mat-card-header>
+        <mat-card-title>Learning Analytics</mat-card-title>
+        <mat-card-subtitle>
+          Last updated: {{userProfile.lastUpdated | date:'medium'}}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metrics-grid">
+          <!-- Learning Speed -->
+          <div class="metric-item">
+            <div class="metric-header">
+              <mat-icon>speed</mat-icon>
+              <h4>Learning Speed</h4>
+            </div>
+            <div class="metric-score">
+              <div class="score-circle" [style.border-color]="getScoreColor(userProfile.learningSpeed)">
+                <span class="score-number">{{userProfile.learningSpeed}}/10</span>
+              </div>
+              <span class="score-label">{{getLearningSpeedText()}}</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="userProfile.learningSpeed * 10"
+              [color]="userProfile.learningSpeed >= 7 ? 'primary' : 'warn'">
+            </mat-progress-bar>
+          </div>
+
+          <!-- Engagement Level -->
+          <div class="metric-item">
+            <div class="metric-header">
+              <mat-icon>favorite</mat-icon>
+              <h4>Engagement Level</h4>
+            </div>
+            <div class="metric-score">
+              <div class="score-circle" [style.border-color]="getScoreColor(userProfile.engagementLevel)">
+                <span class="score-number">{{userProfile.engagementLevel}}/10</span>
+              </div>
+              <span class="score-label">{{getEngagementLevelText()}}</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="userProfile.engagementLevel * 10"
+              [color]="userProfile.engagementLevel >= 7 ? 'primary' : 'warn'">
+            </mat-progress-bar>
+          </div>
+
+          <!-- Knowledge Retention -->
+          <div class="metric-item">
+            <div class="metric-header">
+              <mat-icon>memory</mat-icon>
+              <h4>Knowledge Retention</h4>
+            </div>
+            <div class="metric-score">
+              <div class="score-circle" [style.border-color]="getRetentionColor(userProfile.knowledgeRetention)">
+                <span class="score-number">{{userProfile.knowledgeRetention}}%</span>
+              </div>
+              <span class="score-label">{{getRetentionLevelText()}}</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="userProfile.knowledgeRetention"
+              [color]="userProfile.knowledgeRetention >= 80 ? 'primary' : 'warn'">
+            </mat-progress-bar>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabbed Content -->
+    <mat-tab-group class="profile-tabs" animationDuration="300ms">
+      <!-- Behavior Patterns Tab -->
+      <mat-tab label="Behavior Patterns">
+        <div class="tab-content">            <mat-card class="patterns-card" *ngIf="userProfile && userProfile.behaviorPatterns && userProfile.behaviorPatterns.length > 0; else noPatternsFound">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>analytics</mat-icon>
+                Detected Learning Patterns
+              </mat-card-title>
+              <mat-card-subtitle>
+                AI-identified behaviors that influence your learning
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="patterns-grid">
+                <div 
+                  *ngFor="let pattern of userProfile!.behaviorPatterns" 
+                  class="pattern-item"
+                  [style.border-left-color]="getBehaviorPatternColor(pattern.impact)">
+                  <div class="pattern-header">
+                    <mat-icon [style.color]="getBehaviorPatternColor(pattern.impact)">
+                      {{getBehaviorPatternIcon(pattern.category)}}
+                    </mat-icon>
+                    <div class="pattern-info">
+                      <h4>{{pattern.pattern}}</h4>
+                      <span class="pattern-category">{{pattern.category | titlecase}}</span>
+                    </div>
+                  </div>
+                  <div class="pattern-metrics">
+                    <div class="pattern-metric">
+                      <span class="metric-label">Frequency</span>
+                      <div class="metric-bar">
+                        <div 
+                          class="metric-fill" 
+                          [style.width.%]="(pattern.frequency / 10) * 100"
+                          [style.background-color]="getBehaviorPatternColor(pattern.impact)">
+                        </div>
+                        <span class="metric-value">{{pattern.frequency}}/10</span>
+                      </div>
+                    </div>
+                    <div class="pattern-metric">
+                      <span class="metric-label">Impact</span>
+                      <div class="metric-bar">
+                        <div 
+                          class="metric-fill" 
+                          [style.width.%]="(pattern.impact / 10) * 100"
+                          [style.background-color]="getBehaviorPatternColor(pattern.impact)">
+                        </div>
+                        <span class="metric-value">{{pattern.impact}}/10</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <ng-template #noPatternsFound>
+            <mat-card class="empty-state-card">
+              <mat-card-content>
+                <div class="empty-state">
+                  <mat-icon>analytics</mat-icon>
+                  <h3>No Behavior Patterns Detected</h3>
+                  <p>Continue using the platform to allow AI to analyze your learning patterns.</p>
+                  <div class="sample-actions">
+                    <button 
+                      mat-button 
+                      color="primary" 
+                      (click)="trackBehavior('Clicked help section', 'navigation')">
+                      Track Sample Behavior
+                    </button>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-template>
+        </div>
+      </mat-tab>
+
+      <!-- AI Recommendations Tab -->
+      <mat-tab label="AI Recommendations">
+        <div class="tab-content">
+          <mat-card class="recommendations-card" *ngIf="recommendations.length; else noRecommendations">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>lightbulb</mat-icon>
+                Personalized Recommendations
+              </mat-card-title>
+              <mat-card-subtitle>
+                AI-generated suggestions to improve your learning experience
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="recommendations-list">
+                <div 
+                  *ngFor="let recommendation of recommendations" 
+                  class="recommendation-item"
+                  [class.high-priority]="recommendation.priority >= 8"
+                  [class.medium-priority]="recommendation.priority >= 6 && recommendation.priority < 8">
+                  <div class="recommendation-header">
+                    <mat-icon [style.color]="getRecommendationColor(recommendation.priority)">
+                      {{getRecommendationIcon(recommendation.type)}}
+                    </mat-icon>
+                    <div class="recommendation-info">
+                      <h4>{{recommendation.title}}</h4>
+                      <div class="recommendation-meta">
+                        <mat-chip-listbox>
+                          <mat-chip-option [style.background-color]="getRecommendationColor(recommendation.priority)">
+                            Priority: {{recommendation.priority}}/10
+                          </mat-chip-option>
+                          <mat-chip-option>
+                            Confidence: {{formatConfidence(recommendation.confidence)}}
+                          </mat-chip-option>
+                          <mat-chip-option>
+                            {{recommendation.type | titlecase}}
+                          </mat-chip-option>
+                        </mat-chip-listbox>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="recommendation-description">{{recommendation.description}}</p>
+                  <div class="recommendation-actions">
+                    <button mat-button color="primary">Apply</button>
+                    <button mat-button>Learn More</button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <ng-template #noRecommendations>
+            <mat-card class="empty-state-card">
+              <mat-card-content>
+                <div class="empty-state">
+                  <mat-icon>lightbulb</mat-icon>
+                  <h3>No Recommendations Available</h3>
+                  <p>Complete your learning style assessment and continue learning to receive personalized recommendations.</p>
+                  <div class="empty-actions">
+                    <button mat-raised-button color="primary" routerLink="/assessment/learning-style-quiz">
+                      Take Assessment
+                    </button>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-template>
+        </div>
+      </mat-tab>
+
+      <!-- Learning History Tab -->
+      <mat-tab label="Learning History">
+        <div class="tab-content">
+          <mat-card class="history-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>history</mat-icon>
+                Learning Journey
+              </mat-card-title>
+              <mat-card-subtitle>
+                Track your progress and milestones
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="latestAssessment" class="history-item">
+                <mat-icon>quiz</mat-icon>
+                <div class="history-content">
+                  <h4>Learning Style Assessment Completed</h4>
+                  <p>Primary style: {{latestAssessment.result.primaryStyle | titlecase}}</p>
+                  <span class="history-date">{{latestAssessment.createdAt | date:'medium'}}</span>
+                </div>
+              </div>
+              
+              <div class="history-item">
+                <mat-icon>psychology</mat-icon>
+                <div class="history-content">
+                  <h4>AI Profile Generated</h4>
+                  <p>Behavioral patterns analyzed and learning metrics calculated</p>
+                  <span class="history-date">{{userProfile?.lastUpdated | date:'medium'}}</span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

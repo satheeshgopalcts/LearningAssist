@@ -1,0 +1,200 @@
+<div class="quiz-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading quiz...</p>
+  </div>
+
+  <!-- Quiz Introduction -->
+  <mat-card *ngIf="!isLoading && !isCompleted && currentQuestionIndex === 0 && questions.length > 0" class="intro-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>quiz</mat-icon>
+        Learning Style Assessment
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="intro-text">
+        Discover your unique learning style with our comprehensive assessment. This quiz will help identify 
+        whether you're a visual, auditory, kinesthetic, or reading/writing learner.
+      </p>
+      <div class="quiz-info">
+        <div class="info-item">
+          <mat-icon>timer</mat-icon>
+          <span>Approximately 10-15 minutes</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>quiz</mat-icon>
+          <span>{{questions.length}} questions</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>analytics</mat-icon>
+          <span>Personalized results and recommendations</span>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="nextQuestion()">
+        Start Assessment
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Quiz Questions -->
+  <mat-card *ngIf="!isLoading && !isCompleted && currentQuestion && currentQuestionIndex > 0" class="question-card">
+    <mat-card-header>
+      <div class="question-header">
+        <div class="progress-info">
+          <span class="question-counter">Question {{currentQuestionIndex}} of {{questions.length}}</span>
+          <div class="progress-container">
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="progressPercentage"
+              class="progress-bar">
+            </mat-progress-bar>
+            <span class="progress-text">{{Math.round(progressPercentage)}}%</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="quizForm">
+        <div class="question-content">
+          <h3 class="question-text">{{currentQuestion.question}}</h3>
+          
+          <mat-radio-group 
+            [formControlName]="'question_' + currentQuestion.id"
+            class="radio-group">
+            <mat-radio-button 
+              *ngFor="let option of currentQuestion.options" 
+              [value]="option.id"
+              class="radio-option">
+              {{option.text}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="question-actions">
+      <button 
+        mat-button 
+        (click)="previousQuestion()"
+        [disabled]="isFirstQuestion">
+        <mat-icon>arrow_back</mat-icon>
+        Previous
+      </button>
+      
+      <div class="action-spacer"></div>
+      
+      <button 
+        mat-raised-button 
+        color="primary"
+        *ngIf="!isLastQuestion"
+        (click)="nextQuestion()"
+        [disabled]="!isCurrentQuestionAnswered()">
+        Next
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      
+      <button 
+        mat-raised-button 
+        color="primary"
+        *ngIf="isLastQuestion"
+        (click)="submitQuiz()"
+        [disabled]="!isCurrentQuestionAnswered() || isLoading">
+        <mat-icon>check</mat-icon>
+        Complete Assessment
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Results Display -->
+  <div *ngIf="isCompleted && result" class="results-container">
+    <mat-card class="results-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="success-icon">check_circle</mat-icon>
+          Your Learning Style Results
+        </mat-card-title>
+        <mat-card-subtitle>
+          Assessment completed on {{result.completedAt | date:'medium'}}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Primary Learning Style -->
+        <div class="primary-style">
+          <h3>Your Primary Learning Style</h3>
+          <div class="style-badge primary-badge" 
+               [style.background-color]="getLearningStyleColor(result.primaryStyle)">
+            <mat-icon>{{getLearningStyleIcon(result.primaryStyle)}}</mat-icon>
+            <span>{{formatLearningStyleName(result.primaryStyle)}}</span>
+          </div>
+          <p class="style-description">
+            You learn best through {{formatLearningStyleName(result.primaryStyle).toLowerCase()}} methods.
+          </p>
+        </div>
+
+        <!-- Secondary Learning Style -->
+        <div *ngIf="result.secondaryStyle" class="secondary-style">
+          <h4>Secondary Learning Style</h4>
+          <div class="style-badge secondary-badge"
+               [style.background-color]="getLearningStyleColor(result.secondaryStyle)">
+            <mat-icon>{{getLearningStyleIcon(result.secondaryStyle)}}</mat-icon>
+            <span>{{formatLearningStyleName(result.secondaryStyle)}}</span>
+          </div>
+        </div>
+
+        <!-- Score Breakdown -->
+        <div class="score-breakdown">
+          <h4>Detailed Score Breakdown</h4>
+          <div class="score-grid">
+            <div *ngFor="let style of getAllStyles()" class="score-item">
+              <div class="score-header">
+                <mat-icon [style.color]="getLearningStyleColor(style)">
+                  {{getLearningStyleIcon(style)}}
+                </mat-icon>
+                <span>{{formatLearningStyleName(style)}}</span>
+              </div>
+              <div class="score-bar">
+                <div class="score-progress" 
+                     [style.width.%]="(getScoreForStyle(style) / getMaxScore()) * 100"
+                     [style.background-color]="getLearningStyleColor(style)">
+                </div>
+                <span class="score-value">{{getScoreForStyle(style)}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations">
+          <h4>
+            <mat-icon>lightbulb</mat-icon>
+            Personalized Learning Recommendations
+          </h4>
+          <div class="recommendation-list">
+            <div *ngFor="let recommendation of result.recommendations" class="recommendation-item">
+              <mat-icon>check</mat-icon>
+              <span>{{recommendation}}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="results-actions">
+        <button mat-button (click)="retakeQuiz()" class="retake-button">
+          <mat-icon>refresh</mat-icon>
+          Retake Assessment
+        </button>
+        <button mat-raised-button color="primary" (click)="goToProfile()">
+          <mat-icon>person</mat-icon>
+          View Profile
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

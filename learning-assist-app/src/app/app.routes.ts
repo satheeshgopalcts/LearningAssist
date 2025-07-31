@@ -13,6 +13,16 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   { 
+    path: 'assessment', 
+    loadChildren: () => import('./assessment/assessment.module').then(m => m.AssessmentModule),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'content', 
+    loadChildren: () => import('./content/content.module').then(m => m.ContentModule),
+    canActivate: [authGuard]
+  },
+  { 
     path: 'dashboard', 
     redirectTo: '/profile',  // Temporary redirect until dashboard is implemented
     pathMatch: 'full'

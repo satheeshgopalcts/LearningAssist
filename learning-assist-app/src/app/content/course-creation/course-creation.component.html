@@ -1,0 +1,214 @@
+<div class="course-creation">
+  <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
+    <!-- Course Header -->
+    <mat-card class="course-header">
+      <mat-card-header>
+        <mat-card-title>
+          {{ isEditing ? 'Edit Course' : 'Create New Course' }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="header-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Course Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter course title">
+            <mat-error *ngIf="courseForm.get('title')?.hasError('required')">
+              Title is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3" 
+              placeholder="Enter course description"></textarea>
+            <mat-error *ngIf="courseForm.get('description')?.hasError('required')">
+              Description is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let category of categories" [value]="category.name">
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="courseForm.get('category')?.hasError('required')">
+              Category is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Difficulty Level</mat-label>
+            <mat-select formControlName="difficultyLevel">
+              <mat-option *ngFor="let level of difficultyLevels" [value]="level">
+                {{ getDifficultyLevelDisplay(level) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Instructor</mat-label>
+            <input matInput formControlName="instructor" placeholder="Enter instructor name">
+            <mat-error *ngIf="courseForm.get('instructor')?.hasError('required')">
+              Instructor is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Duration (minutes)</mat-label>
+            <input matInput type="number" formControlName="duration" min="1">
+            <mat-error *ngIf="courseForm.get('duration')?.hasError('required')">
+              Duration is required
+            </mat-error>
+            <mat-error *ngIf="courseForm.get('duration')?.hasError('min')">
+              Duration must be at least 1 minute
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tags</mat-label>
+            <mat-select formControlName="tags" multiple>
+              <mat-option *ngFor="let tag of availableTags" [value]="tag.name">
+                {{ tag.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="isPublished">
+              Publish Course
+            </mat-checkbox>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Prerequisites -->
+    <mat-card class="prerequisites-section">
+      <mat-card-header>
+        <mat-card-title>Prerequisites</mat-card-title>
+        <div class="spacer"></div>
+        <button mat-raised-button color="primary" type="button" 
+          (click)="addPrerequisite()">
+          <mat-icon>add</mat-icon>
+          Add Prerequisite
+        </button>
+      </mat-card-header>
+      <mat-card-content *ngIf="prerequisites.length > 0">
+        <div *ngFor="let prerequisite of prerequisites.controls; let i = index" 
+          class="prerequisite-item">
+          <mat-form-field appearance="outline" class="prerequisite-input">
+            <mat-label>Prerequisite {{ i + 1 }}</mat-label>
+            <input matInput [formControl]="$any(prerequisite)">
+          </mat-form-field>
+          <button mat-icon-button color="warn" type="button" 
+            (click)="removePrerequisite(i)">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Learning Objectives -->
+    <mat-card class="objectives-section">
+      <mat-card-header>
+        <mat-card-title>Learning Objectives</mat-card-title>
+        <div class="spacer"></div>
+        <button mat-raised-button color="primary" type="button" 
+          (click)="addLearningObjective()">
+          <mat-icon>add</mat-icon>
+          Add Objective
+        </button>
+      </mat-card-header>
+      <mat-card-content *ngIf="learningObjectives.length > 0">
+        <div *ngFor="let objective of learningObjectives.controls; let i = index" 
+          class="objective-item">
+          <mat-form-field appearance="outline" class="objective-input">
+            <mat-label>Objective {{ i + 1 }}</mat-label>
+            <input matInput [formControl]="$any(objective)">
+          </mat-form-field>
+          <button mat-icon-button color="warn" type="button" 
+            (click)="removeLearningObjective(i)">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Content Items -->
+    <mat-card class="content-section">
+      <mat-card-header>
+        <mat-card-title>
+          Course Content ({{ contentItems.length }} items)
+          <span class="total-duration">Total: {{ getTotalDuration() }} minutes</span>
+        </mat-card-title>
+        <div class="spacer"></div>
+        <mat-menu #contentMenu="matMenu">
+          <button mat-menu-item *ngFor="let type of contentTypes" 
+            (click)="addContentItem(type)">
+            <mat-icon>add</mat-icon>
+            Add {{ getContentTypeDisplay(type) }}
+          </button>
+        </mat-menu>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="contentMenu">
+          <mat-icon>add</mat-icon>
+          Add Content
+        </button>
+      </mat-card-header>
+      <mat-card-content *ngIf="contentItems.length > 0">
+        <div *ngFor="let item of contentItems.controls; let i = index" 
+          class="content-item">
+          <div [formGroup]="$any(item)" class="content-form">
+            <div class="content-header">
+              <mat-form-field appearance="outline">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option *ngFor="let type of contentTypes" [value]="type">
+                    {{ getContentTypeDisplay(type) }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Duration (min)</mat-label>
+                <input matInput type="number" formControlName="duration" min="0">
+              </mat-form-field>
+
+              <mat-checkbox formControlName="isRequired">
+                Required
+              </mat-checkbox>
+
+              <button mat-icon-button color="warn" type="button" 
+                (click)="removeContentItem(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        Cancel
+      </button>
+      <button mat-stroked-button type="button" (click)="previewCourse()"
+        [disabled]="!courseForm.valid">
+        <mat-icon>visibility</mat-icon>
+        Preview
+      </button>
+      <button mat-raised-button color="primary" type="submit"
+        [disabled]="!courseForm.valid">
+        <mat-icon>save</mat-icon>
+        {{ isEditing ? 'Update' : 'Create' }} Course
+      </button>
+    </div>
+  </form>
+</div>

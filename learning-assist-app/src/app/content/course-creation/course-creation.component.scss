@@ -1,0 +1,197 @@
+.course-creation {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+
+  .course-header,
+  .prerequisites-section,
+  .objectives-section,
+  .content-section {
+    margin-bottom: 24px;
+
+    mat-card-header {
+      display: flex;
+      align-items: center;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .total-duration {
+          font-size: 14px;
+          color: #666;
+          font-weight: normal;
+        }
+      }
+
+      .spacer {
+        flex: 1;
+      }
+    }
+
+    .header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        height: 56px; // Match form field height
+        grid-column: 1 / -1;
+      }
+    }
+
+    .prerequisite-item,
+    .objective-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      .prerequisite-input,
+      .objective-input {
+        flex: 1;
+      }
+
+      button {
+        flex-shrink: 0;
+      }
+    }
+
+    .content-item {
+      margin-bottom: 16px;
+      padding: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+
+      .content-form {
+        .content-header {
+          display: grid;
+          grid-template-columns: 2fr 1fr 100px 100px auto;
+          gap: 16px;
+          align-items: center;
+
+          mat-form-field {
+            margin: 0;
+          }
+
+          mat-checkbox {
+            justify-self: center;
+          }
+
+          button {
+            justify-self: center;
+          }
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+// Dark theme support
+.dark-theme .course-creation {
+  .course-header,
+  .prerequisites-section,
+  .objectives-section,
+  .content-section {
+    mat-card-header {
+      mat-card-title {
+        .total-duration {
+          color: #aaa !important;
+        }
+      }
+    }
+
+    .content-item {
+      border-color: #555;
+    }
+  }
+
+  .actions {
+    border-top-color: #555;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .course-creation {
+    padding: 8px;
+
+    .course-header,
+    .prerequisites-section,
+    .objectives-section,
+    .content-section {
+      mat-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+
+        mat-card-title {
+          justify-content: space-between;
+        }
+
+        .spacer {
+          display: none;
+        }
+      }
+
+      .header-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+
+        .full-width {
+          grid-column: 1;
+        }
+      }
+
+      .prerequisite-item,
+      .objective-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+
+        button {
+          align-self: flex-end;
+        }
+      }
+
+      .content-item {
+        .content-form {
+          .content-header {
+            grid-template-columns: 1fr;
+            gap: 12px;
+
+            mat-checkbox,
+            button {
+              justify-self: stretch;
+            }
+          }
+        }
+      }
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 8px;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

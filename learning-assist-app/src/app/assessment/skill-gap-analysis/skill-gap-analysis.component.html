@@ -1,0 +1,356 @@
+<div class="skill-gap-container">
+  <!-- Assessment Form -->
+  <div *ngIf="!isCompleted" class="assessment-form">
+    <mat-card class="intro-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>assessment</mat-icon>
+          Skill Gap Analysis
+        </mat-card-title>
+        <mat-card-subtitle>
+          Identify your current skill levels and target goals to create a personalized learning path
+        </mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <!-- Skill Categories -->
+    <mat-card class="categories-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>category</mat-icon>
+          Quick Add Skills by Category
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="categories-grid">
+          <div 
+            *ngFor="let category of skillCategories" 
+            class="category-item"
+            [style.border-left-color]="category.color">
+            <div class="category-header">
+              <mat-icon [style.color]="category.color">{{category.icon}}</mat-icon>
+              <h4>{{category.name}}</h4>
+            </div>
+            <div class="category-skills">
+              <mat-chip-listbox>
+                <mat-chip-option 
+                  *ngFor="let skill of category.skills"
+                  (click)="addSkillFromCategory(skill)"
+                  [style.background-color]="category.color + '20'"
+                  [style.border-color]="category.color">
+                  {{skill}}
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Skills Assessment Form -->
+    <mat-card class="skills-form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>edit</mat-icon>
+          Rate Your Skills
+        </mat-card-title>
+        <mat-card-subtitle>
+          Assess your current level and set target goals (1 = Beginner, 10 = World-class)
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="assessmentForm">
+          <div formArrayName="skills" class="skills-list">
+            <div 
+              *ngFor="let skillGroup of skillsArray.controls; let i = index" 
+              [formGroupName]="i"
+              class="skill-item">
+              <div class="skill-header">
+                <mat-form-field appearance="outline" class="skill-name-field">
+                  <mat-label>Skill Name</mat-label>
+                  <input matInput formControlName="skillName" placeholder="Enter skill name">
+                </mat-form-field>
+                <button 
+                  mat-icon-button 
+                  color="warn" 
+                  (click)="removeSkill(i)"
+                  [disabled]="skillsArray.length <= 1">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              
+              <div class="skill-levels">
+                <div class="level-group">
+                  <label>Current Level: {{skillGroup.get('currentLevel')?.value}}/10</label>
+                  <span class="level-text">{{formatCurrentLevel(skillGroup.get('currentLevel')?.value)}}</span>
+                  <mat-slider 
+                    min="1" 
+                    max="10" 
+                    step="1" 
+                    class="skill-slider current-level">
+                    <input matSliderThumb formControlName="currentLevel">
+                  </mat-slider>
+                </div>
+                
+                <div class="level-group">
+                  <label>Target Level: {{skillGroup.get('targetLevel')?.value}}/10</label>
+                  <span class="level-text">{{formatCurrentLevel(skillGroup.get('targetLevel')?.value)}}</span>
+                  <mat-slider 
+                    min="1" 
+                    max="10" 
+                    step="1"
+                    class="skill-slider target-level">
+                    <input matSliderThumb formControlName="targetLevel">
+                  </mat-slider>
+                </div>
+              </div>
+              
+              <div class="skill-importance">
+                <mat-form-field appearance="outline" class="importance-field">
+                  <mat-label>Importance</mat-label>
+                  <mat-select formControlName="importance">
+                    <mat-option value="low">Low Priority</mat-option>
+                    <mat-option value="medium">Medium Priority</mat-option>
+                    <mat-option value="high">High Priority</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="skill-gap-preview">
+                <div class="gap-indicator" 
+                     [style.background-color]="getGapColor(skillGroup.get('targetLevel')?.value - skillGroup.get('currentLevel')?.value)">
+                  Gap: {{skillGroup.get('targetLevel')?.value - skillGroup.get('currentLevel')?.value}} levels
+                  ({{getGapLevelText(skillGroup.get('targetLevel')?.value - skillGroup.get('currentLevel')?.value)}})
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+        <div class="form-actions">
+          <button mat-button (click)="addSkill()" class="add-skill-btn">
+            <mat-icon>add</mat-icon>
+            Add Another Skill
+          </button>
+          
+          <div class="action-spacer"></div>
+          
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="performAnalysis()"
+            [disabled]="isLoading || skillsArray.length === 0">
+            <mat-icon *ngIf="!isLoading">analytics</mat-icon>
+            <mat-progress-bar 
+              *ngIf="isLoading" 
+              mode="indeterminate" 
+              diameter="20"
+              class="button-progress">
+            </mat-progress-bar>
+            {{isLoading ? 'Analyzing...' : 'Analyze Skills'}}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Analysis Results -->
+  <div *ngIf="isCompleted && analysisResult" class="analysis-results">
+    <!-- Overall Summary -->
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="success-icon">analytics</mat-icon>
+          Skill Gap Analysis Results
+        </mat-card-title>
+        <mat-card-subtitle>
+          Analysis completed on {{analysisResult.completedAt | date:'medium'}}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="summary-metrics">
+          <div class="metric-item">
+            <div class="metric-value">{{analysisResult.overallScore}}%</div>
+            <div class="metric-label">Overall Skill Score</div>
+            <div class="metric-description">{{getOverallGapLevel()}}</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">{{analysisResult.skills.length}}</div>
+            <div class="metric-label">Skills Assessed</div>
+            <div class="metric-description">Comprehensive analysis</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">{{getSkillsNeedingAttention().length}}</div>
+            <div class="metric-label">Priority Skills</div>
+            <div class="metric-description">Need immediate attention</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">{{analysisResult.nextReviewDate | date:'shortDate'}}</div>
+            <div class="metric-label">Next Review</div>
+            <div class="metric-description">Recommended reassessment</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabbed Results -->
+    <mat-tab-group class="results-tabs" animationDuration="300ms">
+      <!-- Skills by Priority -->
+      <mat-tab label="By Priority">
+        <div class="tab-content">
+          <div class="priority-sections">
+            <mat-card *ngFor="let priority of priorityLevels" 
+                      class="priority-section">
+              <mat-card-header>
+                <mat-card-title [style.color]="getPriorityColor(priority)">
+                  <mat-icon>{{getPriorityIcon(priority)}}</mat-icon>
+                  {{priority | titlecase}} Priority Skills
+                  <span class="skill-count">({{getSkillsByPriority(priority).length}})</span>
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div *ngIf="getSkillsByPriority(priority).length === 0" class="no-skills">
+                  No {{priority}} priority skills identified
+                </div>
+                <div *ngFor="let skill of getSkillsByPriority(priority)" class="skill-result-item">
+                  <div class="skill-result-header">
+                    <h4>{{skill.skillName}}</h4>
+                    <div class="skill-levels-display">
+                      <span class="current-level">Current: {{skill.currentLevel}}/10</span>
+                      <mat-icon>arrow_forward</mat-icon>
+                      <span class="target-level">Target: {{skill.targetLevel}}/10</span>
+                    </div>
+                  </div>
+                  
+                  <div class="skill-progress-bar">
+                    <div class="progress-track">
+                      <div class="current-progress" 
+                           [style.width.%]="(skill.currentLevel / 10) * 100"
+                           [style.background-color]="getPriorityColor(priority)">
+                      </div>
+                      <div class="target-marker" 
+                           [style.left.%]="(skill.targetLevel / 10) * 100">
+                      </div>
+                    </div>
+                    <div class="gap-info">
+                      <span class="gap-badge" [style.background-color]="getGapColor(skill.gap)">
+                        Gap: {{skill.gap}} levels ({{getGapLevelText(skill.gap)}})
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="skill.recommendations.length > 0" class="skill-recommendations">
+                    <h5>Recommendations:</h5>
+                    <ul>
+                      <li *ngFor="let rec of skill.recommendations">{{rec}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Skills Needing Attention -->
+      <mat-tab label="Needs Attention">
+        <div class="tab-content">
+          <mat-card class="attention-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon color="warn">warning</mat-icon>
+                Skills Requiring Immediate Attention
+              </mat-card-title>
+              <mat-card-subtitle>
+                Focus on these skills to achieve your learning goals faster
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="getSkillsNeedingAttention().length === 0" class="no-skills">
+                Great job! No skills require immediate attention.
+              </div>
+              <div class="attention-skills">
+                <div *ngFor="let skill of getSkillsNeedingAttention(); let i = index" 
+                     class="attention-skill-item">
+                  <div class="skill-rank">{{i + 1}}</div>
+                  <div class="skill-details">
+                    <h4>{{skill.skillName}}</h4>
+                    <div class="skill-gap-visual">
+                      <div class="gap-bar">
+                        <div class="current-bar" [style.width.%]="(skill.currentLevel / 10) * 100"></div>
+                        <div class="gap-section" [style.width.%]="(skill.gap / 10) * 100"></div>
+                      </div>
+                      <div class="gap-labels">
+                        <span>Current: {{skill.currentLevel}}</span>
+                        <span>Gap: {{skill.gap}}</span>
+                        <span>Target: {{skill.targetLevel}}</span>
+                      </div>
+                    </div>
+                    <div class="priority-indicator" [style.background-color]="getPriorityColor(skill.priority)">
+                      {{skill.priority | titlecase}} Priority
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Strengths -->
+      <mat-tab label="Strengths">
+        <div class="tab-content">
+          <mat-card class="strengths-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon color="primary">star</mat-icon>
+                Your Top Strengths
+              </mat-card-title>
+              <mat-card-subtitle>
+                Skills where you're already performing well
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="getTopStrengths().length === 0" class="no-skills">
+                Complete more skill assessments to identify your strengths.
+              </div>
+              <div class="strengths-grid">
+                <div *ngFor="let skill of getTopStrengths()" class="strength-item">
+                  <div class="strength-header">
+                    <mat-icon color="primary">emoji_events</mat-icon>
+                    <h4>{{skill.skillName}}</h4>
+                  </div>
+                  <div class="strength-level">
+                    <span class="level-badge">Level {{skill.currentLevel}}/10</span>
+                    <span class="level-text">{{formatCurrentLevel(skill.currentLevel)}}</span>
+                  </div>
+                  <div class="strength-progress">
+                    <mat-progress-bar 
+                      mode="determinate" 
+                      [value]="skill.currentLevel * 10"
+                      color="primary">
+                    </mat-progress-bar>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- Actions -->
+    <mat-card class="actions-card">
+      <mat-card-actions>
+        <button mat-button (click)="restartAnalysis()">
+          <mat-icon>refresh</mat-icon>
+          New Analysis
+        </button>
+        <button mat-raised-button color="primary" routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          View Profile
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

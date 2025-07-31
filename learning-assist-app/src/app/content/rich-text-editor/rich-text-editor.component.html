@@ -1,0 +1,25 @@
+<div class="rich-text-editor">
+  <!-- Toolbar -->
+  <mat-toolbar class="editor-toolbar">
+    <ng-container *ngFor="let button of toolbarButtons">
+      <span *ngIf="button.command === 'separator'" class="toolbar-separator"></span>
+      <button 
+        *ngIf="button.command !== 'separator'"
+        mat-icon-button
+        [title]="button.title"
+        (click)="executeCommand(button.command)"
+        type="button">
+        <mat-icon>{{ button.icon }}</mat-icon>
+      </button>
+    </ng-container>
+  </mat-toolbar>
+
+  <!-- Editor Content -->
+  <div 
+    #editor
+    class="editor-content"
+    [style.height]="height"
+    contenteditable="true"
+    [attr.data-placeholder]="placeholder">
+  </div>
+</div>

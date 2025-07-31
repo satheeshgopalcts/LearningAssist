@@ -1,0 +1,68 @@
+<div class="video-uploader">
+  <!-- Upload Area -->
+  <div 
+    class="upload-area"
+    [class.drag-over]="isDragOver"
+    [class.uploading]="uploadProgress"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="triggerFileInput()">
+    
+    <!-- Upload Progress -->
+    <div *ngIf="uploadProgress" class="upload-progress">
+      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+      <h3>{{ uploadProgress.fileName }}</h3>
+      
+      <mat-progress-bar 
+        mode="determinate" 
+        [value]="uploadProgress.progress">
+      </mat-progress-bar>
+      
+      <p class="progress-text">
+        {{ uploadProgress.progress | number:'1.0-0' }}% 
+        ({{ uploadProgress.status }})
+      </p>
+      
+      <button 
+        mat-stroked-button 
+        color="warn" 
+        (click)="cancelUpload(); $event.stopPropagation()">
+        Cancel
+      </button>
+    </div>
+
+    <!-- Upload Prompt -->
+    <div *ngIf="!uploadProgress" class="upload-prompt">
+      <mat-icon class="upload-icon">video_library</mat-icon>
+      <h3>Upload Video</h3>
+      <p>Drag and drop a video file here, or click to browse</p>
+      <p class="file-info">
+        Supported formats: MP4, AVI, MOV, WMV<br>
+        Maximum size: {{ maxFileSize / (1024 * 1024) }}MB
+      </p>
+      
+      <button mat-raised-button color="primary">
+        <mat-icon>add</mat-icon>
+        Choose Video File
+      </button>
+    </div>
+  </div>
+
+  <!-- Hidden File Input -->
+  <input
+    type="file"
+    id="video-file-input"
+    [accept]="accept"
+    (change)="onFileSelected($event)"
+    style="display: none;">
+
+  <!-- Video Preview (if URL is provided) -->
+  <div *ngIf="uploadProgress?.status === 'completed'" class="video-preview">
+    <h4>Video Preview</h4>
+    <video controls width="100%" height="200" *ngIf="uploadProgress">
+      <source [src]="uploadProgress.fileName" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>

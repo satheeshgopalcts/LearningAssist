@@ -1,0 +1,256 @@
+.quiz-builder {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+
+  .quiz-settings {
+    margin-bottom: 24px;
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        height: 56px; // Match form field height
+      }
+    }
+  }
+
+  .questions-section {
+    margin-bottom: 24px;
+
+    mat-card-header {
+      display: flex;
+      align-items: center;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .total-points {
+          font-size: 14px;
+          color: #666;
+          font-weight: normal;
+        }
+      }
+
+      .spacer {
+        flex: 1;
+      }
+    }
+
+    .questions-list {
+      .question-item {
+        margin-bottom: 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+
+        &.cdk-drag-preview {
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        &.cdk-drag-animating {
+          transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        mat-expansion-panel-header {
+          .drag-handle {
+            cursor: move;
+            margin-right: 8px;
+            color: #999;
+          }
+
+          .question-type-badge {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+          }
+        }
+
+        .question-form {
+          padding: 16px 0;
+
+          .question-header {
+            display: flex;
+            gap: 16px;
+            align-items: start;
+            margin-bottom: 16px;
+
+            mat-form-field {
+              flex: 1;
+            }
+
+            button {
+              margin-top: 8px;
+            }
+          }
+
+          .full-width {
+            width: 100%;
+          }
+
+          .options-section {
+            margin-top: 16px;
+
+            h4 {
+              margin: 0 0 16px 0;
+              color: #333;
+              font-weight: 500;
+            }
+
+            .option-item {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              margin-bottom: 12px;
+
+              mat-checkbox {
+                flex-shrink: 0;
+              }
+
+              .option-input {
+                flex: 1;
+              }
+
+              button {
+                flex-shrink: 0;
+              }
+            }
+
+            button[mat-stroked-button] {
+              margin-top: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+// Dark theme support
+.dark-theme .quiz-builder {
+  .questions-section {
+    .questions-list {
+      .question-item {
+        border-color: #555;
+
+        mat-expansion-panel-header {
+          .question-type-badge {
+            background-color: #1565c0;
+            color: #bbdefb;
+          }
+        }
+
+        .question-form {
+          .options-section {
+            h4 {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .quiz-settings {
+    .settings-grid {
+      .total-points {
+        color: #aaa !important;
+      }
+    }
+  }
+
+  .actions {
+    border-top-color: #555;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .quiz-builder {
+    padding: 8px;
+
+    .quiz-settings {
+      .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+
+        .full-width {
+          grid-column: 1;
+        }
+      }
+    }
+
+    .questions-section {
+      mat-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+
+        mat-card-title {
+          justify-content: space-between;
+        }
+
+        .spacer {
+          display: none;
+        }
+      }
+
+      .questions-list {
+        .question-item {
+          .question-form {
+            .question-header {
+              flex-direction: column;
+              gap: 12px;
+
+              button {
+                align-self: flex-end;
+                margin-top: 0;
+              }
+            }
+
+            .options-section {
+              .option-item {
+                flex-wrap: wrap;
+                gap: 8px;
+
+                .option-input {
+                  min-width: 200px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 8px;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

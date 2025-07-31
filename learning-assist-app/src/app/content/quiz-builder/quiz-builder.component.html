@@ -1,0 +1,203 @@
+<div class="quiz-builder">
+  <form [formGroup]="quizForm" (ngSubmit)="saveQuiz()">
+    <!-- Quiz Settings -->
+    <mat-card class="quiz-settings">
+      <mat-card-header>
+        <mat-card-title>Quiz Settings</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="settings-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Quiz Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter quiz title">
+            <mat-error *ngIf="quizForm.get('title')?.hasError('required')">
+              Title is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Instructions</mat-label>
+            <textarea matInput formControlName="instructions" rows="3" 
+              placeholder="Enter instructions for quiz takers"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Time Limit (minutes)</mat-label>
+            <input matInput type="number" formControlName="timeLimit" 
+              placeholder="No limit">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Passing Score (%)</mat-label>
+            <input matInput type="number" formControlName="passingScore" 
+              min="0" max="100">
+            <mat-error *ngIf="quizForm.get('passingScore')?.hasError('required')">
+              Passing score is required
+            </mat-error>
+            <mat-error *ngIf="quizForm.get('passingScore')?.hasError('min') || quizForm.get('passingScore')?.hasError('max')">
+              Score must be between 0 and 100
+            </mat-error>
+          </mat-form-field>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="allowRetakes">
+              Allow Retakes
+            </mat-checkbox>
+          </div>
+
+          <mat-form-field appearance="outline" 
+            *ngIf="quizForm.get('allowRetakes')?.value">
+            <mat-label>Max Attempts</mat-label>
+            <input matInput type="number" formControlName="maxAttempts" 
+              placeholder="Unlimited">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Questions Section -->
+    <mat-card class="questions-section">
+      <mat-card-header>
+        <mat-card-title>
+          Questions ({{ questions.length }})
+          <span class="total-points">Total Points: {{ getTotalPoints() }}</span>
+        </mat-card-title>
+        <div class="spacer"></div>
+        <button mat-raised-button color="primary" type="button" 
+          (click)="addQuestion()">
+          <mat-icon>add</mat-icon>
+          Add Question
+        </button>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div cdkDropList (cdkDropListDropped)="onQuestionReorder($event)" 
+          class="questions-list">
+          
+          <div *ngFor="let question of questions.controls; let i = index" 
+            cdkDrag class="question-item">
+            
+            <mat-expansion-panel [expanded]="i === 0">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+                  Question {{ i + 1 }}
+                  <span class="question-type-badge">
+                    {{ getQuestionTypeDisplay(question.get('type')?.value) }}
+                  </span>
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ question.get('points')?.value }} points
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div [formGroup]="$any(question)" class="question-form">
+                <!-- Question Type and Points -->
+                <div class="question-header">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Question Type</mat-label>
+                    <mat-select formControlName="type" 
+                      (selectionChange)="onQuestionTypeChange(i)">
+                      <mat-option *ngFor="let type of questionTypes" [value]="type">
+                        {{ getQuestionTypeDisplay(type) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Points</mat-label>
+                    <input matInput type="number" formControlName="points" min="1">
+                  </mat-form-field>
+
+                  <button mat-icon-button color="warn" type="button" 
+                    (click)="removeQuestion(i)" 
+                    [disabled]="questions.length === 1">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+
+                <!-- Question Text -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Question</mat-label>
+                  <textarea matInput formControlName="question" rows="3" 
+                    placeholder="Enter your question"></textarea>
+                  <mat-error *ngIf="question.get('question')?.hasError('required')">
+                    Question is required
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- Options (for multiple choice and true/false) -->
+                <div *ngIf="question.get('type')?.value === 'multiple_choice' || 
+                          question.get('type')?.value === 'true_false'" 
+                  class="options-section">
+                  <h4>Answer Options</h4>
+                  
+                  <div *ngFor="let option of getOptionsArray(i).controls; let j = index" 
+                    class="option-item">
+                    <mat-checkbox 
+                      [checked]="isCorrectAnswer(i, j)"
+                      (change)="toggleCorrectAnswer(i, j)">
+                    </mat-checkbox>
+                    
+                    <mat-form-field appearance="outline" class="option-input">
+                      <mat-label>Option {{ j + 1 }}</mat-label>
+                      <input matInput [formControl]="$any(option)">
+                    </mat-form-field>
+
+                    <button mat-icon-button type="button" 
+                      (click)="removeOption(i, j)"
+                      [disabled]="getOptionsArray(i).length <= 2"
+                      *ngIf="question.get('type')?.value === 'multiple_choice'">
+                      <mat-icon>remove_circle</mat-icon>
+                    </button>
+                  </div>
+
+                  <button mat-stroked-button type="button" 
+                    (click)="addOption(i)"
+                    *ngIf="question.get('type')?.value === 'multiple_choice'">
+                    <mat-icon>add</mat-icon>
+                    Add Option
+                  </button>
+                </div>
+
+                <!-- Correct Answer (for non-multiple choice) -->
+                <mat-form-field appearance="outline" class="full-width"
+                  *ngIf="question.get('type')?.value === 'short_answer' || 
+                        question.get('type')?.value === 'fill_in_blank'">
+                  <mat-label>Correct Answer</mat-label>
+                  <input matInput 
+                    [value]="getCorrectAnswersArray(i).at(0)?.value || ''"
+                    (input)="updateCorrectAnswer(i, $event)">
+                </mat-form-field>
+
+                <!-- Explanation -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Explanation (Optional)</mat-label>
+                  <textarea matInput formControlName="explanation" rows="2" 
+                    placeholder="Explain the correct answer"></textarea>
+                </mat-form-field>
+              </div>
+            </mat-expansion-panel>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="cancel()">
+        Cancel
+      </button>
+      <button mat-stroked-button type="button" (click)="previewQuiz()"
+        [disabled]="!quizForm.valid">
+        <mat-icon>visibility</mat-icon>
+        Preview
+      </button>
+      <button mat-raised-button color="primary" type="submit"
+        [disabled]="!quizForm.valid">
+        <mat-icon>save</mat-icon>
+        Save Quiz
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,177 @@
+.video-uploader {
+  .upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: #1976d2;
+      background-color: rgba(25, 118, 210, 0.04);
+    }
+
+    &.drag-over {
+      border-color: #1976d2;
+      background-color: rgba(25, 118, 210, 0.08);
+      transform: scale(1.02);
+    }
+
+    &.uploading {
+      border-color: #4caf50;
+      background-color: rgba(76, 175, 80, 0.04);
+      cursor: default;
+    }
+
+    .upload-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: #333;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 8px 0;
+      color: #666;
+      
+      &.file-info {
+        font-size: 12px;
+        margin-top: 16px;
+        margin-bottom: 24px;
+      }
+
+      &.progress-text {
+        margin: 16px 0;
+        font-weight: 500;
+        color: #4caf50;
+      }
+    }
+
+    .upload-progress {
+      width: 100%;
+      max-width: 400px;
+
+      mat-progress-bar {
+        margin: 16px 0;
+        height: 8px;
+        border-radius: 4px;
+      }
+
+      button {
+        margin-top: 16px;
+      }
+    }
+
+    .upload-prompt {
+      button {
+        margin-top: 8px;
+      }
+    }
+  }
+
+  .video-preview {
+    margin-top: 24px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+
+    h4 {
+      margin: 0 0 16px 0;
+      color: #333;
+      font-weight: 500;
+    }
+
+    video {
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// Dark theme support
+.dark-theme .video-uploader {
+  .upload-area {
+    border-color: #555;
+    
+    &:hover {
+      border-color: #64b5f6;
+      background-color: rgba(100, 181, 246, 0.04);
+    }
+
+    &.drag-over {
+      border-color: #64b5f6;
+      background-color: rgba(100, 181, 246, 0.08);
+    }
+
+    &.uploading {
+      border-color: #81c784;
+      background-color: rgba(129, 199, 132, 0.04);
+    }
+
+    .upload-icon {
+      color: #aaa;
+    }
+
+    h3 {
+      color: #fff;
+    }
+
+    p {
+      color: #aaa;
+
+      &.progress-text {
+        color: #81c784;
+      }
+    }
+  }
+
+  .video-preview {
+    border-color: #555;
+    background-color: #424242;
+
+    h4 {
+      color: #fff;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .video-uploader {
+    .upload-area {
+      padding: 24px 16px;
+      min-height: 150px;
+
+      .upload-icon {
+        font-size: 36px;
+        width: 36px;
+        height: 36px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      p {
+        font-size: 14px;
+
+        &.file-info {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
