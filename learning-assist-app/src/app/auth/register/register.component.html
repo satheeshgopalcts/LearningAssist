@@ -1,0 +1,136 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title>Create Your Account</mat-card-title>
+      <mat-card-subtitle>Join thousands of learners on their journey</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Success Message -->
+      <div class="success-message" *ngIf="successMessage">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ successMessage }}</span>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Registration Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        <!-- Name Fields -->
+        <div class="name-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" autocomplete="given-name">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.errors">
+              {{ getErrorMessage('firstName') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" autocomplete="family-name">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.errors">
+              {{ getErrorMessage('lastName') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" autocomplete="new-password">
+          <button mat-icon-button matSuffix (click)="togglePasswordVisibility('password')" type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Strength Indicator -->
+        <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+          <div class="strength-bar">
+            <div class="strength-fill" 
+                 [style.width.%]="getPasswordStrengthScore() * 20" 
+                 [style.background-color]="getPasswordStrengthColor()">
+            </div>
+          </div>
+          <span class="strength-text" [style.color]="getPasswordStrengthColor()">
+            {{ getPasswordStrengthText() }}
+          </span>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" autocomplete="new-password">
+          <button mat-icon-button matSuffix (click)="togglePasswordVisibility('confirmPassword')" type="button">
+            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.errors || registerForm.hasError('passwordMismatch'))">
+            {{ getErrorMessage('confirmPassword') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-section">
+          <mat-checkbox formControlName="agreeToTerms">
+            I agree to the <a href="/terms" target="_blank" class="link">Terms of Service</a> 
+            and <a href="/privacy" target="_blank" class="link">Privacy Policy</a>
+          </mat-checkbox>
+          <mat-error *ngIf="registerForm.get('agreeToTerms')?.touched && registerForm.get('agreeToTerms')?.errors">
+            You must agree to the terms and conditions
+          </mat-error>
+        </div>
+
+        <!-- Register Button -->
+        <button mat-raised-button color="primary" type="submit" class="full-width register-btn" [disabled]="loading">
+          <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+          <span *ngIf="!loading">Create Account</span>
+          <span *ngIf="loading">Creating Account...</span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <!-- Social Registration -->
+      <div class="social-register">
+        <button mat-stroked-button class="social-btn google-btn" (click)="onSocialRegister('google')" [disabled]="loading">
+          <mat-icon>account_circle</mat-icon>
+          Sign up with Google
+        </button>
+        
+        <button mat-stroked-button class="social-btn linkedin-btn" (click)="onSocialRegister('linkedin')" [disabled]="loading">
+          <mat-icon>business</mat-icon>
+          Sign up with LinkedIn
+        </button>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <div class="login-link">
+        Already have an account? 
+        <a routerLink="/auth/login" class="link">Sign in here</a>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>
