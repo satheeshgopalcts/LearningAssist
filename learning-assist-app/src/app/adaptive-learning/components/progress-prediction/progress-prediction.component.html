@@ -1,0 +1,110 @@
+<div class="progress-prediction" *ngIf="prediction">
+  <div class="header">
+    <h1>Progress Prediction</h1>
+    <p>AI-powered insights into your learning journey</p>
+  </div>
+
+  <div class="prediction-grid">
+    <!-- Main Prediction -->
+    <mat-card class="main-prediction">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>trending_up</mat-icon>
+          Course Completion Forecast
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="prediction-stats">
+          <div class="stat-item">
+            <div class="stat-value">{{ prediction.predictedCompletionDate | date:'mediumDate' }}</div>
+            <div class="stat-label">Predicted Completion</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ prediction.successProbability * 100 | number:'1.0-0' }}%</div>
+            <div class="stat-label">Success Probability</div>
+            <mat-progress-bar mode="determinate" [value]="prediction.successProbability * 100" color="primary"></mat-progress-bar>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ prediction.estimatedStudyHours | number:'1.0-0' }}h</div>
+            <div class="stat-label">Est. Study Hours</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ prediction.confidenceLevel * 100 | number:'1.0-0' }}%</div>
+            <div class="stat-label">Confidence Level</div>
+            <mat-progress-bar mode="determinate" [value]="prediction.confidenceLevel * 100" color="accent"></mat-progress-bar>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Risk Factors -->
+    <mat-card class="risk-factors" *ngIf="prediction.riskFactors.length > 0">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>warning</mat-icon>
+          Risk Factors
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="risk-list">
+          <div class="risk-item" *ngFor="let risk of prediction.riskFactors">
+            <div class="risk-header">
+              <mat-chip [color]="getRiskColor(risk.severity)" size="small">
+                {{ risk.severity | titlecase }}
+              </mat-chip>
+              <span class="risk-impact">{{ risk.impact * 100 | number:'1.0-0' }}% impact</span>
+            </div>
+            <div class="risk-description">{{ risk.description }}</div>
+            <mat-progress-bar mode="determinate" [value]="risk.impact * 100" [color]="getRiskColor(risk.severity)"></mat-progress-bar>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Intervention Recommendations -->
+    <mat-card class="interventions" *ngIf="prediction.interventionRecommendations.length > 0">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>lightbulb</mat-icon>
+          Recommended Actions
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="intervention-list">
+          <mat-expansion-panel *ngFor="let intervention of prediction.interventionRecommendations">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-chip [color]="getPriorityColor(intervention.priority)" size="small">
+                  {{ intervention.priority | titlecase }}
+                </mat-chip>
+                {{ intervention.description }}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ intervention.estimatedEffectiveness * 100 | number:'1.0-0' }}% effectiveness
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            
+            <div class="action-items">
+              <h4>Action Items:</h4>
+              <ul>
+                <li *ngFor="let action of intervention.actionItems">{{ action }}</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="empty-state" *ngIf="!prediction">
+  <mat-card>
+    <mat-card-content>
+      <div class="empty-content">
+        <mat-icon>psychology</mat-icon>
+        <h2>Generating Predictions...</h2>
+        <p>Our AI is analyzing your learning patterns to provide personalized insights</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

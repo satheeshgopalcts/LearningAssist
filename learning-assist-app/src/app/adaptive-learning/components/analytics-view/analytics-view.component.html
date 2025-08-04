@@ -1,0 +1,149 @@
+<div class="analytics-view" *ngIf="analytics">
+  <div class="header">
+    <h1>Learning Analytics</h1>
+    <p>Detailed insights into your learning progress and patterns</p>
+  </div>
+
+  <div class="analytics-grid">
+    <!-- Overview Stats -->
+    <mat-card class="overview-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>dashboard</mat-icon>
+          Overview
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ analytics.timeSpent }}</div>
+            <div class="stat-label">Minutes Studied</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ analytics.completionRate * 100 | number:'1.0-0' }}%</div>
+            <div class="stat-label">Completion Rate</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ analytics.averageScore | number:'1.0-0' }}%</div>
+            <div class="stat-label">Average Score</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ analytics.learningVelocity | number:'1.1-1' }}</div>
+            <div class="stat-label">Lessons/Day</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Engagement Metrics -->
+    <mat-card class="engagement-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>favorite</mat-icon>
+          Engagement
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="engagement-item">
+          <div class="engagement-header">
+            <span>Content Interaction</span>
+            <span>{{ getEngagementLevel(analytics.engagementMetrics.contentInteractionRate) }}</span>
+          </div>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="analytics.engagementMetrics.contentInteractionRate * 100"
+            [color]="getEngagementColor(analytics.engagementMetrics.contentInteractionRate)">
+          </mat-progress-bar>
+        </div>
+        
+        <div class="engagement-item">
+          <div class="engagement-header">
+            <span>Assignment Submission</span>
+            <span>{{ analytics.engagementMetrics.assignmentSubmissionRate * 100 | number:'1.0-0' }}%</span>
+          </div>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="analytics.engagementMetrics.assignmentSubmissionRate * 100"
+            color="primary">
+          </mat-progress-bar>
+        </div>
+
+        <div class="session-stats">
+          <div class="session-stat">
+            <mat-icon>event</mat-icon>
+            <span>{{ analytics.engagementMetrics.sessionsPerWeek }} sessions/week</span>
+          </div>
+          <div class="session-stat">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ analytics.engagementMetrics.averageSessionDuration }} min/session</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Learning Progress -->
+    <mat-card class="progress-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>trending_up</mat-icon>
+          Progress Tracking
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="progress-metrics">
+          <div class="progress-metric">
+            <div class="metric-label">Retention Rate</div>
+            <div class="metric-value">{{ analytics.retentionRate * 100 | number:'1.0-0' }}%</div>
+            <mat-progress-bar mode="determinate" [value]="analytics.retentionRate * 100" color="accent"></mat-progress-bar>
+          </div>
+          
+          <div class="progress-metric">
+            <div class="metric-label">Weekly Learning Hours</div>
+            <div class="metric-value">{{ analytics.weeklyLearningHours | number:'1.1-1' }}h</div>
+            <mat-progress-bar mode="determinate" [value]="(analytics.weeklyLearningHours / 20) * 100" color="primary"></mat-progress-bar>
+          </div>
+          
+          <div class="progress-metric">
+            <div class="metric-label">Current Streak</div>
+            <div class="metric-value">{{ analytics.streakDays }} days</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Difficulty Progression -->
+    <mat-card class="difficulty-card" *ngIf="analytics.difficultyProgression.length > 0">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>timeline</mat-icon>
+          Difficulty Progression
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="difficulty-timeline">
+          <div class="timeline-item" *ngFor="let trend of analytics.difficultyProgression.slice(-5)">
+            <div class="timeline-date">{{ trend.date | date:'MMM dd' }}</div>
+            <div class="timeline-difficulty">
+              <mat-chip [color]="trend.difficulty === 'beginner' ? 'primary' : trend.difficulty === 'intermediate' ? 'accent' : 'warn'" size="small">
+                {{ trend.difficulty | titlecase }}
+              </mat-chip>
+            </div>
+            <div class="timeline-performance">{{ trend.performance }}%</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="empty-state" *ngIf="!analytics">
+  <mat-card>
+    <mat-card-content>
+      <div class="empty-content">
+        <mat-icon>analytics</mat-icon>
+        <h2>Loading Analytics...</h2>
+        <p>Gathering your learning data and insights</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

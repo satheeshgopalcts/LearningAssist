@@ -1,0 +1,421 @@
+.adaptive-dashboard {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 8px;
+      background: linear-gradient(45deg, #1976d2, #42a5f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0;
+    }
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  mat-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    mat-card-header {
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.3rem;
+        font-weight: 500;
+
+        mat-icon {
+          color: #1976d2;
+        }
+      }
+
+      mat-card-subtitle {
+        margin-top: 4px;
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  // Progress Overview Card
+  .progress-overview {
+    grid-column: span 2;
+    
+    @media (max-width: 1024px) {
+      grid-column: span 1;
+    }
+
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+
+      .stat-item {
+        text-align: center;
+
+        .stat-value {
+          font-size: 2rem;
+          font-weight: 600;
+          color: #1976d2;
+          margin-bottom: 4px;
+        }
+
+        .stat-label {
+          font-size: 0.9rem;
+          color: rgba(0, 0, 0, 0.6);
+          margin-bottom: 8px;
+        }
+
+        mat-progress-bar {
+          margin-top: 8px;
+        }
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      
+      @media (max-width: 480px) {
+        flex-direction: column;
+      }
+    }
+  }
+
+  // Current Path Card
+  .current-path {
+    .path-info {
+      margin-bottom: 24px;
+
+      mat-chip-listbox {
+        display: flex;
+        gap: 8px;
+
+        mat-chip {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+
+    .steps-section {
+      margin-bottom: 20px;
+
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        color: #1976d2;
+        font-weight: 500;
+      }
+
+      .step-list {
+        .step-item {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          margin-bottom: 8px;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+
+          &.active {
+            background-color: rgba(25, 118, 210, 0.08);
+            border-left: 4px solid #1976d2;
+
+            &:hover {
+              background-color: rgba(25, 118, 210, 0.12);
+            }
+          }
+
+          &.upcoming {
+            background-color: rgba(0, 0, 0, 0.02);
+            opacity: 0.8;
+          }
+
+          > mat-icon:first-child {
+            margin-right: 12px;
+            color: #1976d2;
+          }
+
+          .step-content {
+            flex: 1;
+
+            .step-title {
+              font-weight: 500;
+              margin-bottom: 4px;
+            }
+
+            .step-meta {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+
+              .step-time {
+                font-size: 0.85rem;
+                color: rgba(0, 0, 0, 0.6);
+              }
+            }
+          }
+
+          > mat-icon:last-child {
+            color: rgba(0, 0, 0, 0.4);
+          }
+        }
+      }
+    }
+  }
+
+  // Recommendations Card
+  .recommendations {
+    .recommendation-list {
+      .recommendation-item {
+        padding: 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: #1976d2;
+          background-color: rgba(25, 118, 210, 0.02);
+        }
+
+        .rec-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          margin-bottom: 8px;
+
+          .rec-title {
+            font-weight: 500;
+            font-size: 1.05rem;
+          }
+
+          .rec-confidence {
+            mat-icon {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+
+        .rec-description {
+          font-size: 0.9rem;
+          color: rgba(0, 0, 0, 0.7);
+          margin-bottom: 12px;
+          line-height: 1.4;
+        }
+
+        .rec-meta {
+          mat-chip-listbox {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+
+            mat-chip {
+              font-size: 0.8rem;
+              min-height: 24px;
+              display: flex;
+              align-items: center;
+              gap: 2px;
+
+              mat-icon {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .no-recommendations {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(0, 0, 0, 0.6);
+
+      mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  // Quick Analytics Card
+  .quick-analytics {
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+
+      .analytic-item {
+        text-align: center;
+        padding: 12px;
+        background-color: rgba(25, 118, 210, 0.05);
+        border-radius: 8px;
+
+        .analytic-value {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #1976d2;
+          margin-bottom: 4px;
+        }
+
+        .analytic-label {
+          font-size: 0.85rem;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+    }
+  }
+
+  // Settings Card
+  .settings-card {
+    .current-settings {
+      margin-bottom: 20px;
+
+      .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .setting-label {
+          font-weight: 500;
+          color: rgba(0, 0, 0, 0.8);
+        }
+
+        .setting-value {
+          color: #1976d2;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .adaptive-dashboard {
+    .dashboard-header p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    mat-card {
+      background-color: #2d2d2d;
+      color: white;
+
+      mat-card-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+
+    .progress-overview {
+      .progress-stats {
+        .stat-item {
+          .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+      }
+    }
+
+    .current-path {
+      .steps-section {
+        .step-list {
+          .step-item {
+            &.upcoming {
+              background-color: rgba(255, 255, 255, 0.02);
+            }
+
+            .step-content {
+              .step-meta {
+                .step-time {
+                  color: rgba(255, 255, 255, 0.6);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .recommendations {
+      .recommendation-list {
+        .recommendation-item {
+          border-color: #424242;
+          background-color: #333;
+
+          .rec-description {
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+      }
+
+      .no-recommendations {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .settings-card {
+      .current-settings {
+        .setting-item {
+          border-bottom-color: rgba(255, 255, 255, 0.1);
+
+          .setting-label {
+            color: rgba(255, 255, 255, 0.8);
+          }
+        }
+      }
+    }
+  }
+}

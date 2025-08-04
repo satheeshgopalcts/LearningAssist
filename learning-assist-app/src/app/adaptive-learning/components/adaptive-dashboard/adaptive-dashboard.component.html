@@ -1,0 +1,218 @@
+<div class="adaptive-dashboard">
+  <div class="dashboard-header">
+    <h1>AI-Powered Learning Dashboard</h1>
+    <p>Your personalized learning journey, adapted in real-time</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Learning Progress Overview -->
+    <mat-card class="progress-overview">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>trending_up</mat-icon>
+          Learning Progress
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="progress-stats">
+          <div class="stat-item">
+            <div class="stat-value">{{ overallProgress | number:'1.1-1' }}%</div>
+            <div class="stat-label">Overall Progress</div>
+            <mat-progress-bar mode="determinate" [value]="overallProgress"></mat-progress-bar>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ estimatedCompletion }}</div>
+            <div class="stat-label">Est. Completion</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ currentStreak }}</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ weeklyGoalProgress | number:'1.0-0' }}%</div>
+            <div class="stat-label">Weekly Goal</div>
+            <mat-progress-bar mode="determinate" [value]="weeklyGoalProgress" color="accent"></mat-progress-bar>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="onStartLearning()">
+            <mat-icon>play_arrow</mat-icon>
+            Continue Learning
+          </button>
+          <button mat-button (click)="onViewFullPath()">View Full Path</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Current Learning Path -->
+    <mat-card class="current-path" *ngIf="currentPath">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>route</mat-icon>
+          {{ currentPath.title }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ currentPath.description }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="path-info">
+          <mat-chip-listbox>
+            <mat-chip [color]="getDifficultyColor(currentPath.difficulty)" selected>
+              {{ currentPath.difficulty | titlecase }}
+            </mat-chip>
+            <mat-chip>
+              <mat-icon>schedule</mat-icon>
+              {{ currentPath.estimatedDuration }} min
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+
+        <!-- Active Steps -->
+        <div class="steps-section" *ngIf="activeSteps.length > 0">
+          <h3>Currently Active</h3>
+          <div class="step-list">
+            <div class="step-item active" *ngFor="let step of activeSteps" (click)="onStepClick(step)">
+              <mat-icon>{{ step.type === 'lesson' ? 'school' : step.type === 'quiz' ? 'quiz' : 'assignment' }}</mat-icon>
+              <div class="step-content">
+                <div class="step-title">{{ step.title }}</div>
+                <div class="step-meta">
+                  <span class="step-time">{{ step.estimatedTime }} min</span>
+                  <mat-chip [color]="getDifficultyColor(step.difficulty)" size="small">{{ step.difficulty }}</mat-chip>
+                </div>
+              </div>
+              <mat-icon>arrow_forward_ios</mat-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Steps -->
+        <div class="steps-section" *ngIf="upcomingSteps.length > 0">
+          <h3>Up Next</h3>
+          <div class="step-list">
+            <div class="step-item upcoming" *ngFor="let step of upcomingSteps">
+              <mat-icon>{{ step.type === 'lesson' ? 'school' : step.type === 'quiz' ? 'quiz' : 'assignment' }}</mat-icon>
+              <div class="step-content">
+                <div class="step-title">{{ step.title }}</div>
+                <div class="step-meta">
+                  <span class="step-time">{{ step.estimatedTime }} min</span>
+                  <mat-chip [color]="getDifficultyColor(step.difficulty)" size="small">{{ step.difficulty }}</mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- AI Recommendations -->
+    <mat-card class="recommendations">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>psychology</mat-icon>
+          AI Recommendations
+        </mat-card-title>
+        <mat-card-subtitle>
+          Personalized content based on your learning style and progress
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="recommendation-list" *ngIf="recommendations.length > 0">
+          <div class="recommendation-item" *ngFor="let rec of recommendations" (click)="onRecommendationClick(rec)">
+            <div class="rec-header">
+              <div class="rec-title">{{ rec.title }}</div>
+              <div class="rec-confidence">
+                <mat-icon [matTooltip]="'Confidence: ' + (rec.confidenceScore * 100 | number:'1.0-0') + '%'">
+                  {{ getConfidenceIcon(rec.confidenceScore) }}
+                </mat-icon>
+              </div>
+            </div>
+            <div class="rec-description">{{ rec.description }}</div>
+            <div class="rec-meta">
+              <mat-chip-listbox>
+                <mat-chip [color]="getDifficultyColor(rec.difficulty)" size="small">
+                  {{ rec.difficulty | titlecase }}
+                </mat-chip>
+                <mat-chip size="small">
+                  <mat-icon>schedule</mat-icon>
+                  {{ rec.estimatedTime }} min
+                </mat-chip>
+                <mat-chip size="small">
+                  {{ rec.recommendationSource | titlecase }}
+                </mat-chip>
+              </mat-chip-listbox>
+            </div>
+          </div>
+        </div>
+        <div class="no-recommendations" *ngIf="recommendations.length === 0">
+          <mat-icon>lightbulb_outline</mat-icon>
+          <p>No recommendations available at the moment. Continue learning to get personalized suggestions!</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quick Analytics -->
+    <mat-card class="quick-analytics" *ngIf="analytics">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>analytics</mat-icon>
+          Learning Analytics
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="analytics-grid">
+          <div class="analytic-item">
+            <div class="analytic-value">{{ analytics.learningVelocity | number:'1.1-1' }}</div>
+            <div class="analytic-label">Lessons/Day</div>
+          </div>
+          <div class="analytic-item">
+            <div class="analytic-value">{{ analytics.averageScore | number:'1.0-0' }}%</div>
+            <div class="analytic-label">Avg Score</div>
+          </div>
+          <div class="analytic-item">
+            <div class="analytic-value">{{ analytics.retentionRate * 100 | number:'1.0-0' }}%</div>
+            <div class="analytic-label">Retention</div>
+          </div>
+          <div class="analytic-item">
+            <div class="analytic-value">{{ analytics.engagementMetrics.sessionsPerWeek | number:'1.0-0' }}</div>
+            <div class="analytic-label">Sessions/Week</div>
+          </div>
+        </div>
+        <button mat-stroked-button (click)="onViewAnalytics()">
+          <mat-icon>trending_up</mat-icon>
+          View Detailed Analytics
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Adaptive Settings Quick Access -->
+    <mat-card class="settings-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>tune</mat-icon>
+          Adaptive Learning Settings
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="current-settings" *ngIf="currentPath?.adaptiveSettings">
+          <div class="setting-item">
+            <span class="setting-label">Learning Style:</span>
+            <span class="setting-value">{{ currentPath?.adaptiveSettings?.learningStyle | titlecase }}</span>
+          </div>
+          <div class="setting-item">
+            <span class="setting-label">Difficulty Progression:</span>
+            <span class="setting-value">{{ currentPath?.adaptiveSettings?.difficultyProgression | titlecase }}</span>
+          </div>
+          <div class="setting-item">
+            <span class="setting-label">Real-time Adjustments:</span>
+            <span class="setting-value">{{ currentPath?.adaptiveSettings?.realTimeAdjustments ? 'Enabled' : 'Disabled' }}</span>
+          </div>
+        </div>
+        <button mat-stroked-button (click)="onManageSettings()">
+          <mat-icon>settings</mat-icon>
+          Manage Settings
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

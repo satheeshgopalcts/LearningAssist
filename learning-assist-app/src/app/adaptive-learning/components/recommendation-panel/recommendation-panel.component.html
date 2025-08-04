@@ -1,0 +1,127 @@
+<div class="recommendation-panel">
+  <div class="header">
+    <h1>AI Recommendations</h1>
+    <p>Personalized content suggestions based on your learning progress and preferences</p>
+  </div>
+
+  <div class="filters">
+    <mat-form-field appearance="outline" class="source-filter">
+      <mat-label>Source</mat-label>
+      <mat-select [(value)]="selectedSource" (selectionChange)="onFilterChange()">
+        <mat-option value="all">All Sources</mat-option>
+        <mat-option *ngFor="let source of recommendationSources" [value]="source">
+          <mat-icon>{{ getSourceIcon(source) }}</mat-icon>
+          {{ source | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sort-filter">
+      <mat-label>Sort By</mat-label>
+      <mat-select [(value)]="sortBy" (selectionChange)="onFilterChange()">
+        <mat-option value="relevance">Relevance</mat-option>
+        <mat-option value="confidence">Confidence</mat-option>
+        <mat-option value="newest">Newest</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="recommendations-grid" *ngIf="filteredRecommendations.length > 0">
+    <mat-card class="recommendation-card" *ngFor="let rec of filteredRecommendations" (click)="onRecommendationClick(rec)">
+      <mat-card-header>
+        <div mat-card-avatar class="recommendation-avatar">
+          <mat-icon>{{ getSourceIcon(rec.recommendationSource) }}</mat-icon>
+        </div>
+        <mat-card-title>{{ rec.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [color]="getDifficultyColor(rec.difficulty)" size="small">
+            {{ rec.difficulty | titlecase }}
+          </mat-chip>
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="description">{{ rec.description }}</p>
+        
+        <div class="recommendation-meta">
+          <div class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ rec.estimatedTime }} min</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>{{ rec.contentType === 'video' ? 'play_circle' : rec.contentType === 'text' ? 'article' : 'quiz' }}</mat-icon>
+            <span>{{ rec.contentType | titlecase }}</span>
+          </div>
+        </div>
+
+        <div class="scores">
+          <div class="score-item">
+            <mat-icon matTooltip="Relevance Score">trending_up</mat-icon>
+            <mat-progress-bar mode="determinate" [value]="rec.relevanceScore * 100" color="primary"></mat-progress-bar>
+            <span>{{ rec.relevanceScore * 100 | number:'1.0-0' }}%</span>
+          </div>
+          <div class="score-item">
+            <mat-icon [matTooltip]="'Confidence: ' + (rec.confidenceScore * 100 | number:'1.0-0') + '%'">
+              {{ getConfidenceIcon(rec.confidenceScore) }}
+            </mat-icon>
+            <mat-progress-bar mode="determinate" [value]="rec.confidenceScore * 100" color="accent"></mat-progress-bar>
+            <span>{{ rec.confidenceScore * 100 | number:'1.0-0' }}%</span>
+          </div>
+        </div>
+
+        <div class="tags" *ngIf="rec.tags.length > 0">
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let tag of rec.tags.slice(0, 3)" size="small">
+              {{ tag }}
+            </mat-chip>
+            <mat-chip *ngIf="rec.tags.length > 3" size="small" disabled>
+              +{{ rec.tags.length - 3 }} more
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button color="primary">
+          <mat-icon>play_arrow</mat-icon>
+          Start Learning
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="feedbackMenu" (click)="$event.stopPropagation()">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #feedbackMenu="matMenu">
+          <button mat-menu-item (click)="onProvideFeedback(rec, 5, true)">
+            <mat-icon>thumb_up</mat-icon>
+            <span>Helpful</span>
+          </button>
+          <button mat-menu-item (click)="onProvideFeedback(rec, 1, false)">
+            <mat-icon>thumb_down</mat-icon>
+            <span>Not Helpful</span>
+          </button>
+        </mat-menu>
+      </mat-card-actions>
+
+      <div class="feedback-indicator" *ngIf="rec.userFeedback">
+        <mat-icon *ngIf="rec.userFeedback.wasHelpful" color="primary">check_circle</mat-icon>
+        <mat-icon *ngIf="!rec.userFeedback.wasHelpful" color="warn">cancel</mat-icon>
+        <span>Feedback provided</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="empty-state" *ngIf="filteredRecommendations.length === 0">
+    <mat-card>
+      <mat-card-content>
+        <div class="empty-content">
+          <mat-icon>psychology</mat-icon>
+          <h2>No Recommendations Available</h2>
+          <p *ngIf="selectedSource !== 'all'">Try changing the source filter to see more recommendations.</p>
+          <p *ngIf="selectedSource === 'all'">Complete more learning activities to get personalized recommendations from our AI engine.</p>
+          <button mat-raised-button color="primary" routerLink="/adaptive-learning/dashboard">
+            Back to Dashboard
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -23,8 +23,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   { 
+    path: 'adaptive-learning', 
+    loadChildren: () => import('./adaptive-learning/adaptive-learning.module').then(m => m.AdaptiveLearningModule),
+    canActivate: [authGuard]
+  },
+  { 
     path: 'dashboard', 
-    redirectTo: '/profile',  // Temporary redirect until dashboard is implemented
+    redirectTo: '/adaptive-learning/dashboard',  // Redirect to adaptive learning dashboard
     pathMatch: 'full'
   },
   { path: '**', redirectTo: '/auth/login' }
