@@ -1,0 +1,177 @@
+<div class="progress-dashboard">
+  <div class="dashboard-header">
+    <h1>Learning Progress Dashboard</h1>
+    <p class="subtitle">Track your learning journey and achievements</p>
+  </div>
+
+  <div class="dashboard-content" *ngIf="dashboardData">
+    <!-- Overview Cards -->
+    <div class="overview-cards">
+      <div class="metric-card">
+        <div class="metric-icon">📚</div>
+        <div class="metric-content">
+          <h3>{{ dashboardData.overallProgress.toFixed(1) }}%</h3>
+          <p>Overall Progress</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">⏱️</div>
+        <div class="metric-content">
+          <h3>{{ (dashboardData.totalTimeSpent / 60).toFixed(1) }}h</h3>
+          <p>Total Time Spent</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">🎓</div>
+        <div class="metric-content">
+          <h3>{{ dashboardData.coursesCompleted }}</h3>
+          <p>Courses Completed</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">🔥</div>
+        <div class="metric-content">
+          <h3>{{ dashboardData.currentStreak }}</h3>
+          <p>Day Streak</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Velocity -->
+    <div class="velocity-section">
+      <h2>Learning Velocity</h2>
+      <div class="velocity-metrics">
+        <div class="velocity-item">
+          <span class="label">Lessons per day:</span>
+          <span class="value">{{ dashboardData.learningVelocity.lessonsPerDay.toFixed(2) }}</span>
+        </div>
+        <div class="velocity-item">
+          <span class="label">Avg time per lesson:</span>
+          <span class="value">{{ dashboardData.learningVelocity.averageTimePerLesson.toFixed(1) }}m</span>
+        </div>
+        <div class="velocity-item">
+          <span class="label">Consistency score:</span>
+          <span class="value">{{ dashboardData.learningVelocity.consistencyScore }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Activity Chart -->
+    <div class="activity-section">
+      <h2>Weekly Activity</h2>
+      <div class="activity-chart">
+        <div 
+          *ngFor="let hours of dashboardData.weeklyActivity; let i = index" 
+          class="activity-bar"
+          [style.height.px]="Math.max(4, hours * 20)"
+          [title]="'Day ' + (i + 1) + ': ' + hours.toFixed(1) + ' hours'">
+        </div>
+      </div>
+      <div class="activity-labels">
+        <span *ngFor="let day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']">{{ day }}</span>
+      </div>
+    </div>
+
+    <!-- Recent Achievements -->
+    <div class="achievements-section" *ngIf="recentAchievements.length > 0">
+      <h2>Recent Achievements</h2>
+      <div class="achievements-grid">
+        <div 
+          *ngFor="let achievement of recentAchievements" 
+          class="achievement-card"
+          [style.border-left-color]="achievement.badgeColor">
+          <div class="achievement-icon">{{ achievement.badgeIcon }}</div>
+          <div class="achievement-content">
+            <h4>{{ achievement.title }}</h4>
+            <p>{{ achievement.description }}</p>
+            <small *ngIf="achievement.earnedAt">
+              Earned on {{ achievement.earnedAt | date:'short' }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Badges -->
+    <div class="badges-section" *ngIf="recentBadges.length > 0">
+      <h2>Recent Badges</h2>
+      <div class="badges-grid">
+        <app-badge-display 
+          *ngFor="let badge of recentBadges" 
+          [badge]="badge">
+        </app-badge-display>
+      </div>
+    </div>
+
+    <!-- Learning Goals -->
+    <div class="goals-section" *ngIf="currentGoals.length > 0">
+      <h2>Current Goals</h2>
+      <div class="goals-list">
+        <app-goal-progress 
+          *ngFor="let goal of currentGoals" 
+          [goal]="goal">
+        </app-goal-progress>
+      </div>
+    </div>
+
+    <!-- Strengths & Weaknesses -->
+    <div class="analysis-section" *ngIf="dashboardData.strengthsWeaknesses.length > 0">
+      <h2>Strengths & Areas for Improvement</h2>
+      <div class="analysis-grid">
+        <div 
+          *ngFor="let item of dashboardData.strengthsWeaknesses" 
+          class="analysis-item"
+          [ngClass]="item.type">
+          <div class="analysis-header">
+            <span class="skill-area">{{ item.skillArea }}</span>
+            <span class="confidence">{{ item.confidence }}% confidence</span>
+          </div>
+          <p class="suggestion">{{ item.improvementSuggestion }}</p>
+          <div class="related-courses">
+            <small>Recommended: {{ item.relatedCourses.join(', ') }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparative Analysis -->
+    <div class="comparison-section">
+      <h2>Performance Comparison</h2>
+      <div class="comparison-metrics">
+        <div class="comparison-item">
+          <span class="label">Your Score:</span>
+          <span class="value">{{ dashboardData.comparative.userScore.toFixed(1) }}</span>
+        </div>
+        <div class="comparison-item">
+          <span class="label">Peer Average:</span>
+          <span class="value">{{ dashboardData.comparative.peerAverageScore.toFixed(1) }}</span>
+        </div>
+        <div class="comparison-item">
+          <span class="label">Industry Average:</span>
+          <span class="value">{{ dashboardData.comparative.industryAverageScore.toFixed(1) }}</span>
+        </div>
+        <div class="comparison-item">
+          <span class="label">Percentile:</span>
+          <span class="value">{{ dashboardData.comparative.percentile }}th</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="dashboard-navigation">
+    <nav>
+      <a routerLink="achievements" routerLinkActive="active">Achievements</a>
+      <a routerLink="leaderboard" routerLinkActive="active">Leaderboard</a>
+      <a routerLink="analytics" routerLinkActive="active">Analytics</a>
+    </nav>
+  </div>
+
+  <!-- Route Content -->
+  <div class="route-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

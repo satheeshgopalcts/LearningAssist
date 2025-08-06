@@ -1,0 +1,140 @@
+<div class="achievement-display">
+  <div class="header">
+    <h2>🏆 Achievements & Rewards</h2>
+    <p>Track your learning milestones and unlock rewards</p>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="category-filter">
+    <button 
+      *ngFor="let category of ['all', 'completion', 'performance', 'engagement', 'consistency', 'skill', 'milestone']"
+      [class.active]="selectedCategory === category"
+      (click)="selectedCategory = category">
+      {{ getCategoryDisplayName(category) }}
+    </button>
+  </div>
+
+  <!-- Achievement Stats -->
+  <div class="achievement-stats">
+    <div class="stat-card">
+      <div class="stat-number">{{ unlockedAchievements.length }}</div>
+      <div class="stat-label">Unlocked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ filteredAchievements.length }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ badges.length }}</div>
+      <div class="stat-label">Badges</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ certificates.length }}</div>
+      <div class="stat-label">Certificates</div>
+    </div>
+  </div>
+
+  <!-- Unlocked Achievements -->
+  <div class="achievements-section" *ngIf="unlockedAchievements.length > 0">
+    <h3>🎉 Unlocked Achievements</h3>
+    <div class="achievements-grid">
+      <div 
+        *ngFor="let achievement of unlockedAchievements" 
+        class="achievement-card unlocked"
+        [style.border-color]="achievement.badgeColor">
+        <div class="achievement-badge" [style.color]="achievement.badgeColor">
+          {{ achievement.badgeIcon }}
+        </div>
+        <div class="achievement-content">
+          <h4>{{ achievement.title }}</h4>
+          <p>{{ achievement.description }}</p>
+          <div class="achievement-meta">
+            <span class="category">{{ getCategoryDisplayName(achievement.category) }}</span>
+            <span class="earned-date" *ngIf="achievement.earnedAt">
+              Earned {{ achievement.earnedAt | date:'mediumDate' }}
+            </span>
+          </div>
+        </div>
+        <div class="achievement-status">
+          <div class="completion-badge">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Locked Achievements -->
+  <div class="achievements-section" *ngIf="lockedAchievements.length > 0">
+    <h3>🔒 Locked Achievements</h3>
+    <div class="achievements-grid">
+      <div 
+        *ngFor="let achievement of lockedAchievements" 
+        class="achievement-card locked">
+        <div class="achievement-badge grayscale">
+          {{ achievement.badgeIcon }}
+        </div>
+        <div class="achievement-content">
+          <h4>{{ achievement.title }}</h4>
+          <p>{{ achievement.description }}</p>
+          <div class="achievement-meta">
+            <span class="category">{{ getCategoryDisplayName(achievement.category) }}</span>
+          </div>
+          <div class="progress-section">
+            <div class="progress-bar">
+              <div 
+                class="progress-fill" 
+                [style.width.%]="getAchievementProgress(achievement)">
+              </div>
+            </div>
+            <span class="progress-text">{{ getAchievementProgress(achievement) }}% Complete</span>
+          </div>
+        </div>
+        <div class="achievement-status">
+          <div class="lock-icon">🔒</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badges Section -->
+  <div class="badges-section" *ngIf="badges.length > 0">
+    <h3>🏅 Badge Collection</h3>
+    
+    <!-- Badge Levels -->
+    <div class="badge-levels">
+      <div 
+        *ngFor="let level of ['platinum', 'gold', 'silver', 'bronze']" 
+        class="badge-level-section">
+        <h4 class="level-title">{{ level | titlecase }} Badges</h4>
+        <div class="badges-row">
+          <app-badge-display 
+            *ngFor="let badge of getBadgesByLevel(level)" 
+            [badge]="badge">
+          </app-badge-display>
+          <div 
+            *ngIf="getBadgesByLevel(level).length === 0" 
+            class="no-badges">
+            No {{ level }} badges yet
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificates Section -->
+  <div class="certificates-section" *ngIf="certificates.length > 0">
+    <h3>📜 Certificates</h3>
+    <div class="certificates-grid">
+      <app-certificate-display 
+        *ngFor="let certificate of certificates" 
+        [certificate]="certificate">
+      </app-certificate-display>
+    </div>
+  </div>
+
+  <!-- Empty States -->
+  <div class="empty-state" *ngIf="filteredAchievements.length === 0">
+    <div class="empty-icon">🎯</div>
+    <h3>No Achievements Found</h3>
+    <p>Start learning to unlock your first achievements!</p>
+  </div>
+</div>

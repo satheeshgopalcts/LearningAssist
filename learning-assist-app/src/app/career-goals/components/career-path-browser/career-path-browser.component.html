@@ -1,0 +1,143 @@
+<div class="career-path-browser">
+  <div class="page-header">
+    <h1>Career Path Explorer</h1>
+    <p>Discover career opportunities and plan your professional journey</p>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading career paths...</p>
+  </div>
+
+  <div class="browser-content" *ngIf="!loading">
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="search-bar">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="onSearchChange()" 
+          placeholder="Search career paths..."
+          class="search-input">
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label>Industry</label>
+          <select [(ngModel)]="selectedIndustry" (change)="onIndustryChange()" class="filter-select">
+            <option value="">All Industries</option>
+            <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Career Level</label>
+          <select [(ngModel)]="selectedLevel" (change)="onLevelChange()" class="filter-select">
+            <option value="">All Levels</option>
+            <option *ngFor="let level of levels" [value]="level">{{ level | titlecase }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Demand Level</label>
+          <select [(ngModel)]="selectedDemand" (change)="onDemandChange()" class="filter-select">
+            <option value="">All Demand Levels</option>
+            <option *ngFor="let demand of demandLevels" [value]="demand">{{ demand }}</option>
+          </select>
+        </div>
+
+        <button class="clear-filters-btn" (click)="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="results-summary">
+      <h2>{{ filteredPaths.length }} Career Path{{ filteredPaths.length !== 1 ? 's' : '' }} Found</h2>
+    </div>
+
+    <!-- Career Paths Grid -->
+    <div class="paths-grid" *ngIf="filteredPaths.length > 0">
+      <div class="path-card" *ngFor="let path of filteredPaths">
+        <div class="card-header">
+          <div class="path-info">
+            <h3>{{ path.title }}</h3>
+            <span class="industry-tag">{{ path.industry }}</span>
+          </div>
+          <div class="path-metrics">
+            <span class="demand-badge" [class]="'demand-' + getDemandColor(path.demandLevel)">
+              {{ path.demandLevel }}
+            </span>
+            <span class="level-badge" [class]="'level-' + path.level">
+              {{ path.level | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <p class="path-description">{{ path.description }}</p>
+
+          <div class="path-details">
+            <div class="detail-item">
+              <span class="detail-label">💰 Salary Range:</span>
+              <span class="detail-value">{{ getSalaryRange(path) }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">⏱️ Time to Achieve:</span>
+              <span class="detail-value">{{ path.timeToAchieve }} months</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">📈 Job Outlook:</span>
+              <span class="detail-value">{{ path.jobOutlook }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">⭐ Popularity:</span>
+              <div class="popularity-stars">
+                <span 
+                  *ngFor="let star of getPopularityStars(path.popularity)" 
+                  class="star" 
+                  [class.filled]="star === 1">
+                  ⭐
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="skills-preview">
+            <h4>Key Skills Required:</h4>
+            <div class="skills-tags">
+              <span 
+                *ngFor="let skill of path.requiredSkills.slice(0, 5)" 
+                class="skill-tag">
+                {{ skill.name }}
+              </span>
+              <span *ngIf="path.requiredSkills.length > 5" class="more-skills">
+                +{{ path.requiredSkills.length - 5 }} more
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="action-btn secondary" (click)="viewPathDetails(path)">
+            View Details
+          </button>
+          <button class="action-btn primary" (click)="setAsGoal(path)">
+            Set as Goal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredPaths.length === 0">
+      <div class="empty-icon">🔍</div>
+      <h2>No Career Paths Found</h2>
+      <p>Try adjusting your filters or search terms to find more career opportunities.</p>
+      <button class="cta-button" (click)="clearFilters()">Clear All Filters</button>
+    </div>
+  </div>
+</div>

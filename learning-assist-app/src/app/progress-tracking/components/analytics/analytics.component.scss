@@ -1,0 +1,417 @@
+.analytics {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+
+    p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  }
+
+  .velocity-analytics,
+  .activity-analytics,
+  .skills-analytics,
+  .comparison-analytics {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+    h3 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+  }
+
+  .velocity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+
+    .velocity-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .metric-label {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 10px;
+      }
+
+      .metric-trend {
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        &.positive {
+          color: #2ecc71;
+        }
+
+        &.negative {
+          color: #e74c3c;
+        }
+      }
+    }
+  }
+
+  .activity-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #e74c3c;
+
+      .label {
+        font-weight: 500;
+        color: #555;
+      }
+
+      .value {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .detailed-chart {
+    .chart-title {
+      text-align: center;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .activity-chart {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      height: 180px;
+      margin-bottom: 15px;
+      padding: 0 20px;
+
+      .activity-bar {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        width: 50px;
+        border-radius: 6px 6px 0 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+
+        &:hover {
+          background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+          transform: scaleY(1.1);
+        }
+
+        .bar-value {
+          position: absolute;
+          bottom: 5px;
+          color: white;
+          font-size: 0.7rem;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .activity-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+
+      span {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+
+    .skill-card {
+      border: 2px solid #e0e6ed;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      &.strength {
+        border-left-color: #27ae60;
+        border-left-width: 4px;
+      }
+
+      &.weakness {
+        border-left-color: #e67e22;
+        border-left-width: 4px;
+      }
+
+      .skill-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+
+        h4 {
+          margin: 0;
+          color: #2c3e50;
+          font-weight: 600;
+        }
+
+        .confidence-badge {
+          background: #3498db;
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 600;
+        }
+      }
+
+      .skill-body {
+        .skill-type {
+          display: inline-block;
+          background: #f8f9fa;
+          color: #555;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-bottom: 10px;
+        }
+
+        .suggestion {
+          color: #555;
+          margin: 10px 0;
+          font-size: 0.95rem;
+          line-height: 1.4;
+        }
+
+        .evidence {
+          font-size: 0.8rem;
+          color: #7f8c8d;
+          font-style: italic;
+        }
+      }
+
+      .skill-footer {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e0e6ed;
+
+        .related-courses {
+          font-size: 0.85rem;
+          color: #555;
+
+          strong {
+            color: #2c3e50;
+          }
+        }
+      }
+    }
+  }
+
+  .comparison-chart {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+
+    .comparison-bars {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+      align-items: end;
+      height: 200px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+
+      .comparison-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 80px;
+
+        .bar-fill {
+          width: 60px;
+          background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+          border-radius: 4px 4px 0 0;
+          margin-bottom: 10px;
+          transition: height 0.3s ease;
+        }
+
+        &.user-bar .bar-fill {
+          background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        &.peer-bar .bar-fill {
+          background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        &.industry-bar .bar-fill {
+          background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .bar-label {
+          font-size: 0.9rem;
+          color: #555;
+          font-weight: 500;
+          margin-bottom: 5px;
+        }
+
+        .bar-value {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #2c3e50;
+        }
+      }
+    }
+
+    .percentile-info {
+      display: flex;
+      align-items: center;
+
+      .percentile-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+        .percentile-value {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 5px;
+        }
+
+        .percentile-label {
+          font-size: 1rem;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  .improvement-areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+
+    .areas-section {
+      h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          padding: 10px 15px;
+          margin-bottom: 8px;
+          border-radius: 8px;
+          background: #f8f9fa;
+          color: #555;
+          position: relative;
+          padding-left: 35px;
+
+          &::before {
+            content: '✓';
+            position: absolute;
+            left: 12px;
+            color: #27ae60;
+            font-weight: bold;
+          }
+        }
+
+        &.improvement-list li::before {
+          content: '📈';
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .analytics {
+    padding: 15px;
+
+    .velocity-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .activity-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .activity-chart {
+      padding: 0 10px;
+
+      .activity-bar {
+        width: 35px;
+      }
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison-chart {
+      flex-direction: column;
+      gap: 20px;
+
+      .comparison-bars {
+        height: 150px;
+      }
+    }
+  }
+}

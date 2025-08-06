@@ -1,0 +1,153 @@
+.badge-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 120px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  .badge-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+
+    &.level-bronze {
+      box-shadow: 0 4px 15px rgba(205, 127, 50, 0.3);
+    }
+
+    &.level-silver {
+      box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+    }
+
+    &.level-gold {
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      animation: goldGlow 2s ease-in-out infinite alternate;
+    }
+
+    &.level-platinum {
+      box-shadow: 0 4px 15px rgba(229, 228, 226, 0.4);
+      animation: platinumGlow 2s ease-in-out infinite alternate;
+    }
+
+    .badge-icon {
+      font-size: 2rem;
+      margin-bottom: 2px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge-level-indicator {
+      font-size: 0.6rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.5px;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255, 255, 255, 0.4) 90deg,
+        transparent 180deg,
+        rgba(255, 255, 255, 0.4) 270deg,
+        transparent 360deg
+      );
+      z-index: -1;
+      animation: shine 3s linear infinite;
+    }
+  }
+
+  .badge-info {
+    .badge-name {
+      margin: 0 0 5px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #2c3e50;
+      line-height: 1.2;
+    }
+
+    .badge-date {
+      margin: 0;
+      font-size: 0.75rem;
+      color: #7f8c8d;
+    }
+  }
+}
+
+@keyframes goldGlow {
+  from {
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes platinumGlow {
+  from {
+    box-shadow: 0 4px 15px rgba(229, 228, 226, 0.4);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(229, 228, 226, 0.6);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .badge-display {
+    max-width: 100px;
+
+    .badge-container {
+      width: 70px;
+      height: 70px;
+
+      .badge-icon {
+        font-size: 1.8rem;
+      }
+
+      .badge-level-indicator {
+        font-size: 0.55rem;
+      }
+    }
+
+    .badge-info {
+      .badge-name {
+        font-size: 0.8rem;
+      }
+
+      .badge-date {
+        font-size: 0.7rem;
+      }
+    }
+  }
+}

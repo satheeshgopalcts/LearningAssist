@@ -1,0 +1,67 @@
+<div class="leaderboard">
+  <div class="header">
+    <h2>🏆 Leaderboard</h2>
+    <p>See how you rank among fellow learners</p>
+  </div>
+
+  <div class="leaderboard-table">
+    <div class="table-header">
+      <div class="rank-col">Rank</div>
+      <div class="user-col">User</div>
+      <div class="score-col">Score</div>
+      <div class="badges-col">Badges</div>
+      <div class="streak-col">Streak</div>
+    </div>
+
+    <div class="table-body">
+      <div 
+        *ngFor="let entry of leaderboard; trackBy: trackByUserId" 
+        class="leaderboard-row"
+        [class.current-user]="isCurrentUser(entry.userId)"
+        [class.top-three]="entry.rank <= 3">
+        
+        <div class="rank-col">
+          <span class="rank-badge" [class]="'rank-' + entry.rank">
+            {{ getRankIcon(entry.rank) }}
+          </span>
+        </div>
+        
+        <div class="user-col">
+          <div class="user-info">
+            <div class="avatar">
+              {{ entry.userName.charAt(0).toUpperCase() }}
+            </div>
+            <div class="user-details">
+              <span class="user-name">{{ entry.userName }}</span>
+              <span class="user-level" *ngIf="entry.level">Level {{ entry.level }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="score-col">
+          <span class="score-value">{{ entry.totalScore.toLocaleString() }}</span>
+          <span class="score-label">points</span>
+        </div>
+        
+        <div class="badges-col">
+          <span class="badge-count">{{ entry.totalBadges }}</span>
+          <span class="badge-label">badges</span>
+        </div>
+        
+        <div class="streak-col">
+          <span class="streak-value">{{ entry.currentStreak }}</span>
+          <span class="streak-label">days</span>
+          <span class="streak-icon" *ngIf="entry.currentStreak > 0">🔥</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User's Position (if not in top 10) -->
+  <div class="user-position" *ngIf="!isUserInTopTen()">
+    <h3>Your Position</h3>
+    <div class="current-user-row">
+      <!-- Display current user's stats here -->
+    </div>
+  </div>
+</div>

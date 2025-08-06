@@ -1,0 +1,20 @@
+<div class="badge-display" [title]="badge.name">
+  <div 
+    class="badge-container"
+    [style.background]="getBadgeLevelGradient(badge.level)"
+    [class]="'level-' + badge.level">
+    
+    <div class="badge-icon" [style.color]="badge.color">
+      {{ badge.icon }}
+    </div>
+    
+    <div class="badge-level-indicator">
+      {{ badge.level }}
+    </div>
+  </div>
+  
+  <div class="badge-info">
+    <h4 class="badge-name">{{ badge.name }}</h4>
+    <p class="badge-date">{{ badge.earnedDate | date:'mediumDate' }}</p>
+  </div>
+</div>

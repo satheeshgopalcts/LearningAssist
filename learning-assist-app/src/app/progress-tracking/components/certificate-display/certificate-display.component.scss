@@ -1,0 +1,88 @@
+.certificate-display {
+  .certificate-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e0e6ed;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-color: #9b59b6;
+    }
+
+    .certificate-header {
+      background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+
+      .certificate-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      .certificate-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    .certificate-body {
+      padding: 20px;
+
+      .certificate-description {
+        color: #555;
+        margin: 0 0 15px 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .certificate-meta {
+        .issuer {
+          font-weight: 600;
+          color: #2c3e50;
+          margin-bottom: 5px;
+        }
+
+        .issue-date {
+          color: #7f8c8d;
+          font-size: 0.9rem;
+          margin-bottom: 5px;
+        }
+
+        .expiry {
+          color: #e67e22;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .certificate-footer {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-top: 1px solid #e0e6ed;
+
+      .verify-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+      }
+    }
+  }
+}

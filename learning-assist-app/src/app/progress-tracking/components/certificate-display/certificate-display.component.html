@@ -1,0 +1,23 @@
+<div class="certificate-display">
+  <div class="certificate-card">
+    <div class="certificate-header">
+      <div class="certificate-icon">📜</div>
+      <div class="certificate-title">{{ certificate.courseName }}</div>
+    </div>
+    <div class="certificate-body">
+      <p class="certificate-description">{{ certificate.description }}</p>
+      <div class="certificate-meta">
+        <div class="issuer">Issued by: {{ certificate.issuer }}</div>
+        <div class="issue-date">{{ certificate.issueDate | date:'mediumDate' }}</div>
+        <div class="expiry" *ngIf="certificate.expiryDate">
+          Expires: {{ certificate.expiryDate | date:'mediumDate' }}
+        </div>
+      </div>
+    </div>
+    <div class="certificate-footer">
+      <a [href]="certificate.verificationUrl" target="_blank" class="verify-btn">
+        Verify Certificate
+      </a>
+    </div>
+  </div>
+</div>

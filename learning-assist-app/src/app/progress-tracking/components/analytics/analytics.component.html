@@ -1,0 +1,137 @@
+<div class="analytics" *ngIf="dashboardData">
+  <div class="header">
+    <h2>📊 Learning Analytics</h2>
+    <p>Detailed insights into your learning patterns</p>
+  </div>
+
+  <!-- Velocity Metrics -->
+  <div class="velocity-analytics">
+    <h3>Learning Velocity</h3>
+    <div class="velocity-grid">
+      <div class="velocity-card">
+        <div class="metric-value">{{ dashboardData.learningVelocity.lessonsPerDay.toFixed(2) }}</div>
+        <div class="metric-label">Lessons per Day</div>
+        <div class="metric-trend positive">+{{ dashboardData.learningVelocity.weeklyTrend }}%</div>
+      </div>
+      <div class="velocity-card">
+        <div class="metric-value">{{ dashboardData.learningVelocity.averageTimePerLesson.toFixed(0) }}m</div>
+        <div class="metric-label">Avg Time per Lesson</div>
+        <div class="metric-trend positive">+{{ dashboardData.learningVelocity.monthlyTrend }}%</div>
+      </div>
+      <div class="velocity-card">
+        <div class="metric-value">{{ dashboardData.learningVelocity.consistencyScore }}%</div>
+        <div class="metric-label">Consistency Score</div>
+        <div class="metric-trend positive">Excellent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Activity Analysis -->
+  <div class="activity-analytics">
+    <h3>Weekly Activity Analysis</h3>
+    <div class="activity-summary">
+      <div class="summary-item">
+        <span class="label">Total Hours This Week:</span>
+        <span class="value">{{ getWeeklyTotal().toFixed(1) }}h</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Peak Activity Day:</span>
+        <span class="value">{{ getPeakActivityDay() }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Current Streak:</span>
+        <span class="value">{{ dashboardData.currentStreak }} days</span>
+      </div>
+    </div>
+    
+    <div class="detailed-chart">
+      <div class="chart-title">Daily Learning Hours</div>
+      <div class="activity-chart">
+        <div 
+          *ngFor="let hours of dashboardData.weeklyActivity; let i = index" 
+          class="activity-bar"
+          [style.height.px]="Math.max(8, hours * 30)"
+          [title]="'Day ' + (i + 1) + ': ' + hours.toFixed(1) + ' hours'">
+          <div class="bar-value">{{ hours.toFixed(1) }}</div>
+        </div>
+      </div>
+      <div class="activity-labels">
+        <span *ngFor="let day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']">{{ day }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Strengths & Weaknesses Analysis -->
+  <div class="skills-analytics">
+    <h3>Skills Analysis</h3>
+    <div class="skills-grid">
+      <div 
+        *ngFor="let skill of dashboardData.strengthsWeaknesses" 
+        class="skill-card"
+        [ngClass]="skill.type">
+        <div class="skill-header">
+          <h4>{{ skill.skillArea }}</h4>
+          <div class="confidence-badge">{{ skill.confidence }}%</div>
+        </div>
+        <div class="skill-body">
+          <div class="skill-type">{{ skill.type | titlecase }}</div>
+          <p class="suggestion">{{ skill.improvementSuggestion }}</p>
+          <div class="evidence">
+            Based on {{ skill.evidenceCount }} data points
+          </div>
+        </div>
+        <div class="skill-footer">
+          <div class="related-courses">
+            <strong>Recommended:</strong> {{ skill.relatedCourses.join(', ') }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparative Analysis -->
+  <div class="comparison-analytics">
+    <h3>Performance Comparison</h3>
+    <div class="comparison-chart">
+      <div class="comparison-bars">
+        <div class="comparison-bar user-bar">
+          <div class="bar-fill" [style.height.%]="(dashboardData.comparative.userScore / 100) * 100"></div>
+          <div class="bar-label">You</div>
+          <div class="bar-value">{{ dashboardData.comparative.userScore.toFixed(1) }}</div>
+        </div>
+        <div class="comparison-bar peer-bar">
+          <div class="bar-fill" [style.height.%]="(dashboardData.comparative.peerAverageScore / 100) * 100"></div>
+          <div class="bar-label">Peers</div>
+          <div class="bar-value">{{ dashboardData.comparative.peerAverageScore.toFixed(1) }}</div>
+        </div>
+        <div class="comparison-bar industry-bar">
+          <div class="bar-fill" [style.height.%]="(dashboardData.comparative.industryAverageScore / 100) * 100"></div>
+          <div class="bar-label">Industry</div>
+          <div class="bar-value">{{ dashboardData.comparative.industryAverageScore.toFixed(1) }}</div>
+        </div>
+      </div>
+      
+      <div class="percentile-info">
+        <div class="percentile-card">
+          <div class="percentile-value">{{ dashboardData.comparative.percentile }}th</div>
+          <div class="percentile-label">Percentile</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="improvement-areas">
+      <div class="areas-section">
+        <h4>Strength Areas</h4>
+        <ul class="strength-list">
+          <li *ngFor="let strength of dashboardData.comparative.strengthAreas">{{ strength }}</li>
+        </ul>
+      </div>
+      <div class="areas-section">
+        <h4>Improvement Areas</h4>
+        <ul class="improvement-list">
+          <li *ngFor="let area of dashboardData.comparative.improvementAreas">{{ area }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

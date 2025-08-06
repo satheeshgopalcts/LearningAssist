@@ -1,0 +1,187 @@
+<div class="career-dashboard">
+  <div class="dashboard-header">
+    <h1>Career Goals Dashboard</h1>
+    <p class="dashboard-subtitle">Track your career progress and skill development</p>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading your career dashboard...</p>
+  </div>
+
+  <div class="dashboard-content" *ngIf="!loading && dashboardData">
+    <!-- Quick Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-content">
+          <h3>{{ dashboardData.progressSummary.goalsCompleted }}/{{ dashboardData.progressSummary.totalGoals }}</h3>
+          <p>Goals Completed</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">💪</div>
+        <div class="stat-content">
+          <h3>{{ dashboardData.progressSummary.skillsAcquired }}</h3>
+          <p>Skills Acquired</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-content">
+          <h3>{{ dashboardData.progressSummary.overallProgress }}%</h3>
+          <p>Overall Progress</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-content">
+          <h3>{{ dashboardData.progressSummary.timeInvested }}h</h3>
+          <p>Time Invested</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="action-buttons">
+        <button class="action-btn primary" (click)="navigateToGoalSetting()">
+          <span class="btn-icon">🎯</span>
+          Set New Goal
+        </button>
+        <button class="action-btn secondary" (click)="navigateToSkillAssessment()">
+          <span class="btn-icon">📊</span>
+          Skill Assessment
+        </button>
+        <button class="action-btn secondary" (click)="navigateToCareerPaths()">
+          <span class="btn-icon">🚀</span>
+          Explore Careers
+        </button>
+        <button class="action-btn secondary" (click)="navigateToMarketInsights()">
+          <span class="btn-icon">💡</span>
+          Market Insights
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent Goals -->
+    <div class="recent-goals" *ngIf="recentGoals.length > 0">
+      <div class="section-header">
+        <h2>Recent Goals</h2>
+        <button class="view-all-btn" (click)="navigateToGoalTracking()">View All</button>
+      </div>
+      
+      <div class="goals-grid">
+        <div class="goal-card" *ngFor="let goal of recentGoals">
+          <div class="goal-header">
+            <h3>{{ goal.title }}</h3>
+            <span class="goal-priority" [class]="'priority-' + goal.priority.toLowerCase()">
+              {{ goal.priority }}
+            </span>
+          </div>
+          <p class="goal-description">{{ goal.description }}</p>
+          
+          <div class="goal-progress">
+            <div class="progress-info">
+              <span>Progress</span>
+              <span>{{ getProgressPercentage(goal) }}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getProgressPercentage(goal)"></div>
+            </div>
+          </div>
+          
+          <div class="goal-meta">
+            <span class="goal-status" [class]="'status-' + goal.status.toLowerCase()">
+              {{ goal.status }}
+            </span>
+            <span class="goal-deadline">Due: {{ goal.targetDate | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill Gaps -->
+    <div class="priority-gaps" *ngIf="prioritySkillGaps.length > 0">
+      <div class="section-header">
+        <h2>Priority Skill Gaps</h2>
+        <button class="view-all-btn" (click)="navigateToSkillMatrix()">View Matrix</button>
+      </div>
+      
+      <div class="gaps-list">
+        <div class="gap-item" *ngFor="let gap of prioritySkillGaps">
+          <div class="gap-info">
+            <h4>{{ gap.skillName }}</h4>
+            <p>Current: {{ gap.currentLevel }} → Required: {{ gap.requiredLevel }}</p>
+          </div>
+          <div class="gap-metrics">
+            <span class="gap-priority" [class]="'priority-' + gap.priority.toLowerCase()">
+              {{ gap.priority }}
+            </span>
+            <span class="learning-time">{{ gap.estimatedLearningTime }}h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market Insights -->
+    <div class="market-insights" *ngIf="marketInsights.length > 0">
+      <div class="section-header">
+        <h2>Market Insights</h2>
+        <button class="view-all-btn" (click)="navigateToMarketInsights()">View All</button>
+      </div>
+      
+      <div class="insights-grid">
+        <div class="insight-card" *ngFor="let insight of marketInsights">
+          <div class="insight-header">
+            <h4>{{ insight.title }}</h4>
+            <span class="insight-type">{{ insight.type }}</span>
+          </div>
+          <p class="insight-description">{{ insight.description }}</p>
+          <div class="insight-meta">
+            <span class="insight-source">{{ insight.source }}</span>
+            <span class="insight-date">{{ insight.publishedAt | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="navigation-grid">
+      <div class="nav-card" (click)="navigateToCareerPaths()">
+        <div class="nav-icon">🚀</div>
+        <h3>Career Paths</h3>
+        <p>Explore different career trajectories and requirements</p>
+      </div>
+      
+      <div class="nav-card" (click)="navigateToSkillMatrix()">
+        <div class="nav-icon">🎯</div>
+        <h3>Skill Matrix</h3>
+        <p>Visualize your skills and identify areas for improvement</p>
+      </div>
+      
+      <div class="nav-card" (click)="navigateToGoalTracking()">
+        <div class="nav-icon">📊</div>
+        <h3>Goal Tracking</h3>
+        <p>Monitor progress on your career goals and milestones</p>
+      </div>
+      
+      <div class="nav-card" (click)="navigateToSkillAssessment()">
+        <div class="nav-icon">✅</div>
+        <h3>Skill Assessment</h3>
+        <p>Test your skills and get validated certifications</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !dashboardData">
+    <div class="empty-icon">📈</div>
+    <h2>Welcome to Your Career Dashboard</h2>
+    <p>Start by setting your first career goal or taking a skill assessment.</p>
+    <button class="cta-button" (click)="navigateToGoalSetting()">Get Started</button>
+  </div>
+</div>

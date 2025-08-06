@@ -1,0 +1,35 @@
+<div class="goal-progress">
+  <div class="goal-header">
+    <h4 class="goal-title">{{ goal.title }}</h4>
+    <div class="goal-status" [class.completed]="goal.isCompleted">
+      {{ goal.isCompleted ? 'Completed' : 'In Progress' }}
+    </div>
+  </div>
+  
+  <p class="goal-description">{{ goal.description }}</p>
+  
+  <div class="progress-section">
+    <div class="progress-info">
+      <span class="current-value">{{ goal.currentValue }} {{ goal.unit }}</span>
+      <span class="target-value">/ {{ goal.targetValue }} {{ goal.unit }}</span>
+      <span class="percentage" [style.color]="getProgressColor()">
+        {{ getProgressPercentage() }}%
+      </span>
+    </div>
+    
+    <div class="progress-bar">
+      <div 
+        class="progress-fill" 
+        [style.width.%]="getProgressPercentage()"
+        [style.background-color]="getProgressColor()">
+      </div>
+    </div>
+  </div>
+  
+  <div class="goal-meta">
+    <div class="category">{{ goal.category }}</div>
+    <div class="deadline" [class.urgent]="getDaysRemaining() <= 7">
+      {{ getDaysRemaining() }} days remaining
+    </div>
+  </div>
+</div>

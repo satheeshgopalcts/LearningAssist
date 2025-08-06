@@ -32,5 +32,10 @@ export const routes: Routes = [
     redirectTo: '/adaptive-learning/dashboard',  // Redirect to adaptive learning dashboard
     pathMatch: 'full'
   },
+  { 
+    path: 'progress', 
+    loadChildren: () => import('./progress-tracking/progress-tracking.module').then(m => m.ProgressTrackingModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];

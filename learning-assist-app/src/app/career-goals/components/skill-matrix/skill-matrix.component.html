@@ -1,0 +1,203 @@
+<div class="skill-matrix">
+  <div class="page-header">
+    <h1>Skill Matrix</h1>
+    <p>Visualize your skills and track your development progress</p>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading your skill matrix...</p>
+  </div>
+
+  <div class="matrix-content" *ngIf="!loading && skillMatrix">
+    <!-- Overall Progress Summary -->
+    <div class="progress-summary">
+      <div class="summary-card">
+        <div class="summary-icon">📊</div>
+        <div class="summary-content">
+          <h3>Overall Progress</h3>
+          <div class="progress-bar-large">
+            <div class="progress-fill" [style.width.%]="getOverallProgress()"></div>
+          </div>
+          <span class="progress-text">{{ getOverallProgress() }}% Complete</span>
+        </div>
+      </div>
+
+      <div class="summary-stats">
+        <div class="stat-item">
+          <span class="stat-value">{{ skillMatrix.skills.length }}</span>
+          <span class="stat-label">Skills Assessed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ skillMatrix.strengthAreas.length }}</span>
+          <span class="stat-label">Strength Areas</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ skillMatrix.improvementAreas.length }}</span>
+          <span class="stat-label">Areas to Improve</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters">
+      <h2>Skill Categories</h2>
+      <div class="filter-buttons">
+        <button 
+          class="filter-btn"
+          [class.active]="selectedCategory === 'all'"
+          (click)="onCategoryChange('all')">
+          <span class="filter-icon">📈</span>
+          All Categories
+        </button>
+        <button 
+          *ngFor="let category of categories"
+          class="filter-btn"
+          [class.active]="selectedCategory === category"
+          (click)="onCategoryChange(category)">
+          <span class="filter-icon">{{ getCategoryIcon(category) }}</span>
+          {{ getCategoryLabel(category) }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Skills Grid -->
+    <div class="skills-section">
+      <div class="section-header">
+        <h2>Skills Assessment Overview</h2>
+        <p>Track your current skill levels and target improvements</p>
+      </div>
+
+      <div class="skills-grid" *ngIf="getFilteredSkills().length > 0">
+        <div class="skill-card" *ngFor="let skillAssessment of getFilteredSkills()">
+          <div class="skill-header">
+            <div class="skill-info">
+              <h4>Skill Assessment #{{ skillAssessment.id }}</h4>
+              <span class="assessment-type">{{ skillAssessment.assessmentType | titlecase }}</span>
+            </div>
+            <div class="skill-score">
+              <span class="score-value">{{ skillAssessment.score }}%</span>
+            </div>
+          </div>
+
+          <div class="skill-levels">
+            <div class="level-row">
+              <span class="level-label">Current Level:</span>
+              <div class="level-indicator">
+                <div class="level-bar">
+                  <div 
+                    class="level-fill"
+                    [style.width.%]="getSkillLevelWidth(skillAssessment.currentLevel)"
+                    [style.background-color]="getSkillLevelColor(skillAssessment.currentLevel)">
+                  </div>
+                </div>
+                <span class="level-text">{{ skillAssessment.currentLevel | titlecase }}</span>
+              </div>
+            </div>
+
+            <div class="level-row">
+              <span class="level-label">Target Level:</span>
+              <div class="level-indicator">
+                <div class="level-bar">
+                  <div 
+                    class="level-fill"
+                    [style.width.%]="getSkillLevelWidth(skillAssessment.targetLevel)"
+                    [style.background-color]="getSkillLevelColor(skillAssessment.targetLevel)">
+                  </div>
+                </div>
+                <span class="level-text">{{ skillAssessment.targetLevel | titlecase }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="skill-details">
+            <div class="assessment-info">
+              <span class="info-item">
+                <span class="info-label">📅 Completed:</span>
+                <span class="info-value">{{ skillAssessment.completedAt | date:'shortDate' }}</span>
+              </span>
+              <span class="info-item" *ngIf="skillAssessment.validUntil">
+                <span class="info-label">⏰ Valid Until:</span>
+                <span class="info-value">{{ skillAssessment.validUntil | date:'shortDate' }}</span>
+              </span>
+            </div>
+
+            <div class="strengths-improvements" *ngIf="skillAssessment.strengths.length > 0 || skillAssessment.improvementAreas.length > 0">
+              <div class="strengths" *ngIf="skillAssessment.strengths.length > 0">
+                <h5>💪 Strengths:</h5>
+                <div class="tags">
+                  <span 
+                    *ngFor="let strength of skillAssessment.strengths.slice(0, 3)" 
+                    class="tag strength-tag">
+                    {{ strength }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="improvements" *ngIf="skillAssessment.improvementAreas.length > 0">
+                <h5>🎯 Areas to Improve:</h5>
+                <div class="tags">
+                  <span 
+                    *ngFor="let area of skillAssessment.improvementAreas.slice(0, 3)" 
+                    class="tag improvement-tag">
+                    {{ area }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="skill-actions">
+            <button class="action-btn secondary" (click)="viewLearningResources(skillAssessment)">
+              📚 Resources
+            </button>
+            <button class="action-btn primary" (click)="startAssessment(skillAssessment)">
+              🔄 Reassess
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="getFilteredSkills().length === 0">
+        <div class="empty-icon">📊</div>
+        <h3>No Skills Assessed Yet</h3>
+        <p>Start building your skill matrix by taking your first skill assessment.</p>
+        <button class="cta-button" (click)="startAssessment({} as SkillAssessment)">
+          Take Assessment
+        </button>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="recommendations-section" *ngIf="skillMatrix.recommendations.length > 0">
+      <h2>Personalized Recommendations</h2>
+      <div class="recommendations-grid">
+        <div class="recommendation-card" *ngFor="let recommendation of skillMatrix.recommendations">
+          <div class="recommendation-icon">💡</div>
+          <p>{{ recommendation }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill Level Legend -->
+    <div class="skill-legend">
+      <h3>Skill Level Guide</h3>
+      <div class="legend-items">
+        <div class="legend-item" *ngFor="let level of skillLevels">
+          <div class="legend-color" [style.background-color]="level.color"></div>
+          <span class="legend-label">{{ level.label }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !skillMatrix">
+    <div class="empty-icon">📊</div>
+    <h2>No Skill Matrix Available</h2>
+    <p>Complete some skill assessments to build your personalized skill matrix.</p>
+    <button class="cta-button" (click)="startAssessment({} as SkillAssessment)">
+      Get Started
+    </button>
+  </div>
+</div>
