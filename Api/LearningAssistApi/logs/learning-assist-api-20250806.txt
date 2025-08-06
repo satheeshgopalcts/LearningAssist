@@ -1,4 +1,0 @@
-2025-08-06 11:32:44.595 +05:30 [INF] Starting Learning Assist API
-2025-08-06 11:32:44.685 +05:30 [INF] User profile is available. Using 'C:\Users\570147\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
-2025-08-06 11:32:44.699 +05:30 [INF] Creating key {6d842178-c9c0-4b3c-a8ff-4866b71339fb} with creation date 2025-08-06 06:02:44Z, activation date 2025-08-06 06:02:44Z, and expiration date 2025-11-04 06:02:44Z.
-2025-08-06 11:32:44.727 +05:30 [INF] Writing data to file 'C:\Users\570147\AppData\Local\ASP.NET\DataProtection-Keys\key-6d842178-c9c0-4b3c-a8ff-4866b71339fb.xml'.
