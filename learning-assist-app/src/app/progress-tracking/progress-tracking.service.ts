@@ -409,36 +409,104 @@ export class ProgressTrackingService {
       }
     ];
 
+    const mockBadges: Badge[] = [
+      {
+        id: 'badge-1',
+        name: 'First Steps',
+        icon: 'star',
+        color: '#CD7F32',
+        level: 'bronze',
+        earnedDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+        skillArea: 'Programming'
+      },
+      {
+        id: 'badge-2',
+        name: 'Quick Learner',
+        icon: 'zap',
+        color: '#C0C0C0',
+        level: 'silver',
+        earnedDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        skillArea: 'Learning Speed'
+      },
+      {
+        id: 'badge-3',
+        name: 'Streak Master',
+        icon: 'fire',
+        color: '#FFD700',
+        level: 'gold',
+        earnedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        skillArea: 'Consistency'
+      }
+    ];
+
+    const mockCertificates: Certificate[] = [
+      {
+        id: 'cert-1',
+        title: 'JavaScript Fundamentals Certificate',
+        courseName: 'JavaScript Fundamentals', // Added for template compatibility
+        description: 'Successfully completed JavaScript Fundamentals course',
+        issueDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+        verificationCode: 'JS-FUND-2024-001',
+        verificationUrl: 'https://verify.learningassist.com/JS-FUND-2024-001', // Added for template compatibility
+        skillsValidated: ['Variables', 'Functions', 'Objects', 'Arrays'],
+        issuedBy: 'Learning Assist Platform',
+        issuer: 'Learning Assist Platform', // Added for template compatibility
+        certificateUrl: 'https://certificates.learningassist.com/cert-1.pdf'
+      },
+      {
+        id: 'cert-2',
+        title: 'Web Development Basics Certificate',
+        courseName: 'Web Development Basics', // Added for template compatibility
+        description: 'Successfully completed Web Development Basics course',
+        issueDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+        verificationCode: 'WEB-DEV-2024-002',
+        verificationUrl: 'https://verify.learningassist.com/WEB-DEV-2024-002', // Added for template compatibility
+        skillsValidated: ['HTML', 'CSS', 'Responsive Design'],
+        issuedBy: 'Learning Assist Platform',
+        issuer: 'Learning Assist Platform', // Added for template compatibility
+        certificateUrl: 'https://certificates.learningassist.com/cert-2.pdf'
+      }
+    ];
+
     const mockLeaderboard: LeaderboardEntry[] = [
       {
         userId: 'user-1',
         username: 'LearningChamp',
+        userName: 'LearningChamp', // Added for template compatibility
         totalScore: 1250,
         completedCourses: 5,
         averagePerformance: 88.5,
         currentStreak: 12,
         rank: 3,
-        rankChange: 1
+        rankChange: 1,
+        level: 15, // Added for template compatibility
+        totalBadges: 8 // Added for template compatibility
       },
       {
         userId: 'user-2',
         username: 'CodeMaster',
+        userName: 'CodeMaster', // Added for template compatibility
         totalScore: 1480,
         completedCourses: 7,
         averagePerformance: 92.1,
         currentStreak: 8,
         rank: 1,
-        rankChange: 0
+        rankChange: 0,
+        level: 22, // Added for template compatibility
+        totalBadges: 12 // Added for template compatibility
       },
       {
         userId: 'user-3',
         username: 'QuickLearner',
+        userName: 'QuickLearner', // Added for template compatibility
         totalScore: 1350,
         completedCourses: 6,
         averagePerformance: 89.7,
         currentStreak: 15,
         rank: 2,
-        rankChange: -1
+        rankChange: -1,
+        level: 18, // Added for template compatibility
+        totalBadges: 10 // Added for template compatibility
       }
     ];
 
@@ -475,6 +543,8 @@ export class ProgressTrackingService {
 
     this.progressMetricsSubject.next(mockMetrics);
     this.achievementsSubject.next(mockAchievements);
+    this.badgesSubject.next(mockBadges);
+    this.certificatesSubject.next(mockCertificates);
     this.leaderboardSubject.next(mockLeaderboard);
     this.goalsSubject.next(mockGoals);
   }

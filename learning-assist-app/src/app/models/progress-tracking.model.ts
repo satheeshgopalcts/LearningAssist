@@ -54,18 +54,22 @@ export interface Badge {
 export interface Certificate {
   id: string;
   title: string;
+  courseName: string; // Added for template compatibility
   description: string;
   issueDate: Date;
   expiryDate?: Date;
   verificationCode: string;
+  verificationUrl?: string; // Added for template compatibility
   skillsValidated: string[];
   issuedBy: string;
+  issuer: string; // Added for template compatibility
   certificateUrl?: string;
 }
 
 export interface LeaderboardEntry {
   userId: string;
   username: string;
+  userName: string; // Added for template compatibility
   avatar?: string;
   totalScore: number;
   completedCourses: number;
@@ -73,6 +77,8 @@ export interface LeaderboardEntry {
   currentStreak: number;
   rank: number;
   rankChange: number; // +/- from last period
+  level?: number; // Added for template compatibility
+  totalBadges?: number; // Added for template compatibility
 }
 
 export interface LearningVelocity {

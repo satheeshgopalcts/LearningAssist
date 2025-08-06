@@ -1,0 +1,251 @@
+<div class="goal-setting">
+  <div class="page-header">
+    <h1>Set Career Goal</h1>
+    <p>Create SMART goals to guide your career development journey</p>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading career paths...</p>
+  </div>
+
+  <div class="goal-form-container" *ngIf="!loading">
+    <form [formGroup]="goalForm" (ngSubmit)="onSubmit()" class="goal-form">
+      <!-- Goal Basic Information -->
+      <div class="form-section">
+        <h2>Goal Information</h2>
+        
+        <div class="form-group">
+          <label for="title">Goal Title *</label>
+          <input 
+            type="text" 
+            id="title"
+            formControlName="title"
+            [class.error]="isFieldInvalid('title')"
+            placeholder="e.g., Become a Senior Software Engineer">
+          <div class="error-message" *ngIf="isFieldInvalid('title')">
+            {{ getFieldError('title') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Goal Description *</label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            rows="4"
+            [class.error]="isFieldInvalid('description')"
+            placeholder="Describe your career goal in detail, including what you want to achieve and why it's important to you...">
+          </textarea>
+          <div class="error-message" *ngIf="isFieldInvalid('description')">
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="priority">Priority Level *</label>
+            <select 
+              id="priority"
+              formControlName="priority"
+              [class.error]="isFieldInvalid('priority')">
+              <option *ngFor="let priority of priorities" [value]="priority.value">
+                {{ priority.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="targetDate">Target Date *</label>
+            <input 
+              type="date" 
+              id="targetDate"
+              formControlName="targetDate"
+              [class.error]="isFieldInvalid('targetDate')"
+              [min]="minDate">
+            <div class="error-message" *ngIf="isFieldInvalid('targetDate')">
+              Target date is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Career Path Selection -->
+      <div class="form-section">
+        <h2>Target Career Path</h2>
+        
+        <div class="form-group">
+          <label for="careerPath">Select Career Path *</label>
+          <select 
+            id="careerPath"
+            formControlName="careerPathId"
+            (change)="onCareerPathChange($any($event.target).value || '')"
+            [class.error]="isFieldInvalid('careerPathId')">
+            <option value="">Choose a career path...</option>
+            <option *ngFor="let path of careerPaths" [value]="path.id">
+              {{ path.title }} ({{ path.industry }})
+            </option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('careerPathId')">
+            Please select a career path
+          </div>
+        </div>
+
+        <!-- Career Path Details -->
+        <div class="career-path-details" *ngIf="selectedCareerPath">
+          <div class="path-card">
+            <div class="path-header">
+              <h3>{{ selectedCareerPath.title }}</h3>
+              <span class="industry-tag">{{ selectedCareerPath.industry }}</span>
+            </div>
+            
+            <p class="path-description">{{ selectedCareerPath.description }}</p>
+            
+            <div class="path-metrics">
+              <div class="metric-item">
+                <span class="metric-label">💰 Salary Range:</span>
+                <span class="metric-value">
+                  ${{ selectedCareerPath.averageSalary?.min | number }} - 
+                  ${{ selectedCareerPath.averageSalary?.max | number }}
+                </span>
+              </div>
+              
+              <div class="metric-item">
+                <span class="metric-label">⏱️ Typical Duration:</span>
+                <span class="metric-value">{{ selectedCareerPath.timeToAchieve }} months</span>
+              </div>
+              
+              <div class="metric-item">
+                <span class="metric-label">📈 Demand Level:</span>
+                <span class="metric-value demand-badge" [class]="'demand-' + selectedCareerPath.demandLevel.toLowerCase().replace(' ', '-')">
+                  {{ selectedCareerPath.demandLevel }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Required Skills Preview -->
+            <div class="required-skills" *ngIf="selectedCareerPath.requiredSkills.length > 0">
+              <h4>Key Skills Required:</h4>
+              <div class="skills-tags">
+                <span 
+                  *ngFor="let skill of selectedCareerPath.requiredSkills.slice(0, 6)" 
+                  class="skill-tag">
+                  {{ skill.name }}
+                </span>
+                <span *ngIf="selectedCareerPath.requiredSkills.length > 6" class="more-skills">
+                  +{{ selectedCareerPath.requiredSkills.length - 6 }} more
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goal Settings -->
+      <div class="form-section">
+        <h2>Goal Configuration</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="motivationLevel">Motivation Level (1-10) *</label>
+            <div class="slider-container">
+              <input 
+                type="range" 
+                id="motivationLevel"
+                formControlName="motivationLevel"
+                min="1" 
+                max="10" 
+                class="slider">
+              <div class="slider-value">{{ goalForm.get('motivationLevel')?.value }}</div>
+            </div>
+            <div class="slider-labels">
+              <span>Low</span>
+              <span>High</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="estimatedTime">Estimated Time (months) *</label>
+            <input 
+              type="number" 
+              id="estimatedTime"
+              formControlName="estimatedTimeToComplete"
+              min="1" 
+              max="120"
+              [class.error]="isFieldInvalid('estimatedTimeToComplete')"
+              placeholder="12">
+            <div class="error-message" *ngIf="isFieldInvalid('estimatedTimeToComplete')">
+              {{ getFieldError('estimatedTimeToComplete') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Gap Analysis -->
+      <div class="form-section" *ngIf="getRelatedSkillGaps().length > 0">
+        <h2>Related Skill Gaps</h2>
+        <p class="section-description">These skill gaps are related to your selected career path:</p>
+        
+        <div class="skill-gaps-list">
+          <div class="gap-item" *ngFor="let gap of getRelatedSkillGaps()">
+            <div class="gap-info">
+              <h4>{{ gap.skillName }}</h4>
+              <p>Current: {{ gap.currentLevel }} → Required: {{ gap.requiredLevel }}</p>
+            </div>
+            <div class="gap-metrics">
+              <span class="gap-priority" [class]="'priority-' + gap.priority.toLowerCase()">
+                {{ gap.priority }}
+              </span>
+              <span class="learning-time">{{ gap.estimatedLearningTime }}h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SMART Goal Validation -->
+      <div class="smart-validation">
+        <h3>SMART Goal Checklist</h3>
+        <div class="validation-items">
+          <div class="validation-item" [class.valid]="goalForm.get('title')?.value?.length >= 3">
+            <span class="validation-icon">{{ goalForm.get('title')?.value?.length >= 3 ? '✅' : '❌' }}</span>
+            <span class="validation-text">Specific: Goal has a clear, specific title</span>
+          </div>
+          
+          <div class="validation-item" [class.valid]="goalForm.get('careerPathId')?.value && goalForm.get('targetDate')?.value">
+            <span class="validation-icon">{{ goalForm.get('careerPathId')?.value && goalForm.get('targetDate')?.value ? '✅' : '❌' }}</span>
+            <span class="validation-text">Measurable: Clear target career path and timeline</span>
+          </div>
+          
+          <div class="validation-item" [class.valid]="goalForm.get('estimatedTimeToComplete')?.value >= 1">
+            <span class="validation-icon">{{ goalForm.get('estimatedTimeToComplete')?.value >= 1 ? '✅' : '❌' }}</span>
+            <span class="validation-text">Achievable: Realistic timeframe set</span>
+          </div>
+          
+          <div class="validation-item" [class.valid]="goalForm.get('description')?.value?.length >= 10">
+            <span class="validation-icon">{{ goalForm.get('description')?.value?.length >= 10 ? '✅' : '❌' }}</span>
+            <span class="validation-text">Relevant: Clear description of why this goal matters</span>
+          </div>
+          
+          <div class="validation-item" [class.valid]="goalForm.get('targetDate')?.value">
+            <span class="validation-icon">{{ goalForm.get('targetDate')?.value ? '✅' : '❌' }}</span>
+            <span class="validation-text">Time-bound: Specific target date set</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn secondary" (click)="onCancel()" [disabled]="submitting">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn primary" 
+          [disabled]="!goalForm.valid || !validateSmartGoal() || submitting">
+          <span *ngIf="submitting" class="spinner-small"></span>
+          {{ submitting ? 'Creating Goal...' : 'Create Goal' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

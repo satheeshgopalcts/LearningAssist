@@ -10,6 +10,7 @@ import { DashboardData } from '../../../models/progress-tracking.model';
 })
 export class AnalyticsComponent implements OnInit, OnDestroy {
   dashboardData: DashboardData | null = null;
+  Math = Math; // Expose Math to template
   
   private subscriptions: Subscription[] = [];
 

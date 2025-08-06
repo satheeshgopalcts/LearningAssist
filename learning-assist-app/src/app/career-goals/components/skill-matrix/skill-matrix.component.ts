@@ -154,13 +154,30 @@ export class SkillMatrixComponent implements OnInit, OnDestroy {
     return Math.round(totalProgress / totalSkills);
   }
 
-  startAssessment(skillAssessment: SkillAssessment): void {
+  startAssessment(skillAssessment?: SkillAssessment): void {
     // Navigate to skill assessment
-    console.log('Starting assessment for skill ID:', skillAssessment.skillId);
+    if (skillAssessment) {
+      console.log('Starting assessment for skill ID:', skillAssessment.skillId);
+    } else {
+      console.log('Starting general skill assessment');
+      // Navigate to general assessment page or show skill selection
+    }
   }
 
   viewLearningResources(skillAssessment: SkillAssessment): void {
     // Show learning resources for the skill
     console.log('Viewing resources for skill ID:', skillAssessment.skillId);
+  }
+
+  getSkillLevelLabel(level: SkillLevel): string {
+    switch(level) {
+      case SkillLevel.NONE: return 'None';
+      case SkillLevel.BEGINNER: return 'Beginner';
+      case SkillLevel.NOVICE: return 'Novice';
+      case SkillLevel.INTERMEDIATE: return 'Intermediate';
+      case SkillLevel.ADVANCED: return 'Advanced';
+      case SkillLevel.EXPERT: return 'Expert';
+      default: return 'Unknown';
+    }
   }
 }

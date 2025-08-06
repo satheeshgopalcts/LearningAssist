@@ -644,6 +644,10 @@ export class CareerGoalsService {
     // Initialize mock market insights
     const mockMarketInsights: MarketInsight[] = [
       {
+        id: 'insight_1',
+        title: 'JavaScript Development Trends',
+        description: 'Strong demand for JavaScript developers continues with increasing adoption of modern frameworks.',
+        type: 'Skill Demand',
         industry: 'Technology',
         skillId: 'js',
         region: 'United States',
@@ -652,6 +656,8 @@ export class CareerGoalsService {
         growthRate: 18,
         competitionLevel: 'Medium',
         demandTrend: 'High Growth',
+        source: 'Tech Industry Report',
+        publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         topCompanies: [
           { id: 'comp_1', name: 'Google', industry: 'Technology', size: 'Enterprise', location: 'Mountain View, CA', openPositions: 150, averageSalary: 120000, rating: 4.5 },
           { id: 'comp_2', name: 'Microsoft', industry: 'Technology', size: 'Enterprise', location: 'Redmond, WA', openPositions: 120, averageSalary: 115000, rating: 4.4 }

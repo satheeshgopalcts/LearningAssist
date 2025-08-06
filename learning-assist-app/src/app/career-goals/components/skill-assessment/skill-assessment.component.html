@@ -1,0 +1,30 @@
+<div class="skill-assessment">
+  <div class="page-header">
+    <h1>Skill Assessment</h1>
+    <p>Test and validate your skills with comprehensive assessments</p>
+  </div>
+
+  <div class="assessment-content" *ngIf="!loading">
+    <div class="actions-section">
+      <button class="new-assessment-btn" (click)="startNewAssessment()">
+        Start New Assessment
+      </button>
+    </div>
+
+    <div class="assessments-list" *ngIf="assessments.length > 0">
+      <h2>Previous Assessments</h2>
+      <div class="assessment-card" *ngFor="let assessment of assessments">
+        <div class="assessment-header">
+          <h3>Assessment #{{ assessment.id }}</h3>
+          <span class="assessment-score">{{ assessment.score }}%</span>
+        </div>
+        <div class="assessment-details">
+          <p>Current Level: {{ getSkillLevelLabel(assessment.currentLevel) }}</p>
+          <p>Target Level: {{ getSkillLevelLabel(assessment.targetLevel) }}</p>
+          <p>Completed: {{ assessment.completedAt | date:'shortDate' }}</p>
+        </div>
+        <button (click)="retakeAssessment(assessment)">Retake Assessment</button>
+      </div>
+    </div>
+  </div>
+</div>

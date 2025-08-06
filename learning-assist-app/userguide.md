@@ -14,9 +14,10 @@
 5. [Module 3: Content Management System](#module-3-content-management-system)
 6. [Module 4: AI-Driven Adaptive Learning Engine](#module-4-ai-driven-adaptive-learning-engine)
 7. [Module 5: Learning Progress Tracking](#module-5-learning-progress-tracking)
-8. [Tips and Best Practices](#tips-and-best-practices)
-9. [Troubleshooting](#troubleshooting)
-10. [Support](#support)
+8. [Module 6: Career Goals & Skill Mapping](#module-6-career-goals--skill-mapping)
+9. [Tips and Best Practices](#tips-and-best-practices)
+10. [Troubleshooting](#troubleshooting)
+11. [Support](#support)
 
 ---
 
@@ -47,6 +48,7 @@ The Learning Assist application uses a modular structure with dedicated sections
 - **Content Management:** `http://localhost:4200/content/*`
 - **Adaptive Learning:** `http://localhost:4200/adaptive-learning/*`
 - **Progress Tracking:** `http://localhost:4200/progress/*` ✨ **NEW**
+- **Career Goals:** `http://localhost:4200/career-goals/*` ✨ **NEW**
 
 ### Quick Access Menu
 The application features a responsive navigation menu that adapts to your device:
@@ -882,6 +884,320 @@ Progress Tracking seamlessly integrates with other platform modules:
 
 ---
 
+## Module 6: Career Goals & Skill Mapping
+
+### Overview
+Module 6 empowers you to define and achieve your career objectives by mapping them to relevant skills, learning paths, and assessment tools. This module provides a comprehensive framework for setting career goals, identifying skill gaps, and tracking your progress towards professional development.
+
+### 🎯 Career Goals Dashboard
+
+#### Goals Overview
+**URL:** `http://localhost:4200/career-goals/dashboard`
+
+**Features:**
+- Visual goal tracking and management
+- AI-powered goal suggestions
+- Skill gap identification
+- Learning path recommendations
+- Progress analytics and reporting
+
+**Using the Dashboard:**
+1. Review suggested career goals based on your profile
+2. Customize goals by adding, editing, or deleting as needed
+3. Explore recommended skills and learning paths for each goal
+4. Monitor your progress with visual indicators and analytics
+5. Adjust goals and paths based on performance and changing interests
+
+### 🛠️ Skill Mapping Tool
+
+#### Mapping Interface
+**URL:** `http://localhost:4200/career-goals/skill-mapping`
+
+**Features:**
+- Interactive skill mapping interface
+- Drag-and-drop skill assignment
+- Skill proficiency level setting
+- Automated gap analysis
+- Customizable skill development plans
+
+**Mapping Your Skills:**
+1. Review the suggested skills for your career goals
+2. Drag and drop skills to arrange them by priority or relevance
+3. Set your current proficiency level for each skill
+4. Define target proficiency levels and timelines
+5. Review the automated analysis of your skill gaps
+6. Customize your skill development plan with recommended resources
+
+### 📈 Progress Tracking & Analytics
+
+#### Progress Dashboard
+**URL:** `http://localhost:4200/career-goals/progress`
+
+**Features:**
+- Comprehensive progress tracking for goals and skills
+- Visual analytics and reporting
+- Milestone and deadline management
+- Performance trend analysis
+- Automated reminders and notifications
+
+**Tracking Your Progress:**
+1. View your overall progress towards each career goal
+2. Monitor skill development and proficiency level changes
+3. Receive alerts for upcoming deadlines or milestones
+4. Analyze performance trends and adjust plans as needed
+5. Generate reports for self-assessment or sharing with mentors
+
+---
+
+## Module 6: Career Goals & Skill Mapping
+
+**Navigation Route:** `http://localhost:4200/career-goals`
+
+The Career Goals & Skill Mapping module provides a comprehensive career planning and professional development system. This module helps you define career objectives, track skill development, explore career paths, and make data-driven decisions about your professional growth.
+
+### 6.1 Career Dashboard
+
+**Route:** `http://localhost:4200/career-goals`
+
+The career dashboard serves as your central hub for career planning and professional development:
+
+#### **Overview Section**
+- **Active Goals:** Number of current career goals you're working towards
+- **Skill Assessments:** Count of completed skill evaluations
+- **Career Paths:** Number of career paths you're exploring
+- **Market Insights:** Latest industry trends and opportunities
+
+#### **Progress Summary**
+- **Overall Career Progress:** Visual indicator of your advancement toward career goals
+- **Skill Development:** Progress across different skill categories
+- **Goal Completion Rate:** Percentage of goals achieved vs. set
+
+#### **Quick Actions**
+- **Set New Goal:** Direct access to SMART goal creation
+- **Take Skill Assessment:** Quick link to skill evaluation tools
+- **Explore Career Paths:** Browse new career opportunities
+- **View Market Insights:** Access latest industry data and trends
+
+#### **Recent Activity**
+- Display of your latest goal progress updates
+- Recent skill assessment results
+- New career path explorations
+- Market insights relevant to your interests
+
+### 6.2 Career Path Browser
+
+**Route:** `http://localhost:4200/career-goals/career-path-browser`
+
+Explore and discover career opportunities that align with your interests and skills:
+
+#### **Career Path Discovery**
+- **Industry Filter:** Filter paths by technology, healthcare, finance, marketing, etc.
+- **Experience Level:** Filter by entry-level, mid-level, senior, or executive positions
+- **Market Demand:** Sort by high-demand, growing, stable, or emerging career paths
+- **Search Functionality:** Find specific roles or career tracks
+
+#### **Detailed Career Information**
+For each career path, view:
+- **Role Description:** Comprehensive overview of responsibilities and expectations
+- **Required Skills:** List of technical and soft skills needed for success
+- **Skill Gap Analysis:** Comparison of your current skills vs. requirements
+- **Salary Information:** Average salary ranges and progression potential
+- **Career Timeline:** Typical progression path and time to advance
+- **Market Demand:** Current job market demand and growth projections
+
+#### **Action Options**
+- **Set Career Goal:** Create SMART goals aligned with the career path
+- **View Skill Requirements:** Detailed breakdown of needed competencies
+- **Explore Learning Resources:** Recommended courses and training materials
+- **Save for Later:** Bookmark interesting career paths for future reference
+
+### 6.3 Skill Matrix
+
+**Route:** `http://localhost:4200/career-goals/skill-matrix`
+
+Visualize and track your skill development across different categories:
+
+#### **Skill Visualization**
+- **Category Organization:** Skills grouped by type (Technical, Soft Skills, Domain-Specific)
+- **Level Indicators:** Visual representation of skill levels (Beginner, Intermediate, Advanced, Expert)
+- **Progress Tracking:** Historical view of skill development over time
+- **Gap Identification:** Clear highlighting of skills needing development
+
+#### **Skill Categories**
+- **Technical Skills:** Programming languages, software tools, technical frameworks
+- **Soft Skills:** Communication, leadership, problem-solving, teamwork
+- **Domain Skills:** Industry-specific knowledge and expertise
+- **Emerging Skills:** New and trending skills in your field
+
+#### **Assessment Integration**
+- **Assessment History:** Record of all skill assessments taken
+- **Score Progression:** Track improvement over time
+- **Peer Benchmarking:** Compare your skills with industry standards
+- **Certification Tracking:** Monitor progress toward professional certifications
+
+#### **Improvement Recommendations**
+- **Priority Skills:** AI-recommended skills to focus on next
+- **Learning Resources:** Suggested courses, tutorials, and practice materials
+- **Time Estimates:** Projected time needed to reach next skill level
+- **Career Impact:** How skill improvements align with career goals
+
+### 6.4 Goal Setting
+
+**Route:** `http://localhost:4200/career-goals/goal-setting`
+
+Create and manage SMART career goals that drive your professional development:
+
+#### **SMART Goal Framework**
+Create goals that are:
+- **Specific:** Clear and well-defined objectives
+- **Measurable:** Quantifiable progress indicators
+- **Achievable:** Realistic and attainable targets
+- **Relevant:** Aligned with your career aspirations
+- **Time-bound:** Clear deadlines and timelines
+
+#### **Goal Creation Process**
+1. **Goal Definition:** Write a clear, specific goal statement
+2. **Career Path Alignment:** Link goals to specific career paths or roles
+3. **Skill Targeting:** Associate goals with specific skills to develop
+4. **Milestone Planning:** Break down goals into manageable milestones
+5. **Timeline Setting:** Establish realistic deadlines and checkpoints
+6. **Priority Assignment:** Set importance levels for multiple goals
+
+#### **Goal Categories**
+- **Skill Development:** Focus on building specific competencies
+- **Career Advancement:** Promotion or role change objectives
+- **Education Goals:** Formal education or certification targets
+- **Project Goals:** Specific work achievements or deliverables
+- **Network Building:** Professional relationship and community goals
+
+#### **Validation Features**
+- **SMART Checker:** Automatic validation of goal criteria
+- **Feasibility Analysis:** Assessment of goal achievability
+- **Resource Requirements:** Identification of needed resources and support
+- **Conflict Detection:** Alerts for overlapping or conflicting goals
+
+### 6.5 Goal Tracking
+
+**Route:** `http://localhost:4200/career-goals/goal-tracking`
+
+Monitor and manage progress toward your career objectives:
+
+#### **Progress Monitoring**
+- **Visual Progress Bars:** Clear indication of completion percentages
+- **Milestone Tracking:** Checkpoints within each goal with status updates
+- **Timeline View:** Calendar-based view of deadlines and milestones
+- **Status Indicators:** Active, Completed, Paused, or At-Risk goal states
+
+#### **Goal Management**
+- **Status Filtering:** View goals by current status or priority level
+- **Progress Updates:** Log progress and update milestone completion
+- **Goal Modification:** Edit timelines, milestones, or priorities as needed
+- **Archive Completed:** Move finished goals to achievement history
+
+#### **Progress Analytics**
+- **Completion Trends:** Track goal achievement patterns over time
+- **Time to Completion:** Analysis of actual vs. estimated completion times
+- **Success Factors:** Identify what contributes to successful goal achievement
+- **Bottleneck Analysis:** Recognize common obstacles and challenges
+
+#### **Motivational Features**
+- **Progress Celebrations:** Recognition for milestone achievements
+- **Reminder System:** Notifications for upcoming deadlines
+- **Peer Comparison:** Anonymous benchmarking with similar professionals
+- **Mentor Integration:** Share progress with mentors or career advisors
+
+### 6.6 Market Insights
+
+**Route:** `http://localhost:4200/career-goals/market-insights`
+
+Stay informed about industry trends, job market demands, and career opportunities:
+
+#### **Industry Trends**
+- **Skill Demand:** Current and projected demand for various skills
+- **Salary Trends:** Compensation changes across different roles and locations
+- **Job Market Analysis:** Growth rates in different sectors and specializations
+- **Emerging Opportunities:** New roles and career paths becoming available
+
+#### **Skill Intelligence**
+- **Trending Skills:** Most in-demand skills in your industry
+- **Skill Combinations:** Valuable skill sets that work well together
+- **Learning ROI:** Skills that provide the best career advancement potential
+- **Future Skills:** Emerging competencies to prepare for future roles
+
+#### **Career Intelligence**
+- **Role Evolution:** How traditional roles are changing with technology
+- **Industry Disruption:** Sectors experiencing significant transformation
+- **Geographic Trends:** Regional differences in job markets and opportunities
+- **Company Insights:** Growth companies and sectors with high hiring demand
+
+#### **Personalized Recommendations**
+- **Relevant Trends:** Industry insights filtered by your interests and goals
+- **Opportunity Alerts:** Notifications about new career openings in your field
+- **Skill Recommendations:** Suggested skills based on market trends
+- **Career Path Updates:** New or modified career paths based on market changes
+
+### 6.7 Skill Assessment
+
+**Route:** `http://localhost:4200/career-goals/skill-assessment`
+
+Evaluate and validate your professional competencies:
+
+#### **Assessment Types**
+- **Self-Assessment:** Evaluate your own skill levels and competencies
+- **Practical Demonstrations:** Project-based skill validation
+- **Peer Reviews:** Feedback from colleagues and team members
+- **Certification Preparation:** Practice tests for professional certifications
+
+#### **Assessment Categories**
+- **Technical Skills:** Programming, software proficiency, technical knowledge
+- **Soft Skills:** Communication, leadership, problem-solving abilities
+- **Domain Expertise:** Industry-specific knowledge and experience
+- **Emerging Technologies:** New tools and platforms in your field
+
+#### **Assessment Results**
+- **Current Level:** Your present competency in each skill area
+- **Target Level:** Desired proficiency for career goals
+- **Gap Analysis:** Specific areas needing development
+- **Improvement Recommendations:** Suggested learning paths and resources
+
+#### **Progress Tracking**
+- **Assessment History:** Record of all assessments taken over time
+- **Skill Progression:** Visual tracking of improvement in each area
+- **Benchmark Comparison:** How your skills compare to industry standards
+- **Certification Readiness:** Progress toward professional certification requirements
+
+### Career Planning Best Practices
+
+#### **Effective Goal Setting**
+1. **Start with Career Vision:** Define your long-term career aspirations
+2. **Use SMART Criteria:** Ensure all goals are specific, measurable, achievable, relevant, and time-bound
+3. **Break Down Large Goals:** Divide ambitious objectives into manageable milestones
+4. **Regular Review:** Schedule monthly or quarterly goal review sessions
+5. **Stay Flexible:** Be prepared to adjust goals based on changing circumstances
+
+#### **Skill Development Strategy**
+1. **Prioritize High-Impact Skills:** Focus on competencies with the greatest career advancement potential
+2. **Balance Technical and Soft Skills:** Develop both domain expertise and interpersonal abilities
+3. **Stay Current:** Regularly update skills to match industry trends and demands
+4. **Seek Practical Application:** Apply new skills in real projects or volunteer opportunities
+5. **Get Feedback:** Regularly seek input from mentors, peers, and supervisors
+
+#### **Career Path Exploration**
+1. **Research Thoroughly:** Investigate multiple career options before committing
+2. **Network Actively:** Connect with professionals in your target roles
+3. **Gain Experience:** Seek opportunities to try different roles or responsibilities
+4. **Consider Transferable Skills:** Leverage existing competencies in new contexts
+5. **Plan Transitions:** Create detailed plans for moving between roles or industries
+
+#### **Market Intelligence Usage**
+1. **Stay Informed:** Regularly review industry trends and market insights
+2. **Adapt Quickly:** Adjust career plans based on market changes
+3. **Anticipate Trends:** Position yourself ahead of emerging opportunities
+4. **Validate Decisions:** Use market data to inform career choices
+5. **Network Strategically:** Build relationships in growth areas and emerging sectors
+
+---
+
 ## Tips and Best Practices
 
 ### Learning Style Optimization
@@ -1042,17 +1358,26 @@ Progress Tracking Module:
 ├── /progress/leaderboard - Leaderboard and competition
 └── /progress/analytics - Advanced analytics
 
+Career Goals Module: ✨ NEW
+├── /career-goals - Career planning dashboard and overview
+├── /career-goals/career-path-browser - Explore and discover career opportunities
+├── /career-goals/skill-matrix - Visual skill tracking and development
+├── /career-goals/goal-setting - SMART goal creation and planning
+├── /career-goals/goal-tracking - Goal progress monitoring and management
+├── /career-goals/market-insights - Industry trends and career intelligence
+└── /career-goals/skill-assessment - Skill evaluation and competency testing
 ```
 
 ### Version History
 - **v1.0 (July 31, 2025):** Initial release with Modules 1-3
 - **v1.1 (August 4, 2025):** Added Module 4 - AI-Driven Adaptive Learning Engine
-- **v1.2 (August 6, 2025):** Added Module 5 - Learning Progress Tracking ✨ **NEW**
+- **v1.2 (August 6, 2025):** Added Module 5 - Learning Progress Tracking
+- **v1.3 (August 6, 2025):** Added Module 6 - Career Goals & Skill Mapping ✨ **NEW**
 - **Upcoming Features:** Career goal mapping, resource recommendation system, social learning features
 
 ---
 
-**Document Version:** 1.2  
+**Document Version:** 1.3  
 **Last Updated:** August 6, 2025  
 **Next Review:** August 20, 2025  
 **Maintainer:** Learning Assist Development Team

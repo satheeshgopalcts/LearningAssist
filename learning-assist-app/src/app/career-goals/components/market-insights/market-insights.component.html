@@ -1,0 +1,19 @@
+<div class="market-insights">
+  <div class="page-header">
+    <h1>Market Insights</h1>
+    <p>Stay informed about career trends and market demands</p>
+  </div>
+
+  <div class="insights-content" *ngIf="!loading">
+    <div class="insights-grid">
+      <div class="insight-card" *ngFor="let insight of insights">
+        <h3>{{ insight.title }}</h3>
+        <p>{{ insight.description }}</p>
+        <div class="insight-meta">
+          <span>{{ insight.source }}</span>
+          <span>{{ insight.publishedAt | date:'shortDate' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

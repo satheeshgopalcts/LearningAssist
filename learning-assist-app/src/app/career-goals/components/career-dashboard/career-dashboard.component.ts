@@ -108,4 +108,30 @@ export class CareerDashboardComponent implements OnInit, OnDestroy {
     if (gapPercentage >= 40) return 'warning';
     return 'success';
   }
+
+  getPriorityClass(priority: any): string {
+    if (typeof priority === 'number') {
+      switch(priority) {
+        case 1: return 'priority-low';
+        case 2: return 'priority-medium';
+        case 3: return 'priority-high';
+        case 4: return 'priority-critical';
+        default: return 'priority-medium';
+      }
+    }
+    return `priority-${priority.toString().toLowerCase()}`;
+  }
+
+  getPriorityLabel(priority: any): string {
+    if (typeof priority === 'number') {
+      switch(priority) {
+        case 1: return 'Low';
+        case 2: return 'Medium';
+        case 3: return 'High';
+        case 4: return 'Critical';
+        default: return 'Medium';
+      }
+    }
+    return priority.toString();
+  }
 }

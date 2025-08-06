@@ -1,0 +1,52 @@
+<div class="goal-tracking">
+  <div class="page-header">
+    <h1>Goal Tracking</h1>
+    <p>Monitor your career goals and track progress towards achievement</p>
+  </div>
+
+  <div class="tracking-content">
+    <!-- Status Filter -->
+    <div class="filter-section">
+      <label>Filter by Status:</label>
+      <select [(ngModel)]="selectedStatus" (change)="onStatusFilterChange(selectedStatus)">
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Goals List -->
+    <div class="goals-list" *ngIf="filteredGoals.length > 0">
+      <div class="goal-card" *ngFor="let goal of filteredGoals">
+        <div class="goal-header">
+          <h3>{{ goal.title }}</h3>
+          <span class="goal-status" [class]="'status-' + getStatusColor(goal.status)">
+            {{ goal.status | titlecase }}
+          </span>
+        </div>
+        
+        <p>{{ goal.description }}</p>
+        
+        <div class="goal-progress">
+          <div class="progress-info">
+            <span>Progress: {{ getProgressPercentage(goal) }}%</span>
+            <span>Due: {{ goal.targetDate | date:'shortDate' }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getProgressPercentage(goal)"></div>
+          </div>
+        </div>
+        
+        <div class="goal-actions">
+          <button (click)="viewGoalDetails(goal)">View Details</button>
+          <button (click)="editGoal(goal)">Edit Goal</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredGoals.length === 0">
+      <h3>No goals found</h3>
+      <p>Create your first career goal to start tracking your progress.</p>
+    </div>
+  </div>
+</div>

@@ -21,6 +21,7 @@ export class ProgressDashboardComponent implements OnInit, OnDestroy {
   recentBadges: Badge[] = [];
   recentCertificates: Certificate[] = [];
   currentGoals: LearningGoal[] = [];
+  Math = Math; // Expose Math to template
   
   private subscriptions: Subscription[] = [];
 

@@ -141,6 +141,10 @@ export interface Certification {
 }
 
 export interface MarketInsight {
+  id: string;
+  title: string;
+  description: string;
+  type: 'Industry Trend' | 'Skill Demand' | 'Salary Data' | 'Job Market';
   industry: string;
   skillId?: string;
   careerPathId?: string;
@@ -152,6 +156,8 @@ export interface MarketInsight {
   demandTrend: 'Declining' | 'Stable' | 'Growing' | 'High Growth';
   topCompanies: Company[];
   skillDemandRanking: SkillDemandRank[];
+  source: string;
+  publishedAt: Date;
   lastUpdated: Date;
   dataSource: string;
 }

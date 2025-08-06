@@ -79,8 +79,8 @@
         <div class="goal-card" *ngFor="let goal of recentGoals">
           <div class="goal-header">
             <h3>{{ goal.title }}</h3>
-            <span class="goal-priority" [class]="'priority-' + goal.priority.toLowerCase()">
-              {{ goal.priority }}
+            <span class="goal-priority" [class]="getPriorityClass(goal.priority)">
+              {{ getPriorityLabel(goal.priority) }}
             </span>
           </div>
           <p class="goal-description">{{ goal.description }}</p>

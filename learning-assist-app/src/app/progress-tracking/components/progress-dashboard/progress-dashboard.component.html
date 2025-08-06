@@ -131,7 +131,7 @@
           </div>
           <p class="suggestion">{{ item.improvementSuggestion }}</p>
           <div class="related-courses">
-            <small>Recommended: {{ item.relatedCourses.join(', ') }}</small>
+            <small>Recommended: {{ item.relatedCourses?.join(', ') || 'None available' }}</small>
           </div>
         </div>
       </div>

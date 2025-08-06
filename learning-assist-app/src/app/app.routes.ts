@@ -37,5 +37,10 @@ export const routes: Routes = [
     loadChildren: () => import('./progress-tracking/progress-tracking.module').then(m => m.ProgressTrackingModule),
     canActivate: [authGuard]
   },
+  { 
+    path: 'career-goals', 
+    loadChildren: () => import('./career-goals/career-goals.module').then(m => m.CareerGoalsModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];

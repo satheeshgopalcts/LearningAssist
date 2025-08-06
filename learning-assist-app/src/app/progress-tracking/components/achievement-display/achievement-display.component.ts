@@ -98,4 +98,8 @@ export class AchievementDisplayComponent implements OnInit, OnDestroy {
   getBadgesByLevel(level: 'bronze' | 'silver' | 'gold' | 'platinum'): Badge[] {
     return this.badges.filter(b => b.level === level);
   }
+
+  getBadgesByLevelString(level: string): Badge[] {
+    return this.getBadgesByLevel(level as 'bronze' | 'silver' | 'gold' | 'platinum');
+  }
 }

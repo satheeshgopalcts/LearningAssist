@@ -82,7 +82,7 @@
         </div>
         <div class="skill-footer">
           <div class="related-courses">
-            <strong>Recommended:</strong> {{ skill.relatedCourses.join(', ') }}
+            <strong>Recommended:</strong> {{ skill.relatedCourses?.join(', ') || 'None available' }}
           </div>
         </div>
       </div>

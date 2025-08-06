@@ -107,11 +107,11 @@
         <h4 class="level-title">{{ level | titlecase }} Badges</h4>
         <div class="badges-row">
           <app-badge-display 
-            *ngFor="let badge of getBadgesByLevel(level)" 
+            *ngFor="let badge of getBadgesByLevelString(level)" 
             [badge]="badge">
           </app-badge-display>
           <div 
-            *ngIf="getBadgesByLevel(level).length === 0" 
+            *ngIf="getBadgesByLevelString(level).length === 0" 
             class="no-badges">
             No {{ level }} badges yet
           </div>
