@@ -1,0 +1,307 @@
+<div class="personalized-materials">
+  <!-- Context Configuration Section -->
+  <section class="context-config">
+    <div class="context-header">
+      <h2>Learning Context</h2>
+      <p>Customize your learning experience based on your current situation</p>
+    </div>
+    
+    <div class="context-form">
+      <div class="context-row">
+        <div class="context-field">
+          <label for="currentTopic">Current Topic/Subject</label>
+          <input 
+            id="currentTopic"
+            type="text" 
+            [(ngModel)]="currentTopic" 
+            placeholder="What are you learning?"
+            (input)="onContextChange()"
+            class="context-input"
+          >
+          <div class="quick-select">
+            <span 
+              *ngFor="let topic of quickTopics" 
+              class="quick-tag"
+              (click)="selectTopic(topic)"
+            >
+              {{topic}}
+            </span>
+          </div>
+        </div>
+        
+        <div class="context-field">
+          <label for="learningGoal">Learning Goal</label>
+          <input 
+            id="learningGoal"
+            type="text" 
+            [(ngModel)]="learningGoal" 
+            placeholder="What's your objective?"
+            (input)="onContextChange()"
+            class="context-input"
+          >
+          <div class="quick-select">
+            <span 
+              *ngFor="let goal of quickGoals" 
+              class="quick-tag"
+              (click)="selectGoal(goal)"
+            >
+              {{goal}}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="context-row">
+        <div class="context-field">
+          <label for="skillGap">Skill Gap/Challenge</label>
+          <input 
+            id="skillGap"
+            type="text" 
+            [(ngModel)]="skillGap" 
+            placeholder="What specific challenge are you facing?"
+            (input)="onContextChange()"
+            class="context-input"
+          >
+        </div>
+        
+        <div class="context-field">
+          <label for="timeAvailable">Available Time (minutes)</label>
+          <input 
+            id="timeAvailable"
+            type="range" 
+            min="5" 
+            max="180" 
+            [(ngModel)]="timeAvailable" 
+            (input)="onContextChange()"
+            class="time-slider"
+          >
+          <span class="time-value">{{timeAvailable}} min</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personalized Recommendations Section -->
+  <section class="recommendations-section" *ngIf="personalizedRecommendations.length > 0">
+    <div class="section-header">
+      <h3>Personalized for You</h3>
+      <p>Based on your learning profile and preferences</p>
+    </div>
+    
+    <div class="recommendations-grid">
+      <div 
+        *ngFor="let recommendation of personalizedRecommendations" 
+        class="recommendation-card"
+        [class.adapted]="hasAdaptedContent(recommendation.resource.id)"
+      >
+        <div class="card-header">
+          <div class="resource-info">
+            <h4>{{recommendation.resource.title}}</h4>
+            <span class="resource-type">{{recommendation.resource.type}}</span>
+            <span class="confidence-badge" [class]="getConfidenceClass(recommendation.confidenceScore)">
+              {{(recommendation.confidenceScore * 100).toFixed(0)}}% match
+            </span>
+          </div>
+          <div class="card-actions">
+            <button 
+              class="bookmark-btn"
+              [class.bookmarked]="recommendation.resource.isBookmarked"
+              (click)="toggleBookmark(recommendation.resource)"
+              title="Bookmark"
+            >
+              <i class="fas fa-bookmark"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <p class="description">{{recommendation.resource.description}}</p>
+          
+          <div class="resource-meta">
+            <span class="duration">
+              <i class="fas fa-clock"></i>
+              {{recommendation.resource.duration}} min
+            </span>
+            <span class="difficulty" [class]="getDifficultyClass(recommendation.resource.difficulty)">
+              <i class="fas fa-signal"></i>
+              {{recommendation.resource.difficulty}}
+            </span>
+            <div class="rating">
+              <div class="stars">
+                <i 
+                  *ngFor="let star of getStarArray(recommendation.resource.rating)" 
+                  class="fas fa-star"
+                  [class.filled]="star <= recommendation.resource.rating"
+                ></i>
+              </div>
+              <span class="rating-value">({{recommendation.resource.rating.toFixed(1)}})</span>
+            </div>
+          </div>
+          
+          <div class="recommendation-reasons" *ngIf="recommendation.recommendationReason">
+            <h5>Why this is recommended:</h5>
+            <p>{{recommendation.recommendationReason}}</p>
+          </div>
+          
+          <!-- Adapted Content Preview -->
+          <div class="adapted-preview" *ngIf="hasAdaptedContent(recommendation.resource.id)">
+            <div class="adaptation-info">
+              <i class="fas fa-magic"></i>
+              <span>Content adapted from {{getAdaptedContent(recommendation.resource.id)?.originalDifficulty || 'original'}} to {{getAdaptedContent(recommendation.resource.id)?.adaptedDifficulty || 'your level'}}</span>
+            </div>
+            <div class="adaptation-summary">
+              <ng-container *ngIf="getAdaptedContent(recommendation.resource.id) as adaptedContent">
+                {{adaptedContent.contentModifications[0]?.description || 'Content has been personalized for you'}}
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="accessResource(recommendation.resource)">
+            Access Resource
+          </button>
+          <button 
+            class="btn btn-secondary" 
+            (click)="adaptContent(recommendation.resource)"
+            *ngIf="!hasAdaptedContent(recommendation.resource.id)"
+          >
+            Adapt Content
+          </button>
+          <button class="btn btn-outline" (click)="shareResource(recommendation.resource)">
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contextual Recommendations Section -->
+  <section class="contextual-section" *ngIf="contextualRecommendations.length > 0">
+    <div class="section-header">
+      <h3>Contextual Recommendations</h3>
+      <p>Resources specifically for your current learning context</p>
+    </div>
+    
+    <div class="contextual-grid">
+      <div 
+        *ngFor="let recommendation of contextualRecommendations" 
+        class="contextual-card"
+      >
+        <div class="context-match">
+          <span class="match-label">Context Match:</span>
+          <span class="match-value">{{(recommendation.confidenceScore * 100).toFixed(0)}}%</span>
+        </div>
+        
+        <h4>{{recommendation.resource.title}}</h4>
+        <p class="resource-description">{{recommendation.resource.description}}</p>
+        
+        <div class="resource-tags">
+          <span 
+            *ngFor="let tag of recommendation.resource.tags.slice(0, 3)" 
+            class="resource-tag"
+          >
+            {{tag}}
+          </span>
+        </div>
+        
+        <div class="contextual-footer">
+          <span class="time-fit">
+            <i class="fas fa-clock"></i>
+            {{recommendation.resource.duration}} min
+          </span>
+          <button class="btn btn-sm btn-primary" (click)="accessResource(recommendation.resource)">
+            Learn Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Just-in-Time Resources Section -->
+  <section class="jit-section" *ngIf="justInTimeResources.length > 0">
+    <div class="section-header">
+      <h3>Just-in-Time Resources</h3>
+      <p>Quick solutions for immediate learning needs</p>
+    </div>
+    
+    <div class="jit-grid">
+      <div 
+        *ngFor="let resource of justInTimeResources" 
+        class="jit-card"
+        [class.quick-access]="resource.duration <= 10">
+      >
+        <div class="jit-header">
+          <div class="urgency-indicator" [class]="getUrgencyClass(resource.duration)"></div>
+          <h4>{{resource.title}}</h4>
+          <span class="quick-time">{{resource.duration}} min</span>
+        </div>
+        
+        <p class="jit-description">{{resource.description}}</p>
+        
+        <div class="jit-actions">
+          <button class="btn btn-urgent" (click)="accessResource(resource)">
+            Quick Access
+          </button>
+          <button 
+            class="btn btn-outline-sm" 
+            (click)="saveForLater(resource)"
+            title="Save for later"
+          >
+            <i class="fas fa-bookmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Progress Integration -->
+  <section class="progress-integration" *ngIf="personalizedRecommendations.length > 0">
+    <div class="section-header">
+      <h3>Learning Path Integration</h3>
+      <p>See how these resources fit into your overall learning journey</p>
+    </div>
+    
+    <div class="progress-timeline">
+      <div class="timeline-item current">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h4>Current Focus</h4>
+          <p>{{currentTopic || 'General Learning'}}</p>
+        </div>
+      </div>
+      <div class="timeline-item next">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h4>Recommended Next</h4>
+          <p>{{getNextRecommendation()}}</p>
+        </div>
+      </div>
+      <div class="timeline-item future">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h4>Future Goals</h4>
+          <p>{{learningGoal || 'Continue skill development'}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="personalizedRecommendations.length === 0 && !isLoading">
+    <div class="empty-icon">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <h3>No Personalized Recommendations Yet</h3>
+    <p>Complete the learning context above to get personalized resource recommendations</p>
+    <button class="btn btn-primary" (click)="generateRecommendations()">
+      Get Recommendations
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Generating personalized recommendations...</p>
+  </div>
+</div>

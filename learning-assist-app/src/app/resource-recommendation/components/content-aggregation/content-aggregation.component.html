@@ -1,0 +1,415 @@
+<div class="content-aggregation-container">
+  <!-- Header -->
+  <div class="aggregation-header">
+    <div class="header-content">
+      <h1>🌐 Content Aggregation Hub</h1>
+      <p>Discover high-quality learning materials from multiple trusted sources</p>
+    </div>
+    
+    <button (click)="refreshContent()" class="refresh-btn">
+      <i class="icon-refresh"></i>
+      Refresh Content
+    </button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-navigation">
+    <button 
+      *ngFor="let tab of [
+        {key: 'external', label: 'External Sources', icon: '🌐'},
+        {key: 'expert', label: 'Expert Curated', icon: '👨‍🏫'},
+        {key: 'community', label: 'Community', icon: '👥'},
+        {key: 'collections', label: 'Collections', icon: '📚'}
+      ]"
+      [class.active]="selectedTab === tab.key"
+      (click)="onTabChange(tab.key)"
+      class="tab-button">
+      <span class="tab-icon">{{ tab.icon }}</span>
+      {{ tab.label }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Aggregating content from multiple sources...</p>
+  </div>
+
+  <!-- External Sources Tab -->
+  <div *ngIf="selectedTab === 'external' && !isLoading" class="external-sources-section">
+    <!-- Source Filter -->
+    <div class="source-filter-section">
+      <h3>Filter by Source</h3>
+      <div class="source-filters">
+        <button 
+          *ngFor="let source of availableSources"
+          [class.active]="selectedSource === source.value"
+          (click)="onSourceFilter(source.value)"
+          class="source-filter-btn">
+          <span class="source-icon">{{ source.icon }}</span>
+          <span class="source-label">{{ source.label }}</span>
+          <span class="resource-count" *ngIf="source.value !== 'all'">
+            {{ getResourceCount(source.value) }}
+          </span>
+          <span class="resource-count" *ngIf="source.value === 'all'">
+            {{ getTotalExternalResources() }}
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- External Resources Grid -->
+    <div class="external-resources-section">
+      <div class="section-header">
+        <h3>🌐 External Learning Resources</h3>
+        <div class="stats">
+          <span class="stat">
+            <strong>{{ externalResources.length }}</strong> resources
+          </span>
+          <span class="stat">
+            <strong>{{ getAverageRating(externalResources) }}</strong> avg rating
+          </span>
+        </div>
+      </div>
+
+      <div class="resources-grid" *ngIf="externalResources.length > 0">
+        <div 
+          *ngFor="let resource of externalResources" 
+          class="resource-card"
+          (click)="onResourceClick(resource)">
+          
+          <div class="card-header">
+            <img [src]="resource.thumbnailUrl" 
+                 [alt]="resource.title"
+                 class="resource-thumbnail"
+                 onerror="this.src='/assets/images/default-resource.jpg'">
+            
+            <div class="source-badge">
+              <span class="source-icon">{{ getSourceIcon(resource.source) }}</span>
+              {{ resource.source }}
+            </div>
+            
+            <div class="card-actions">
+              <button 
+                (click)="onBookmarkResource(resource, $event)"
+                [class.bookmarked]="resource.isBookmarked"
+                class="bookmark-btn">
+                <i class="icon-bookmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <div class="resource-meta">
+              <span class="resource-type">{{ resource.type }}</span>
+              <span class="resource-duration">{{ resource.duration }}m</span>
+            </div>
+
+            <h3 class="resource-title">{{ resource.title }}</h3>
+            <p class="resource-description">{{ resource.description }}</p>
+
+            <div class="resource-details">
+              <div class="author">
+                <i class="icon-user"></i>
+                {{ resource.author }}
+              </div>
+              
+              <div class="rating">
+                <div class="stars">
+                  <i *ngFor="let star of [1,2,3,4,5]" 
+                     [class]="star <= resource.rating ? 'icon-star-filled' : 'icon-star-empty'">
+                  </i>
+                </div>
+                <span class="rating-text">{{ resource.rating }} ({{ resource.reviewCount }})</span>
+              </div>
+
+              <div class="published-date">
+                <i class="icon-calendar"></i>
+                {{ formatDate(resource.publishedDate) }}
+              </div>
+            </div>
+
+            <div class="resource-tags">
+              <span *ngFor="let tag of resource.tags.slice(0, 3)" class="tag">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="externalResources.length === 0" class="empty-state">
+        <i class="icon-globe"></i>
+        <h3>No external resources found</h3>
+        <p>Try selecting a different source or refresh the content</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expert Curated Tab -->
+  <div *ngIf="selectedTab === 'expert' && !isLoading" class="expert-content-section">
+    <div class="section-header">
+      <h3>👨‍🏫 Expert Curated Content</h3>
+      <p>Carefully selected resources by verified industry experts</p>
+    </div>
+
+    <div class="expert-collections" *ngIf="expertContent.length > 0">
+      <div 
+        *ngFor="let expertCollection of expertContent" 
+        class="expert-collection-card">
+        
+        <div class="expert-header">
+          <div class="expert-info">
+            <div class="expert-avatar">
+              {{ expertCollection.expertName.charAt(0).toUpperCase() }}
+            </div>
+            <div class="expert-details">
+              <h4 class="expert-name">{{ expertCollection.expertName }}</h4>
+              <div class="verification-status">
+                <span class="status-icon">{{ getVerificationStatusIcon(expertCollection.verificationStatus) }}</span>
+                {{ expertCollection.verificationStatus | titlecase }}
+              </div>
+              <div class="specializations">
+                <span *ngFor="let spec of expertCollection.specialization.slice(0, 2)" class="spec-tag">
+                  {{ spec }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <button (click)="onViewExpertProfile(expertCollection.expertId)" class="view-profile-btn">
+            View Profile
+          </button>
+        </div>
+
+        <div class="curator-notes" *ngIf="expertCollection.curatorNotes">
+          <h5>📝 Curator Notes</h5>
+          <p>{{ expertCollection.curatorNotes }}</p>
+        </div>
+
+        <div class="curated-resources">
+          <h5>📚 Curated Resources ({{ expertCollection.resources.length }})</h5>
+          <div class="resources-mini-grid">
+            <div 
+              *ngFor="let resource of expertCollection.resources" 
+              class="mini-resource-card"
+              (click)="onResourceClick(resource)">
+              
+              <img [src]="resource.thumbnailUrl" 
+                   [alt]="resource.title"
+                   class="mini-thumbnail"
+                   onerror="this.src='/assets/images/default-resource.jpg'">
+              
+              <div class="mini-content">
+                <h6 class="mini-title">{{ resource.title }}</h6>
+                <div class="mini-meta">
+                  <span class="mini-type">{{ resource.type }}</span>
+                  <span class="mini-rating">⭐ {{ resource.rating }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="collection-meta">
+          <span class="curation-date">
+            <i class="icon-calendar"></i>
+            Curated on {{ formatDate(expertCollection.curationDate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="expertContent.length === 0" class="empty-state">
+      <i class="icon-expert"></i>
+      <h3>No expert curated content available</h3>
+      <p>Expert collections will appear here once they are verified</p>
+    </div>
+  </div>
+
+  <!-- Community Resources Tab -->
+  <div *ngIf="selectedTab === 'community' && !isLoading" class="community-section">
+    <div class="section-header">
+      <h3>👥 Community Contributions</h3>
+      <p>High-quality resources shared by our learning community</p>
+    </div>
+
+    <div class="community-resources" *ngIf="communityResources.length > 0">
+      <div 
+        *ngFor="let communityResource of communityResources" 
+        class="community-resource-card"
+        (click)="onResourceClick(communityResource.resource)">
+        
+        <div class="card-header">
+          <img [src]="communityResource.resource.thumbnailUrl" 
+               [alt]="communityResource.resource.title"
+               class="resource-thumbnail"
+               onerror="this.src='/assets/images/default-resource.jpg'">
+          
+          <div class="community-badges">
+            <div class="moderation-badge">
+              <span class="status-icon">{{ getModerationStatusIcon(communityResource.moderationStatus) }}</span>
+              {{ communityResource.moderationStatus | titlecase }}
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <button 
+              (click)="onBookmarkResource(communityResource.resource, $event)"
+              [class.bookmarked]="communityResource.resource.isBookmarked"
+              class="bookmark-btn">
+              <i class="icon-bookmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <h3 class="resource-title">{{ communityResource.resource.title }}</h3>
+          <p class="resource-description">{{ communityResource.resource.description }}</p>
+
+          <div class="contributor-info">
+            <div class="contributor">
+              <i class="icon-user"></i>
+              <span>Contributed by <strong>{{ communityResource.contributorName }}</strong></span>
+            </div>
+            <div class="submission-date">
+              <i class="icon-calendar"></i>
+              {{ formatDate(communityResource.submissionDate) }}
+            </div>
+          </div>
+
+          <div class="community-stats">
+            <div class="stat">
+              <i class="icon-star"></i>
+              <span>{{ communityResource.communityRating }}/5</span>
+            </div>
+            <div class="stat">
+              <i class="icon-reviews"></i>
+              <span>{{ communityResource.reviewCount }} reviews</span>
+            </div>
+            <div class="stat" *ngIf="communityResource.reportCount > 0">
+              <i class="icon-flag"></i>
+              <span>{{ communityResource.reportCount }} reports</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="communityResources.length === 0" class="empty-state">
+      <i class="icon-community"></i>
+      <h3>No community resources available</h3>
+      <p>Community contributions will appear here after moderation</p>
+    </div>
+  </div>
+
+  <!-- Resource Collections Tab -->
+  <div *ngIf="selectedTab === 'collections' && !isLoading" class="collections-section">
+    <div class="section-header">
+      <h3>📚 Resource Collections</h3>
+      <p>Curated collections organized by topic and learning path</p>
+    </div>
+
+    <div class="collections-grid" *ngIf="resourceCollections.length > 0">
+      <div 
+        *ngFor="let collection of resourceCollections" 
+        class="collection-card"
+        (click)="onViewCollection(collection)">
+        
+        <div class="collection-header">
+          <div class="collection-icon">📚</div>
+          <div class="collection-meta">
+            <span class="resource-count">{{ collection.resources.length }} resources</span>
+            <span class="visibility">
+              <i class="icon-globe" *ngIf="collection.isPublic"></i>
+              <i class="icon-lock" *ngIf="!collection.isPublic"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="collection-content">
+          <h3 class="collection-title">{{ collection.name }}</h3>
+          <p class="collection-description">{{ collection.description }}</p>
+
+          <div class="collection-tags">
+            <span *ngFor="let tag of collection.tags.slice(0, 3)" class="tag">{{ tag }}</span>
+          </div>
+
+          <div class="collection-details">
+            <div class="creator">
+              <i class="icon-user"></i>
+              Created by {{ collection.createdBy }}
+            </div>
+            <div class="created-date">
+              <i class="icon-calendar"></i>
+              {{ formatDate(collection.createdDate) }}
+            </div>
+            <div class="category">
+              <i class="icon-category"></i>
+              {{ collection.category }}
+            </div>
+          </div>
+
+          <div class="collaborators" *ngIf="collection.collaborators.length > 0">
+            <span class="collaborator-label">Collaborators:</span>
+            <span *ngFor="let collaborator of collection.collaborators.slice(0, 2)" class="collaborator">
+              {{ collaborator }}
+            </span>
+            <span *ngIf="collection.collaborators.length > 2" class="more-collaborators">
+              +{{ collection.collaborators.length - 2 }} more
+            </span>
+          </div>
+        </div>
+
+        <div class="collection-preview">
+          <h5>Preview Resources:</h5>
+          <div class="preview-resources">
+            <div 
+              *ngFor="let resource of collection.resources.slice(0, 3)" 
+              class="preview-resource">
+              <img [src]="resource.thumbnailUrl" 
+                   [alt]="resource.title"
+                   class="preview-thumbnail"
+                   onerror="this.src='/assets/images/default-resource.jpg'">
+              <span class="preview-title">{{ resource.title }}</span>
+            </div>
+            <div *ngIf="collection.resources.length > 3" class="more-resources">
+              +{{ collection.resources.length - 3 }} more
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="resourceCollections.length === 0" class="empty-state">
+      <i class="icon-collection"></i>
+      <h3>No public collections available</h3>
+      <p>Resource collections will appear here when made public</p>
+    </div>
+  </div>
+
+  <!-- Quality Verification Section (appears in all tabs) -->
+  <div class="quality-section" *ngIf="!isLoading">
+    <div class="section-header">
+      <h3>✅ Quality Verified Resources</h3>
+      <p>Top-rated resources that meet our quality standards</p>
+    </div>
+
+    <div class="quality-stats">
+      <div class="stat-card">
+        <div class="stat-value">{{ qualityVerifiedResources.length }}</div>
+        <div class="stat-label">Verified Resources</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getAverageRating(qualityVerifiedResources) }}</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">4.0+</div>
+        <div class="stat-label">Minimum Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">10+</div>
+        <div class="stat-label">Minimum Reviews</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -15,9 +15,10 @@
 6. [Module 4: AI-Driven Adaptive Learning Engine](#module-4-ai-driven-adaptive-learning-engine)
 7. [Module 5: Learning Progress Tracking](#module-5-learning-progress-tracking)
 8. [Module 6: Career Goals & Skill Mapping](#module-6-career-goals--skill-mapping)
-9. [Tips and Best Practices](#tips-and-best-practices)
-10. [Troubleshooting](#troubleshooting)
-11. [Support](#support)
+9. [Module 7: Resource Recommendation System](#module-7-resource-recommendation-system)
+10. [Tips and Best Practices](#tips-and-best-practices)
+11. [Troubleshooting](#troubleshooting)
+12. [Support](#support)
 
 ---
 
@@ -47,8 +48,9 @@ The Learning Assist application uses a modular structure with dedicated sections
 - **Assessments:** `http://localhost:4200/assessment/*`
 - **Content Management:** `http://localhost:4200/content/*`
 - **Adaptive Learning:** `http://localhost:4200/adaptive-learning/*`
-- **Progress Tracking:** `http://localhost:4200/progress/*` ✨ **NEW**
-- **Career Goals:** `http://localhost:4200/career-goals/*` ✨ **NEW**
+- **Progress Tracking:** `http://localhost:4200/progress/*`
+- **Career Goals:** `http://localhost:4200/career-goals/*`
+- **Resource Recommendation:** `http://localhost:4200/resource-recommendation/*` ✨ **NEW**
 
 ### Quick Access Menu
 The application features a responsive navigation menu that adapts to your device:
@@ -1195,6 +1197,167 @@ Evaluate and validate your professional competencies:
 3. **Anticipate Trends:** Position yourself ahead of emerging opportunities
 4. **Validate Decisions:** Use market data to inform career choices
 5. **Network Strategically:** Build relationships in growth areas and emerging sectors
+
+---
+
+## Module 7: Resource Recommendation System
+
+Module 7 provides an intelligent resource discovery and recommendation platform that helps users find the most relevant learning materials based on their goals, skill gaps, and learning context.
+
+### 7.1 Resource Discovery
+
+**Access:** Navigate to `http://localhost:4200/resource-recommendation/discovery`
+
+#### AI-Powered Search
+- **Intelligent Search Bar:** Enter natural language queries to find relevant learning resources
+- **Auto-suggestions:** Get real-time search suggestions as you type
+- **Advanced Filters:** Use filters for content type, difficulty level, source, and format
+- **Smart Results:** Results are ranked by relevance to your learning profile and goals
+
+#### Resource Recommendations
+- **Personalized Suggestions:** View AI-generated recommendations based on your learning history
+- **Confidence Scores:** See how well each resource matches your needs (85-95% accuracy)
+- **Recommendation Reasons:** Understand why each resource was suggested
+- **Featured Content:** Access expert-curated high-quality resources
+
+#### Search Features
+- **View Modes:** Switch between grid and list view for optimal browsing
+- **Bookmarking:** Save interesting resources for later review
+- **Rating System:** Rate resources to improve future recommendations
+- **Quick Actions:** Access, bookmark, or share resources with one click
+
+### 7.2 Content Aggregation
+
+**Access:** Navigate to `http://localhost:4200/resource-recommendation/aggregation`
+
+#### Multi-Source Content
+- **External Sources:** Access content from 11+ educational platforms including YouTube, Medium, GitHub
+- **Expert-Curated:** Browse professionally selected high-quality learning materials
+- **Community Resources:** Explore user-contributed content with quality verification
+- **Resource Collections:** Access curated learning paths and topic-specific resource groups
+
+#### Quality Verification
+- **Verification Badges:** Identify expert-verified and community-validated content
+- **Quality Indicators:** See quality scores based on ratings, engagement, and expert reviews
+- **Source Attribution:** Clear identification of content sources and reliability indicators
+- **Authority Scoring:** Expert credibility and community reputation metrics
+
+#### Content Organization
+- **Category Browsing:** Explore content by subject, difficulty, and learning objectives
+- **Source Filtering:** Filter by specific content sources and platforms
+- **Quality Levels:** Browse by verification status (Verified, Pending, Unverified)
+- **Content Types:** Filter by format (Video, Article, Tutorial, Practice, Documentation)
+
+### 7.3 Personalized Learning Materials
+
+**Access:** Navigate to `http://localhost:4200/resource-recommendation/personalized`
+
+#### Learning Context Setup
+- **Current Topic:** Specify what you're currently learning
+- **Learning Goal:** Define your specific learning objective
+- **Skill Gap:** Identify particular challenges you're facing
+- **Available Time:** Set your available study time (5-180 minutes)
+- **Quick Selection:** Use preset options for common learning scenarios
+
+#### Personalized Recommendations
+- **Adaptive Content:** Resources that match your current proficiency level
+- **Learning Style Optimization:** Content adapted for your learning style preferences
+- **Goal Alignment:** Recommendations aligned with your career goals and objectives
+- **Progress Integration:** Suggestions based on your learning progress and achievements
+
+#### Contextual Features
+- **Just-in-Time Learning:** Urgent resources for immediate learning needs
+- **Contextual Suggestions:** Recommendations based on your current learning situation
+- **Adaptive Difficulty:** Content difficulty adjusted to your skill level
+- **Learning Path Integration:** Resources that fit into your overall learning journey
+
+#### Content Adaptation
+- **Difficulty Adjustment:** Content automatically adapted to your proficiency level
+- **Learning Style Presentation:** Visual, auditory, kinesthetic, or reading/writing optimization
+- **Personalized Summaries:** AI-generated summaries tailored to your learning needs
+- **Interactive Elements:** Enhanced content with personalized explanations and examples
+
+### 7.4 Resource Management
+
+#### Bookmarking and Collections
+- **Save Resources:** Bookmark interesting resources for later review
+- **Personal Collections:** Organize saved resources into custom collections
+- **Learning Lists:** Create topic-specific resource lists for structured learning
+- **Progress Tracking:** Track your progress through saved resources
+
+#### Quality Feedback
+- **Resource Rating:** Rate resources on a 5-star scale to improve recommendations
+- **Quality Reporting:** Report low-quality or inappropriate content
+- **Feedback Integration:** Your ratings help improve the AI recommendation algorithms
+- **Community Contribution:** Contribute to the collective intelligence of the platform
+
+#### Sharing and Collaboration
+- **Resource Sharing:** Share useful resources with other learners
+- **Social Recommendations:** Get recommendations from your learning network
+- **Community Reviews:** Read and contribute resource reviews
+- **Expert Endorsements:** See which resources are endorsed by industry experts
+
+### 7.5 Best Practices for Resource Discovery
+
+#### Effective Search Strategies
+1. **Use Specific Keywords:** Include specific technologies, concepts, or skills in your search
+2. **Leverage Filters:** Use difficulty and format filters to narrow down results
+3. **Check Quality Indicators:** Prioritize verified and highly-rated resources
+4. **Read Recommendations:** Review why resources are suggested for better selection
+
+#### Personalization Optimization
+1. **Complete Learning Context:** Provide detailed information about your learning situation
+2. **Update Preferences:** Regularly update your learning style and goal preferences
+3. **Provide Feedback:** Rate resources to improve future recommendations
+4. **Track Progress:** Use the progress tracking features to inform recommendations
+
+#### Quality Assessment
+1. **Verify Sources:** Check the credibility and authority of content sources
+2. **Read Reviews:** Review community feedback and expert endorsements
+3. **Check Recency:** Ensure content is current and up-to-date
+4. **Match Learning Style:** Choose resources that match your preferred learning style
+
+### 7.6 Integration with Other Modules
+
+#### Assessment Integration
+- **Skill Gap Data:** Uses assessment results to recommend targeted learning resources
+- **Learning Style Preferences:** Applies learning style assessment results to content recommendations
+- **Competency Tracking:** Recommends resources based on identified skill gaps and competency levels
+
+#### Progress Tracking Integration
+- **Learning History:** Uses your learning progress to inform future recommendations
+- **Goal Alignment:** Recommends resources that support your current learning goals
+- **Achievement Integration:** Suggests resources for unlocking new achievements and badges
+
+#### Career Goals Integration
+- **Career Path Alignment:** Recommends resources relevant to your chosen career path
+- **Skill Development:** Suggests resources for developing specific professional skills
+- **Industry Trends:** Recommends content based on current industry demands and trends
+
+#### Adaptive Learning Integration
+- **Learning Path Context:** Integrates with adaptive learning paths for seamless resource discovery
+- **Difficulty Progression:** Recommends resources that match your current learning progression
+- **Intervention Support:** Provides additional resources when learning difficulties are detected
+
+### 7.7 Advanced Features
+
+#### AI Recommendation Engine
+- **Hybrid Algorithms:** Combines collaborative filtering, content-based filtering, and behavioral analysis
+- **Continuous Learning:** Algorithms improve over time based on user feedback and behavior
+- **Cold Start Handling:** Provides quality recommendations even for new users
+- **Context Awareness:** Considers current learning context and immediate needs
+
+#### Quality Assurance System
+- **Multi-tier Verification:** Expert validation, community moderation, and algorithmic quality assessment
+- **Real-time Quality Monitoring:** Continuous assessment of content quality and relevance
+- **Feedback Integration:** User ratings and reports contribute to quality scores
+- **Expert Curation:** Professional educators and industry experts contribute to content selection
+
+#### Personalization Engine
+- **Learning Profile Analysis:** Deep understanding of individual learning preferences and patterns
+- **Contextual Adaptation:** Real-time adaptation based on current learning situation
+- **Goal-driven Recommendations:** Recommendations aligned with specific learning objectives
+- **Timing Optimization:** Just-in-time delivery of relevant learning resources
 
 ---
 

@@ -1,0 +1,341 @@
+<div class="resource-discovery-container">
+  <!-- Header with Search and View Switcher -->
+  <div class="discovery-header">
+    <div class="header-content">
+      <h1>🔍 Discover Learning Resources</h1>
+      <p>AI-powered recommendations tailored to your learning journey</p>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-section">
+      <div class="search-bar">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (keyup.enter)="onSearch()"
+          placeholder="Search for courses, tutorials, articles..."
+          class="search-input">
+        <button (click)="onSearch()" class="search-button">
+          <i class="icon-search"></i>
+        </button>
+      </div>
+      
+      <!-- View Mode Switcher -->
+      <div class="view-switcher">
+        <button 
+          *ngFor="let mode of ['recommendations', 'search', 'featured']"
+          [class.active]="viewMode === mode"
+          (click)="switchView(mode)"
+          class="view-button">
+          {{ mode | titlecase }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section" *ngIf="viewMode === 'search'">
+    <div class="filters-header">
+      <h3>🎯 Filters</h3>
+      <button (click)="clearFilters()" class="clear-filters-btn">Clear All</button>
+    </div>
+    
+    <div class="filters-grid">
+      <!-- Categories Filter -->
+      <div class="filter-group">
+        <label>Categories</label>
+        <div class="filter-options">
+          <label *ngFor="let category of availableCategories" class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [value]="category"
+              [(ngModel)]="selectedCategories"
+              (change)="onFilterChange()">
+            {{ category }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Resource Types Filter -->
+      <div class="filter-group">
+        <label>Type</label>
+        <div class="filter-options">
+          <label *ngFor="let type of availableTypes" class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [value]="type"
+              [(ngModel)]="selectedTypes"
+              (change)="onFilterChange()">
+            {{ getResourceTypeDisplayName(type) }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Difficulty Filter -->
+      <div class="filter-group">
+        <label>Difficulty</label>
+        <div class="filter-options">
+          <label *ngFor="let difficulty of availableDifficulties" class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [value]="difficulty"
+              [(ngModel)]="selectedDifficulties"
+              (change)="onFilterChange()">
+            <span class="difficulty-badge" [style.background-color]="getDifficultyColor(difficulty)">
+              {{ getDifficultyDisplayName(difficulty) }}
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Sort Options -->
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select [(ngModel)]="currentSortOption" (change)="onSortChange()" class="sort-select">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Finding the best resources for you...</p>
+  </div>
+
+  <!-- Recommendations View -->
+  <div *ngIf="viewMode === 'recommendations' && !isLoading" class="recommendations-section">
+    <div class="section-header">
+      <h2>✨ Personalized Recommendations</h2>
+      <p>Based on your learning style, goals, and progress</p>
+    </div>
+
+    <div class="recommendations-grid" *ngIf="recommendations.length > 0">
+      <div 
+        *ngFor="let recommendation of recommendations" 
+        class="recommendation-card"
+        (click)="onResourceClick(recommendation.resource)">
+        
+        <div class="card-header">
+          <img [src]="recommendation.resource.thumbnailUrl" 
+               [alt]="recommendation.resource.title"
+               class="resource-thumbnail"
+               onerror="this.src='/assets/images/default-resource.jpg'">
+          
+          <div class="card-actions">
+            <button 
+              (click)="onBookmark(recommendation.resource, $event)"
+              [class.bookmarked]="recommendation.resource.isBookmarked"
+              class="bookmark-btn">
+              <i class="icon-bookmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="resource-meta">
+            <span class="resource-type">{{ getResourceTypeDisplayName(recommendation.resource.type) }}</span>
+            <span class="resource-duration">{{ formatDuration(recommendation.resource.duration) }}</span>
+          </div>
+
+          <h3 class="resource-title">{{ recommendation.resource.title }}</h3>
+          <p class="resource-description">{{ recommendation.resource.description }}</p>
+
+          <div class="recommendation-reason">
+            <i class="icon-lightbulb"></i>
+            <span>{{ recommendation.recommendationReason }}</span>
+          </div>
+
+          <div class="resource-details">
+            <div class="author">
+              <i class="icon-user"></i>
+              {{ recommendation.resource.author }}
+            </div>
+            
+            <div class="rating">
+              <div class="stars">
+                <i *ngFor="let star of [1,2,3,4,5]" 
+                   [class]="star <= recommendation.resource.rating ? 'icon-star-filled' : 'icon-star-empty'">
+                </i>
+              </div>
+              <span class="rating-text">{{ recommendation.resource.rating }} ({{ recommendation.resource.reviewCount }})</span>
+            </div>
+
+            <div class="difficulty">
+              <span class="difficulty-badge" [style.background-color]="getDifficultyColor(recommendation.resource.difficulty)">
+                {{ getDifficultyDisplayName(recommendation.resource.difficulty) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="confidence-score">
+            <div class="confidence-bar">
+              <div class="confidence-fill" [style.width.%]="recommendation.confidenceScore * 100"></div>
+            </div>
+            <span class="confidence-text">{{ (recommendation.confidenceScore * 100).toFixed(0) }}% match</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="recommendations.length === 0" class="empty-state">
+      <i class="icon-search"></i>
+      <h3>No recommendations available</h3>
+      <p>Complete your profile setup to get personalized recommendations</p>
+    </div>
+  </div>
+
+  <!-- Search Results View -->
+  <div *ngIf="viewMode === 'search' && !isLoading" class="search-results-section">
+    <div class="section-header">
+      <h2>🔍 Search Results</h2>
+      <p *ngIf="searchResults.length > 0">Found {{ searchResults.length }} resources</p>
+    </div>
+
+    <div class="search-results-grid" *ngIf="searchResults.length > 0">
+      <div 
+        *ngFor="let resource of searchResults" 
+        class="resource-card"
+        (click)="onResourceClick(resource)">
+        
+        <div class="card-header">
+          <img [src]="resource.thumbnailUrl" 
+               [alt]="resource.title"
+               class="resource-thumbnail"
+               onerror="this.src='/assets/images/default-resource.jpg'">
+          
+          <div class="card-actions">
+            <button 
+              (click)="onBookmark(resource, $event)"
+              [class.bookmarked]="resource.isBookmarked"
+              class="bookmark-btn">
+              <i class="icon-bookmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="resource-meta">
+            <span class="resource-type">{{ getResourceTypeDisplayName(resource.type) }}</span>
+            <span class="resource-duration">{{ formatDuration(resource.duration) }}</span>
+            <span class="resource-source">{{ resource.source }}</span>
+          </div>
+
+          <h3 class="resource-title">{{ resource.title }}</h3>
+          <p class="resource-description">{{ resource.description }}</p>
+
+          <div class="resource-tags">
+            <span *ngFor="let tag of resource.tags.slice(0, 3)" class="tag">{{ tag }}</span>
+          </div>
+
+          <div class="resource-details">
+            <div class="author">
+              <i class="icon-user"></i>
+              {{ resource.author }}
+            </div>
+            
+            <div class="rating">
+              <div class="stars">
+                <i *ngFor="let star of [1,2,3,4,5]" 
+                   [class]="star <= resource.rating ? 'icon-star-filled' : 'icon-star-empty'">
+                </i>
+              </div>
+              <span class="rating-text">{{ resource.rating }} ({{ resource.reviewCount }})</span>
+            </div>
+
+            <div class="difficulty">
+              <span class="difficulty-badge" [style.background-color]="getDifficultyColor(resource.difficulty)">
+                {{ getDifficultyDisplayName(resource.difficulty) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="searchResults.length === 0 && searchQuery" class="empty-state">
+      <i class="icon-search"></i>
+      <h3>No results found</h3>
+      <p>Try adjusting your search terms or filters</p>
+    </div>
+  </div>
+
+  <!-- Featured Resources View -->
+  <div *ngIf="viewMode === 'featured' && !isLoading" class="featured-section">
+    <div class="section-header">
+      <h2>⭐ Featured Resources</h2>
+      <p>Top-rated and most popular learning materials</p>
+    </div>
+
+    <div class="featured-grid" *ngIf="featuredResources.length > 0">
+      <div 
+        *ngFor="let resource of featuredResources" 
+        class="featured-card"
+        (click)="onResourceClick(resource)">
+        
+        <div class="card-header">
+          <img [src]="resource.thumbnailUrl" 
+               [alt]="resource.title"
+               class="resource-thumbnail"
+               onerror="this.src='/assets/images/default-resource.jpg'">
+          
+          <div class="featured-badge">
+            <i class="icon-star"></i>
+            Featured
+          </div>
+          
+          <div class="card-actions">
+            <button 
+              (click)="onBookmark(resource, $event)"
+              [class.bookmarked]="resource.isBookmarked"
+              class="bookmark-btn">
+              <i class="icon-bookmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="resource-meta">
+            <span class="resource-type">{{ getResourceTypeDisplayName(resource.type) }}</span>
+            <span class="resource-duration">{{ formatDuration(resource.duration) }}</span>
+          </div>
+
+          <h3 class="resource-title">{{ resource.title }}</h3>
+          <p class="resource-description">{{ resource.description }}</p>
+
+          <div class="resource-details">
+            <div class="author">
+              <i class="icon-user"></i>
+              {{ resource.author }}
+            </div>
+            
+            <div class="rating">
+              <div class="stars">
+                <i *ngFor="let star of [1,2,3,4,5]" 
+                   [class]="star <= resource.rating ? 'icon-star-filled' : 'icon-star-empty'">
+                </i>
+              </div>
+              <span class="rating-text">{{ resource.rating }} ({{ resource.reviewCount }})</span>
+            </div>
+
+            <div class="difficulty">
+              <span class="difficulty-badge" [style.background-color]="getDifficultyColor(resource.difficulty)">
+                {{ getDifficultyDisplayName(resource.difficulty) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="popularity-indicator">
+            <div class="popularity-bar">
+              <div class="popularity-fill" [style.width.%]="resource.popularity"></div>
+            </div>
+            <span class="popularity-text">{{ resource.popularity }}% popular</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

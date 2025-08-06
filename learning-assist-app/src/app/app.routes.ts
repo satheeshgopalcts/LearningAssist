@@ -42,5 +42,10 @@ export const routes: Routes = [
     loadChildren: () => import('./career-goals/career-goals.module').then(m => m.CareerGoalsModule),
     canActivate: [authGuard]
   },
+  { 
+    path: 'resource-recommendation', 
+    loadChildren: () => import('./resource-recommendation/resource-recommendation.module').then(m => m.ResourceRecommendationModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];
