@@ -543,6 +543,135 @@
 
 ---
 
+## Backend Infrastructure Requirements
+*(Updated from main requirements.md - August 7, 2025)*
+
+### API Development
+- [ ] **RESTful API Design**
+  - [ ] Resource-based URLs with proper HTTP methods
+  - [ ] Consistent JSON response format
+  - [ ] Standard HTTP status codes
+  - [ ] API versioning strategy (v1, v2, etc.)
+  - **Acceptance Criteria:**
+    - APIs follow REST principles and conventions
+    - Response format is consistent across all endpoints
+    - Error handling returns appropriate status codes
+    - API versions are properly maintained and documented
+
+- [ ] **GraphQL Implementation for Complex Queries**
+  - [ ] GraphQL schema design
+  - [ ] Query optimization and batching
+  - [ ] Subscription support for real-time features
+  - [ ] Integration with existing REST endpoints
+  - **Acceptance Criteria:**
+    - GraphQL queries are optimized and performant
+    - Complex data fetching reduced to single requests
+    - Real-time subscriptions work reliably
+    - Seamless integration with REST API architecture
+
+- [ ] **Real-time WebSocket Connections**
+  - [ ] SignalR hub implementation
+  - [ ] Connection management and scaling
+  - [ ] Real-time notifications system
+  - [ ] Live collaboration features
+  - **Acceptance Criteria:**
+    - Real-time features work reliably across devices
+    - Connection scaling supports concurrent users
+    - Notifications are delivered promptly
+    - Collaboration features maintain data consistency
+
+- [ ] **API Rate Limiting and Security**
+  - [ ] Rate limiting by user and endpoint
+  - [ ] API key management
+  - [ ] Request throttling and queuing
+  - [ ] DDoS protection measures
+  - **Acceptance Criteria:**
+    - Security measures prevent API abuse
+    - Rate limits are fair and well-documented
+    - System remains stable under heavy load
+    - Monitoring alerts on unusual activity patterns
+
+### Database Design
+- [ ] **Relational Database for Core Data**
+  - [ ] Entity relationship modeling
+  - [ ] Database schema optimization
+  - [ ] Index strategy for performance
+  - [ ] Data integrity constraints
+  - **Acceptance Criteria:**
+    - Database schema is optimized for performance
+    - Queries perform within acceptable limits (<100ms avg)
+    - Data integrity is maintained across all operations
+    - Schema supports scalability requirements
+
+- [ ] **NoSQL for User Behavior Analytics**
+  - [ ] Document-based user behavior tracking
+  - [ ] Analytics data aggregation
+  - [ ] Real-time analytics processing
+  - [ ] Data retention policies
+  - **Acceptance Criteria:**
+    - User behavior data is captured comprehensively
+    - Analytics queries perform efficiently
+    - Data aggregation provides actionable insights
+    - Storage costs are optimized with retention policies
+
+- [ ] **Data Warehousing for ML Models**
+  - [ ] ETL pipeline for data transformation
+  - [ ] Data lake architecture
+  - [ ] Machine learning feature stores
+  - [ ] Historical data preservation
+  - **Acceptance Criteria:**
+    - Data pipeline reliably processes all sources
+    - ML models have access to required feature data
+    - Historical data supports trend analysis
+    - Data quality checks prevent corrupt training data
+
+- [ ] **Backup and Recovery Procedures**
+  - [ ] Automated backup scheduling
+  - [ ] Point-in-time recovery capabilities
+  - [ ] Cross-region backup replication
+  - [ ] Recovery testing procedures
+  - **Acceptance Criteria:**
+    - Recovery procedures are tested and validated
+    - Backup integrity is regularly verified
+    - Recovery time objectives (RTO) are met
+    - Data loss is minimized (RPO < 1 hour)
+
+### Performance and Infrastructure
+- [ ] **API Performance Optimization**
+  - [ ] Response caching strategies
+  - [ ] Database query optimization
+  - [ ] Asynchronous processing implementation
+  - [ ] CDN integration for static content
+  - **Acceptance Criteria:**
+    - API response times consistently under 500ms
+    - Database queries are optimized with proper indexing
+    - Heavy operations don't block API responses
+    - Static content loads quickly via CDN
+
+- [ ] **Scalability and Load Balancing**
+  - [ ] Horizontal scaling capabilities
+  - [ ] Load balancer configuration
+  - [ ] Auto-scaling based on metrics
+  - [ ] Database connection pooling
+  - **Acceptance Criteria:**
+    - System handles 10,000+ concurrent users
+    - Load balancing distributes traffic evenly
+    - Auto-scaling responds to load changes
+    - Connection pooling prevents database overload
+
+- [ ] **Monitoring and Logging**
+  - [ ] Application performance monitoring (APM)
+  - [ ] Structured logging implementation
+  - [ ] Health check endpoints
+  - [ ] Alert system configuration
+  - **Acceptance Criteria:**
+    - All API endpoints have health monitoring
+    - Logs provide sufficient debugging information
+    - Alerts notify team of critical issues
+    - Performance metrics are tracked and visualized
+
+---
+
 ## Risk Assessment & Mitigation
 
 ### Technical Risks
@@ -569,8 +698,8 @@
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** July 31, 2025  
+**Document Version:** 1.1  
+**Last Updated:** August 7, 2025 (Added Backend Infrastructure Requirements)  
 **Related Files:** requirements.md, prompts.md  
 **Review Schedule:** Weekly during development, monthly post-deployment  
 **Sign-off Required:** Technical Lead, Product Owner, Security Team

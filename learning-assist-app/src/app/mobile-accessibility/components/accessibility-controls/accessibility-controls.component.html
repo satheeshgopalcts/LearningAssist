@@ -1,0 +1,218 @@
+<div class="accessibility-controls-container">
+  <!-- Header -->
+  <mat-card class="header-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>accessibility</mat-icon>
+      </div>
+      <mat-card-title>Accessibility Controls</mat-card-title>
+      <mat-card-subtitle>Customize accessibility settings for better experience</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Quick Actions -->
+  <mat-card class="quick-actions-card">
+    <mat-card-header>
+      <mat-card-title>Quick Actions</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="quick-actions">
+        <button mat-raised-button 
+                [color]="settings.highContrast ? 'accent' : 'primary'"
+                (click)="toggleHighContrast()"
+                class="quick-action-btn">
+          <mat-icon>contrast</mat-icon>
+          High Contrast
+        </button>
+
+        <button mat-raised-button 
+                [color]="settings.reducedMotion ? 'accent' : 'primary'"
+                (click)="toggleReducedMotion()"
+                class="quick-action-btn">
+          <mat-icon>motion_photos_off</mat-icon>
+          Reduced Motion
+        </button>
+
+        <button mat-raised-button 
+                [color]="settings.screenReaderEnabled ? 'accent' : 'primary'"
+                (click)="toggleScreenReader()"
+                class="quick-action-btn">
+          <mat-icon>record_voice_over</mat-icon>
+          Screen Reader
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Visual Settings -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Visual Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="accessibilityForm" class="accessibility-form">
+        <!-- Font Size -->
+        <div class="form-group">
+          <label class="form-label">Font Size</label>
+          <mat-slider 
+            formControlName="fontSize"
+            min="0" max="4" step="1" discrete
+            [displayWith]="formatFontSizeLabel">
+            <input matSliderThumb>
+          </mat-slider>
+          <div class="font-preview" [ngClass]="'font-size-' + settings.fontSize">
+            Sample text with current font size
+          </div>
+        </div>
+
+        <!-- Color Scheme -->
+        <div class="form-group">
+          <label class="form-label">Color Scheme</label>
+          <mat-radio-group formControlName="colorScheme" class="radio-group">
+            <mat-radio-button value="light">Light</mat-radio-button>
+            <mat-radio-button value="dark">Dark</mat-radio-button>
+            <mat-radio-button value="auto">Auto</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <!-- High Contrast -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="highContrast">
+            High Contrast Mode
+          </mat-slide-toggle>
+          <p class="toggle-description">Increases contrast for better visibility</p>
+        </div>
+
+        <!-- Reduced Motion -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="reducedMotion">
+            Reduce Motion
+          </mat-slide-toggle>
+          <p class="toggle-description">Reduces animations and transitions</p>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Audio Settings -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Audio Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="accessibilityForm" class="accessibility-form">
+        <!-- Screen Reader -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="screenReaderEnabled">
+            Screen Reader Support
+          </mat-slide-toggle>
+          <p class="toggle-description">Enables screen reader announcements</p>
+        </div>
+
+        <!-- Audio Descriptions -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="audioDescriptions">
+            Audio Descriptions
+          </mat-slide-toggle>
+          <p class="toggle-description">Provides audio descriptions for visual content</p>
+        </div>
+
+        <!-- Sound Notifications -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="soundNotifications">
+            Sound Notifications
+          </mat-slide-toggle>
+          <p class="toggle-description">Plays sounds for important notifications</p>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Navigation Settings -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Navigation Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="accessibilityForm" class="accessibility-form">
+        <!-- Keyboard Navigation -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="keyboardNavigation">
+            Enhanced Keyboard Navigation
+          </mat-slide-toggle>
+          <p class="toggle-description">Improves keyboard navigation with focus indicators</p>
+        </div>
+
+        <!-- Focus Indicators -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="focusIndicators">
+            Enhanced Focus Indicators
+          </mat-slide-toggle>
+          <p class="toggle-description">Makes focus indicators more visible</p>
+        </div>
+
+        <!-- Skip Links -->
+        <div class="form-group">
+          <mat-slide-toggle formControlName="skipLinks">
+            Skip Navigation Links
+          </mat-slide-toggle>
+          <p class="toggle-description">Adds skip links for faster navigation</p>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Keyboard Shortcuts -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Keyboard Shortcuts</mat-card-title>
+      <mat-card-subtitle>Configure keyboard shortcuts for quick access</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="shortcuts-list">
+        <div *ngFor="let shortcut of keyboardShortcuts" class="shortcut-item">
+          <div class="shortcut-info">
+            <h4 class="shortcut-name">{{ shortcut.action }}</h4>
+            <p class="shortcut-description">{{ shortcut.description }}</p>
+            <div class="shortcut-keys">
+              <span *ngFor="let key of shortcut.keys" class="key-badge">{{ key }}</span>
+            </div>
+          </div>
+          <div class="shortcut-toggle">
+            <mat-slide-toggle 
+              [checked]="shortcut.enabled"
+              (change)="toggleShortcut(shortcut.id)">
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Action Buttons -->
+  <mat-card class="actions-card">
+    <mat-card-content>
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="saveSettings()">
+          <mat-icon>save</mat-icon>
+          Save Settings
+        </button>
+
+        <button mat-raised-button (click)="resetSettings()">
+          <mat-icon>refresh</mat-icon>
+          Reset to Defaults
+        </button>
+
+        <button mat-raised-button (click)="testScreenReader()">
+          <mat-icon>volume_up</mat-icon>
+          Test Screen Reader
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Live Region for Screen Reader Announcements -->
+  <div aria-live="polite" aria-atomic="true" class="sr-only">
+    {{ screenReaderAnnouncement }}
+  </div>
+</div>

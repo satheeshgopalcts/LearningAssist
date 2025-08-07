@@ -1,0 +1,275 @@
+.offline-manager-container {
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .header-card {
+    margin-bottom: 16px;
+
+    .mat-card-avatar {
+      .mat-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+
+        &.offline {
+          color: #f44336;
+        }
+
+        &.online {
+          color: #4caf50;
+        }
+      }
+    }
+
+    .sync-status {
+      font-style: italic;
+      color: #ff9800;
+    }
+  }
+
+  .storage-card {
+    margin-bottom: 16px;
+
+    .storage-info {
+      .storage-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 14px;
+
+        .percentage {
+          font-weight: 500;
+        }
+      }
+
+      mat-progress-bar {
+        height: 8px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .actions-card {
+    margin-bottom: 16px;
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+
+  .content-section {
+    margin-bottom: 16px;
+
+    .content-item {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.downloaded {
+        background-color: rgba(76, 175, 80, 0.05);
+      }
+
+      .mat-list-icon {
+        mat-icon {
+          color: #666;
+          font-size: 24px;
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .content-info {
+        flex: 1;
+        margin: 0 16px;
+
+        .content-title {
+          margin: 0 0 4px 0;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 1.2;
+        }
+
+        .content-description {
+          margin: 0 0 8px 0;
+          font-size: 14px;
+          color: #666;
+          line-height: 1.3;
+        }
+
+        .content-size {
+          font-size: 12px;
+          color: #999;
+          background: rgba(0, 0, 0, 0.05);
+          padding: 2px 8px;
+          border-radius: 12px;
+        }
+
+        .content-meta {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          flex-wrap: wrap;
+
+          .download-date {
+            font-size: 12px;
+            color: #666;
+          }
+
+          .sync-needed {
+            font-size: 12px;
+            color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+          }
+        }
+      }
+
+      .content-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .download-progress {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          min-width: 80px;
+
+          mat-progress-bar {
+            width: 100%;
+            height: 4px;
+          }
+
+          span {
+            font-size: 12px;
+            color: #666;
+          }
+        }
+
+        button {
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+
+    .empty-content {
+      mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #ccc;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        margin: 0 0 8px 0;
+        color: #666;
+      }
+
+      p {
+        margin: 0;
+        color: #999;
+      }
+    }
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 768px) {
+  .offline-manager-container {
+    padding: 8px;
+
+    .content-section {
+      .content-item {
+        .content-info {
+          margin: 0 8px;
+
+          .content-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+          }
+        }
+
+        .content-actions {
+          flex-direction: column;
+
+          .download-progress {
+            min-width: 60px;
+          }
+        }
+      }
+    }
+
+    .actions-card {
+      .action-buttons {
+        flex-direction: column;
+
+        button {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .offline-manager-container {
+    .content-item {
+      border-bottom: 2px solid #000;
+
+      &.downloaded {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .storage-info {
+      mat-progress-bar {
+        border: 1px solid #000;
+      }
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .offline-manager-container {
+    .download-progress {
+      mat-progress-bar {
+        animation: none;
+      }
+    }
+  }
+}

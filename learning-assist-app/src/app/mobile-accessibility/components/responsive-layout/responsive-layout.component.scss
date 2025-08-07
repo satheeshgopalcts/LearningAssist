@@ -1,0 +1,475 @@
+.responsive-layout-container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+}
+
+.header-card {
+  margin-bottom: 24px;
+  
+  mat-card-header {
+    padding: 24px;
+  }
+  
+  .mat-mdc-card-avatar {
+    background-color: #1976d2;
+    color: white;
+    
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+}
+
+.device-info-card {
+  margin-bottom: 24px;
+  
+  .device-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  
+  .breakpoint-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .device-icon-xs,
+    .device-icon-sm {
+      color: #ff9800;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .device-icon-md {
+      color: #2196f3;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .device-icon-lg,
+    .device-icon-xl {
+      color: #4caf50;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .breakpoint-details {
+      h3 {
+        margin: 0 0 4px 0;
+        color: #1976d2;
+      }
+      
+      p {
+        margin: 0 0 8px 0;
+        color: #666;
+        font-size: 14px;
+      }
+      
+      .breakpoint-range {
+        background: #e3f2fd;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #1565c0;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .device-flags {
+    mat-chip-set {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .mat-mdc-chip {
+      &.active {
+        background-color: #4caf50;
+        color: white;
+      }
+      
+      &.inactive {
+        background-color: #f5f5f5;
+        color: #999;
+      }
+    }
+  }
+}
+
+.controls-card,
+.breakpoint-testing-card,
+.demo-content-card,
+.metrics-card {
+  margin-bottom: 24px;
+  
+  mat-card-header {
+    padding: 16px 16px 8px 16px;
+  }
+  
+  mat-card-content {
+    padding: 0 16px 16px 16px;
+  }
+}
+
+.layout-form {
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    mat-form-field {
+      flex: 1;
+    }
+  }
+}
+
+.control-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  
+  button {
+    min-width: 140px;
+    
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.breakpoint-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  
+  button {
+    flex: 1;
+    min-width: 160px;
+    padding: 12px 16px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    
+    &.active {
+      border-color: #1976d2;
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+    
+    &:hover:not(.active) {
+      background-color: #f5f5f5;
+    }
+    
+    mat-icon {
+      margin-right: 8px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+    
+    @media (max-width: 768px) {
+      min-width: 120px;
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+}
+
+.demo-section {
+  margin-bottom: 24px;
+  
+  h4 {
+    color: #1976d2;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+  }
+}
+
+// Grid Layout Styles
+.demo-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  mat-card-header {
+    padding: 12px;
+    
+    .mat-mdc-card-avatar {
+      background-color: #1976d2;
+      color: white;
+      width: 32px;
+      height: 32px;
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+  
+  mat-card-content {
+    flex: 1;
+    padding: 0 12px 12px 12px;
+    
+    .card-content {
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+}
+
+// List Layout Styles
+.demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.demo-list-card {
+  width: 100%;
+  
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .list-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #1976d2;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+    
+    .list-content {
+      flex: 1;
+      
+      h4 {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        color: #1976d2;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+        line-height: 1.4;
+      }
+    }
+  }
+  
+  &.density-comfortable .list-item {
+    padding: 16px;
+  }
+  
+  &.density-standard .list-item {
+    padding: 12px;
+  }
+  
+  &.density-compact .list-item {
+    padding: 8px;
+    
+    .list-avatar {
+      width: 36px;
+      height: 36px;
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    .list-content {
+      h4 {
+        font-size: 14px;
+      }
+      
+      p {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+// Compact Layout Styles
+.demo-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+}
+
+.demo-compact-card {
+  .compact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    
+    mat-icon {
+      color: #1976d2;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    
+    .compact-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+}
+
+// Metrics Styles
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #1976d2;
+  
+  mat-icon {
+    color: #1976d2;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+    strong {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    span {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .responsive-layout-container {
+    .controls-card,
+    .breakpoint-testing-card,
+    .demo-content-card,
+    .metrics-card {
+      margin-bottom: 16px;
+    }
+    
+    .demo-section h4 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .metric-item {
+      padding: 12px;
+      
+      div {
+        strong {
+          font-size: 10px;
+        }
+        
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .breakpoint-buttons {
+    button {
+      min-width: 100px;
+      font-size: 11px;
+      padding: 6px 8px;
+      
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+  
+  .demo-compact {
+    grid-template-columns: 1fr;
+  }
+  
+  .metrics-grid {
+    gap: 8px;
+  }
+}

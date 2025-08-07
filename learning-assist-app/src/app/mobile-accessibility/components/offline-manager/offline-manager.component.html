@@ -1,0 +1,149 @@
+<div class="offline-manager-container">
+  <!-- Header -->
+  <mat-card class="header-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon [class.offline]="isOffline" [class.online]="!isOffline">
+          {{ isOffline ? 'cloud_off' : 'cloud_done' }}
+        </mat-icon>
+      </div>
+      <mat-card-title>Offline Content Manager</mat-card-title>
+      <mat-card-subtitle>
+        {{ isOffline ? 'You are offline' : 'You are online' }}
+        <span *ngIf="syncStatus !== SyncStatus.SYNCED" class="sync-status">
+          • {{ getSyncStatusText() }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Storage Info -->
+  <mat-card class="storage-card" *ngIf="storageQuota">
+    <mat-card-header>
+      <mat-card-title>Storage Usage</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="storage-info">
+        <div class="storage-details">
+          <span>{{ formatFileSize(storageQuota.used) }} of {{ formatFileSize(storageQuota.total) }} used</span>
+          <span class="percentage">{{ getStoragePercentage().toFixed(1) }}%</span>
+        </div>
+        <mat-progress-bar 
+          [value]="getStoragePercentage()" 
+          [color]="getStorageColor()"
+          mode="determinate">
+        </mat-progress-bar>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Action Buttons -->
+  <mat-card class="actions-card">
+    <mat-card-content>
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" 
+                (click)="syncContent()"
+                [disabled]="syncStatus === SyncStatus.UPLOADING || isOffline"
+                *ngIf="downloadedContent.length > 0">
+          <mat-icon>sync</mat-icon>
+          {{ syncStatus === SyncStatus.UPLOADING ? 'Syncing...' : 'Sync All' }}
+        </button>
+
+        <button mat-raised-button color="warn"
+                (click)="clearStorage()"
+                *ngIf="downloadedContent.length > 0">
+          <mat-icon>delete_sweep</mat-icon>
+          Clear Storage
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Available Content -->
+  <mat-card class="content-section" *ngIf="availableContent.length > 0">
+    <mat-card-header>
+      <mat-card-title>Available for Download</mat-card-title>
+      <mat-card-subtitle>Content you can download for offline use</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let content of availableContent" class="content-item">
+          <div mat-list-icon>
+            <mat-icon>{{ getContentIcon(content.contentType) }}</mat-icon>
+          </div>
+          <div mat-line class="content-info">
+            <h4 class="content-title">{{ content.title }}</h4>
+            <p class="content-description">{{ content.description }}</p>
+            <span class="content-size">{{ formatFileSize(content.size) }}</span>
+          </div>
+          <div class="content-actions">
+            <div *ngIf="downloadProgress[content.id] !== undefined" class="download-progress">
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              <span>Downloading...</span>
+            </div>
+            <button *ngIf="downloadProgress[content.id] === undefined"
+                    mat-icon-button color="primary"
+                    (click)="downloadContent(content)"
+                    [disabled]="isOffline"
+                    matTooltip="Download for offline use">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Downloaded Content -->
+  <mat-card class="content-section" *ngIf="downloadedContent.length > 0">
+    <mat-card-header>
+      <mat-card-title>Downloaded Content</mat-card-title>
+      <mat-card-subtitle>Content available offline</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let content of downloadedContent" class="content-item downloaded">
+          <div mat-list-icon>
+            <mat-icon>{{ getContentIcon(content.type) }}</mat-icon>
+          </div>
+          <div mat-line class="content-info">
+            <h4 class="content-title">{{ content.title }}</h4>
+            <div class="content-meta">
+              <span class="content-size">{{ formatFileSize(content.size) }}</span>
+              <span class="download-date">Downloaded: {{ content.downloadedAt | date:'short' }}</span>
+              <span *ngIf="content.syncStatus !== SyncStatus.SYNCED" 
+                    class="sync-needed">
+                Sync needed
+              </span>
+            </div>
+          </div>
+          <div class="content-actions">
+            <button mat-icon-button 
+                    (click)="syncContent(content)"
+                    [disabled]="syncStatus === SyncStatus.UPLOADING || isOffline"
+                    matTooltip="Sync this content"
+                    *ngIf="content.syncStatus !== SyncStatus.SYNCED">
+              <mat-icon>sync</mat-icon>
+            </button>
+            <button mat-icon-button color="warn"
+                    (click)="removeContent(content)"
+                    matTooltip="Remove from offline storage">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Empty State -->
+  <mat-card *ngIf="availableContent.length === 0 && downloadedContent.length === 0" class="empty-state">
+    <mat-card-content>
+      <div class="empty-content">
+        <mat-icon>cloud_download</mat-icon>
+        <h3>No Content Available</h3>
+        <p>There is no content available for offline download at the moment.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

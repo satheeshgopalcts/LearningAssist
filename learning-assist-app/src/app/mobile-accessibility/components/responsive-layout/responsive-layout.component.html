@@ -1,0 +1,272 @@
+<div class="responsive-layout-container">
+  <!-- Header Section -->
+  <mat-card class="header-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>devices</mat-icon>
+      </div>
+      <mat-card-title>Responsive Layout</mat-card-title>
+      <mat-card-subtitle>Cross-platform compatibility and adaptive design</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Current Device Info -->
+  <mat-card class="device-info-card" *ngIf="currentBreakpoint">
+    <mat-card-content>
+      <div class="device-status">
+        <div class="breakpoint-info">
+          <mat-icon [class]="'device-icon-' + currentBreakpoint.id">
+            {{ getDeviceIcon() }}
+          </mat-icon>
+          <div class="breakpoint-details">
+            <h3>{{ currentBreakpoint.name }}</h3>
+            <p>{{ currentBreakpoint.description }}</p>
+            <span class="breakpoint-range">
+              {{ currentBreakpoint.minWidth }}px 
+              <span *ngIf="currentBreakpoint.maxWidth">- {{ currentBreakpoint.maxWidth }}px</span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="device-flags">
+          <mat-chip-set>
+            <mat-chip [class]="isMobile ? 'active' : 'inactive'">
+              <mat-icon matChipAvatar>phone_android</mat-icon>
+              Mobile
+            </mat-chip>
+            <mat-chip [class]="isTablet ? 'active' : 'inactive'">
+              <mat-icon matChipAvatar>tablet</mat-icon>
+              Tablet
+            </mat-chip>
+            <mat-chip [class]="isDesktop ? 'active' : 'inactive'">
+              <mat-icon matChipAvatar>computer</mat-icon>
+              Desktop
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Layout Controls -->
+  <mat-card class="controls-card">
+    <mat-card-header>
+      <mat-card-title>Layout Controls</mat-card-title>
+      <mat-card-subtitle>Customize the adaptive layout behavior</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="layoutForm" class="layout-form">
+        <div class="form-row">
+          <mat-form-field>
+            <mat-label>Card Layout</mat-label>
+            <mat-select formControlName="cardLayout">
+              <mat-option [value]="CardLayout.GRID">Grid</mat-option>
+              <mat-option [value]="CardLayout.LIST">List</mat-option>
+              <mat-option [value]="CardLayout.COMPACT">Compact</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>List Density</mat-label>
+            <mat-select formControlName="density">
+              <mat-option [value]="ListDensity.COMFORTABLE">Comfortable</mat-option>
+              <mat-option [value]="ListDensity.STANDARD">Standard</mat-option>
+              <mat-option [value]="ListDensity.COMPACT">Compact</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field>
+            <mat-label>Columns</mat-label>
+            <mat-select formControlName="columns">
+              <mat-option [value]="1">1 Column</mat-option>
+              <mat-option [value]="2">2 Columns</mat-option>
+              <mat-option [value]="3">3 Columns</mat-option>
+              <mat-option [value]="4">4 Columns</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Spacing (px)</mat-label>
+            <mat-select formControlName="spacing">
+              <mat-option [value]="8">8px</mat-option>
+              <mat-option [value]="16">16px</mat-option>
+              <mat-option [value]="24">24px</mat-option>
+              <mat-option [value]="32">32px</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
+
+      <div class="control-actions">
+        <button mat-raised-button color="primary" (click)="toggleCardLayout()">
+          <mat-icon>view_module</mat-icon>
+          Toggle Layout
+        </button>
+        
+        <button mat-stroked-button (click)="testOrientation()">
+          <mat-icon>screen_rotation</mat-icon>
+          Test Orientation
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Breakpoint Testing -->
+  <mat-card class="breakpoint-testing-card">
+    <mat-card-header>
+      <mat-card-title>Breakpoint Testing</mat-card-title>
+      <mat-card-subtitle>Test different screen sizes and device types</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="breakpoint-buttons">
+        <button mat-button 
+                [class]="currentBreakpoint?.id === 'xs' ? 'active' : ''"
+                (click)="simulateBreakpoint('xs')">
+          <mat-icon>phone_android</mat-icon>
+          Extra Small (< 576px)
+        </button>
+        
+        <button mat-button 
+                [class]="currentBreakpoint?.id === 'sm' ? 'active' : ''"
+                (click)="simulateBreakpoint('sm')">
+          <mat-icon>phone_android</mat-icon>
+          Small (576-767px)
+        </button>
+        
+        <button mat-button 
+                [class]="currentBreakpoint?.id === 'md' ? 'active' : ''"
+                (click)="simulateBreakpoint('md')">
+          <mat-icon>tablet</mat-icon>
+          Medium (768-991px)
+        </button>
+        
+        <button mat-button 
+                [class]="currentBreakpoint?.id === 'lg' ? 'active' : ''"
+                (click)="simulateBreakpoint('lg')">
+          <mat-icon>laptop</mat-icon>
+          Large (992-1199px)
+        </button>
+        
+        <button mat-button 
+                [class]="currentBreakpoint?.id === 'xl' ? 'active' : ''"
+                (click)="simulateBreakpoint('xl')">
+          <mat-icon>desktop_windows</mat-icon>
+          Extra Large (≥ 1200px)
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Responsive Demo Content -->
+  <mat-card class="demo-content-card">
+    <mat-card-header>
+      <mat-card-title>Responsive Demo</mat-card-title>
+      <mat-card-subtitle>See how content adapts to different screen sizes</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Grid Layout Demo -->
+      <div class="demo-section" *ngIf="adaptiveUI && adaptiveUI.layout.cardLayout === CardLayout.GRID">
+        <h4>Grid Layout</h4>
+        <mat-grid-list [cols]="getDemoGridCols()" [rowHeight]="getGridRowHeight()" gutterSize="16px">
+          <mat-grid-tile *ngFor="let card of demoCards">
+            <mat-card class="demo-card">
+              <mat-card-header>
+                <div mat-card-avatar>
+                  <mat-icon>{{ card.icon }}</mat-icon>
+                </div>
+                <mat-card-title class="card-title">{{ card.title }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p class="card-content">{{ card.content }}</p>
+              </mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+
+      <!-- List Layout Demo -->
+      <div class="demo-section" *ngIf="adaptiveUI && adaptiveUI.layout.cardLayout === CardLayout.LIST">
+        <h4>List Layout</h4>
+        <div class="demo-list">
+          <mat-card *ngFor="let card of demoCards" class="demo-list-card" [class]="getCardClass()">
+            <mat-card-content>
+              <div class="list-item">
+                <div class="list-avatar">
+                  <mat-icon>{{ card.icon }}</mat-icon>
+                </div>
+                <div class="list-content">
+                  <h4>{{ card.title }}</h4>
+                  <p>{{ card.content }}</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- Compact Layout Demo -->
+      <div class="demo-section" *ngIf="adaptiveUI && adaptiveUI.layout.cardLayout === CardLayout.COMPACT">
+        <h4>Compact Layout</h4>
+        <div class="demo-compact">
+          <mat-card *ngFor="let card of demoCards" class="demo-compact-card">
+            <mat-card-content>
+              <div class="compact-item">
+                <mat-icon>{{ card.icon }}</mat-icon>
+                <span class="compact-title">{{ card.title }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Layout Metrics -->
+  <mat-card class="metrics-card" *ngIf="adaptiveUI">
+    <mat-card-header>
+      <mat-card-title>Current Layout Metrics</mat-card-title>
+      <mat-card-subtitle>Active layout configuration details</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <mat-icon>view_column</mat-icon>
+          <div>
+            <strong>Columns</strong>
+            <span>{{ adaptiveUI.layout.columns }}</span>
+          </div>
+        </div>
+        
+        <div class="metric-item">
+          <mat-icon>space_bar</mat-icon>
+          <div>
+            <strong>Spacing</strong>
+            <span>{{ adaptiveUI.layout.spacing }}px</span>
+          </div>
+        </div>
+        
+        <div class="metric-item">
+          <mat-icon>border_outer</mat-icon>
+          <div>
+            <strong>Margins</strong>
+            <span>{{ adaptiveUI.layout.margins }}px</span>
+          </div>
+        </div>
+        
+        <div class="metric-item">
+          <mat-icon>touch_app</mat-icon>
+          <div>
+            <strong>Touch Target</strong>
+            <span>{{ adaptiveUI.interactions.touchTargetSize }}px</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
