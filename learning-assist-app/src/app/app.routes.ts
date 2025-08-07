@@ -47,5 +47,10 @@ export const routes: Routes = [
     loadChildren: () => import('./resource-recommendation/resource-recommendation.module').then(m => m.ResourceRecommendationModule),
     canActivate: [authGuard]
   },
+  { 
+    path: 'interactive-learning', 
+    loadChildren: () => import('./interactive-learning/interactive-learning.module').then(m => m.InteractiveLearningModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];

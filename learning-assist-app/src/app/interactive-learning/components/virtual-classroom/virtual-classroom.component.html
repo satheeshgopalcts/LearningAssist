@@ -1,0 +1,360 @@
+<div class="virtual-classroom-container">
+  <!-- Classroom List View -->
+  <div *ngIf="viewMode === 'list'" class="classrooms-list-view">
+    <div class="header-section">
+      <h2>
+        <mat-icon>video_call</mat-icon>
+        Virtual Classrooms
+      </h2>
+      <p class="subtitle">Join live sessions and interactive learning experiences</p>
+    </div>
+
+    <!-- Create New Classroom -->
+    <mat-card class="create-classroom-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>add</mat-icon>
+          Create New Virtual Classroom
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Classroom Title</mat-label>
+            <input matInput [(ngModel)]="newClassroomTitle" placeholder="Enter classroom title">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Max Participants</mat-label>
+            <input matInput type="number" [(ngModel)]="newClassroomMaxParticipants" min="1" max="100">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="newClassroomDescription" rows="2"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Start Time</mat-label>
+            <input matInput [matDatepicker]="startPicker" [(ngModel)]="newClassroomStartDate">
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Time</mat-label>
+            <input matInput [matDatepicker]="endPicker" [(ngModel)]="newClassroomEndDate">
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="createClassroom()">
+          <mat-icon>create</mat-icon>
+          Create Classroom
+        </button>
+        <button mat-button (click)="resetClassroomForm()">Reset</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Classrooms List -->
+    <div class="classrooms-grid">
+      <mat-card *ngFor="let classroom of classrooms$ | async" class="classroom-card">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon [ngClass]="'status-' + getClassroomStatusColor(classroom.status)">
+              {{ getClassroomStatusIcon(classroom.status) }}
+            </mat-icon>
+          </div>
+          <mat-card-title>{{ classroom.title }}</mat-card-title>
+          <mat-card-subtitle>{{ classroom.instructorName }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <p class="classroom-description">{{ classroom.description }}</p>
+          
+          <div class="classroom-details">
+            <div class="detail-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(classroom.scheduledStart) }} {{ formatTime(classroom.scheduledStart) }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>people</mat-icon>
+              <span>{{ getParticipantCount(classroom) }}/{{ classroom.maxParticipants }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>access_time</mat-icon>
+              <span>{{ formatTime(classroom.scheduledStart) }} - {{ formatTime(classroom.scheduledEnd) }}</span>
+            </div>
+          </div>
+
+          <div class="features-list">
+            <mat-icon *ngIf="hasFeature(classroom, ClassroomFeature.VIDEO_CONFERENCE)" 
+                     title="Video Conference" class="feature-icon">videocam</mat-icon>
+            <mat-icon *ngIf="hasFeature(classroom, ClassroomFeature.SCREEN_SHARE)" 
+                     title="Screen Share" class="feature-icon">screen_share</mat-icon>
+            <mat-icon *ngIf="hasFeature(classroom, ClassroomFeature.WHITEBOARD)" 
+                     title="Whiteboard" class="feature-icon">draw</mat-icon>
+            <mat-icon *ngIf="hasFeature(classroom, ClassroomFeature.CHAT)" 
+                     title="Chat" class="feature-icon">chat</mat-icon>
+            <mat-icon *ngIf="hasFeature(classroom, ClassroomFeature.RECORDING)" 
+                     title="Recording" class="feature-icon">videocam</mat-icon>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-raised-button 
+                  [color]="isClassroomLive(classroom) ? 'accent' : 'primary'"
+                  [disabled]="!canJoinClassroom(classroom)"
+                  (click)="joinClassroom(classroom)">
+            <mat-icon>{{ isClassroomLive(classroom) ? 'play_arrow' : 'login' }}</mat-icon>
+            {{ isClassroomLive(classroom) ? 'Join Live' : 'Join' }}
+          </button>
+          <button mat-button *ngIf="classroom.recordingUrl">
+            <mat-icon>play_circle</mat-icon>
+            Recording
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Active Classroom View -->
+  <div *ngIf="viewMode === 'classroom' && selectedClassroom" class="active-classroom-view">
+    <!-- Toolbar -->
+    <mat-toolbar class="classroom-toolbar">
+      <button mat-icon-button (click)="leaveClassroom()">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+      <span class="classroom-title">{{ selectedClassroom.title }}</span>
+      <span class="spacer"></span>
+      
+      <!-- Media Controls -->
+      <div class="media-controls">
+        <button mat-icon-button 
+                [color]="micEnabled ? 'accent' : 'warn'"
+                (click)="toggleMicrophone()"
+                [title]="micEnabled ? 'Disable Microphone' : 'Enable Microphone'">
+          <mat-icon>{{ micEnabled ? 'mic' : 'mic_off' }}</mat-icon>
+        </button>
+        
+        <button mat-icon-button 
+                [color]="cameraEnabled ? 'accent' : 'warn'"
+                (click)="toggleCamera()"
+                [title]="cameraEnabled ? 'Disable Camera' : 'Enable Camera'">
+          <mat-icon>{{ cameraEnabled ? 'videocam' : 'videocam_off' }}</mat-icon>
+        </button>
+        
+        <button mat-icon-button 
+                [color]="screenSharing ? 'accent' : 'primary'"
+                (click)="toggleScreenShare()"
+                [title]="screenSharing ? 'Stop Screen Share' : 'Start Screen Share'">
+          <mat-icon>{{ screenSharing ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
+        </button>
+      </div>
+
+      <button mat-icon-button (click)="sidenavOpen = !sidenavOpen">
+        <mat-icon>{{ sidenavOpen ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="classroom-content">
+      <!-- Main Content -->
+      <mat-sidenav-content class="main-content">
+        <mat-tab-group class="classroom-tabs">
+          <!-- Video Conference Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>videocam</mat-icon>
+              Video
+            </ng-template>
+            
+            <div class="video-conference-section">
+              <!-- Main Video Area -->
+              <div class="main-video-area" #videoContainer>
+                <div class="instructor-video">
+                  <div class="video-placeholder">
+                    <mat-icon>person</mat-icon>
+                    <p>{{ selectedClassroom.instructorName }}</p>
+                  </div>
+                </div>
+                
+                <!-- Participant Videos Grid -->
+                <div class="participants-grid">
+                  <div *ngFor="let participant of selectedClassroom.participants" class="participant-video">
+                    <div class="video-placeholder small">
+                      <mat-icon>{{ getRoleIcon(participant.role) }}</mat-icon>
+                      <p>{{ participant.name }}</p>
+                      <div class="participant-status">
+                        <mat-icon *ngIf="!participant.micEnabled" class="muted">mic_off</mat-icon>
+                        <mat-icon *ngIf="!participant.cameraEnabled" class="muted">videocam_off</mat-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Whiteboard Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>draw</mat-icon>
+              Whiteboard
+            </ng-template>
+            
+            <div class="whiteboard-section">
+              <!-- Whiteboard Tools -->
+              <div class="whiteboard-toolbar">
+                <button mat-icon-button 
+                        [color]="currentDrawingTool === ElementType.DRAWING ? 'accent' : 'primary'"
+                        (click)="currentDrawingTool = ElementType.DRAWING"
+                        title="Draw">
+                  <mat-icon>brush</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        [color]="currentDrawingTool === ElementType.TEXT ? 'accent' : 'primary'"
+                        (click)="currentDrawingTool = ElementType.TEXT; addTextToWhiteboard()"
+                        title="Add Text">
+                  <mat-icon>text_fields</mat-icon>
+                </button>
+                
+                <mat-form-field appearance="outline" class="color-picker">
+                  <mat-label>Color</mat-label>
+                  <input matInput type="color" [(ngModel)]="drawingColor">
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="size-picker">
+                  <mat-label>Size</mat-label>
+                  <input matInput type="range" min="1" max="20" [(ngModel)]="drawingSize">
+                </mat-form-field>
+                
+                <button mat-icon-button (click)="clearWhiteboard()" title="Clear Whiteboard">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+              
+              <!-- Whiteboard Canvas -->
+              <div class="whiteboard-container">
+                <canvas #whiteboardCanvas 
+                        class="whiteboard-canvas"
+                        width="800" 
+                        height="600">
+                </canvas>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Screen Share Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>screen_share</mat-icon>
+              Screen Share
+            </ng-template>
+            
+            <div class="screen-share-section">
+              <div *ngIf="!screenSharing" class="no-screen-share">
+                <mat-icon>screen_share</mat-icon>
+                <p>No screen is being shared</p>
+                <button mat-raised-button color="primary" (click)="toggleScreenShare()">
+                  <mat-icon>screen_share</mat-icon>
+                  Start Sharing Your Screen
+                </button>
+              </div>
+              
+              <div *ngIf="screenSharing" class="screen-share-display">
+                <div class="screen-placeholder">
+                  <mat-icon>desktop_mac</mat-icon>
+                  <p>Your screen is being shared</p>
+                  <button mat-button color="warn" (click)="toggleScreenShare()">
+                    <mat-icon>stop_screen_share</mat-icon>
+                    Stop Sharing
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-sidenav-content>
+
+      <!-- Side Navigation - Chat and Participants -->
+      <mat-sidenav mode="side" 
+                   [opened]="sidenavOpen" 
+                   position="end" 
+                   class="classroom-sidenav">
+        <mat-tab-group class="sidenav-tabs">
+          <!-- Chat Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon [matBadge]="chatMessages.length" matBadgeColor="accent">chat</mat-icon>
+              Chat
+            </ng-template>
+            
+            <div class="chat-section">
+              <div class="chat-messages">
+                <div *ngFor="let message of chatMessages" class="chat-message">
+                  <div class="message-header">
+                    <span class="sender">{{ message.senderName }}</span>
+                    <span class="timestamp">{{ formatTime(message.timestamp) }}</span>
+                  </div>
+                  <div class="message-content">{{ message.message }}</div>
+                </div>
+              </div>
+              
+              <div class="chat-input">
+                <mat-form-field appearance="outline" class="message-input">
+                  <mat-label>Type a message...</mat-label>
+                  <input matInput 
+                         [(ngModel)]="chatMessage" 
+                         (keydown.enter)="sendChatMessage()"
+                         placeholder="Send a message to the class">
+                  <button matSuffix 
+                          mat-icon-button 
+                          (click)="sendChatMessage()"
+                          [disabled]="!chatMessage.trim()">
+                    <mat-icon>send</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Participants Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon [matBadge]="getParticipantCount(selectedClassroom)" matBadgeColor="primary">people</mat-icon>
+              Participants
+            </ng-template>
+            
+            <div class="participants-section">
+              <mat-list>
+                <!-- Instructor -->
+                <mat-list-item>
+                  <mat-icon matListItemIcon>school</mat-icon>
+                  <div matListItemTitle>{{ selectedClassroom.instructorName }}</div>
+                  <div matListItemLine>Instructor</div>
+                </mat-list-item>
+                
+                <mat-divider></mat-divider>
+                
+                <!-- Participants -->
+                <mat-list-item *ngFor="let participant of selectedClassroom.participants">
+                  <mat-icon matListItemIcon>{{ getRoleIcon(participant.role) }}</mat-icon>
+                  <div matListItemTitle>{{ participant.name }}</div>
+                  <div matListItemLine>{{ participant.role | titlecase }}</div>
+                  <div class="participant-controls">
+                    <mat-icon *ngIf="!participant.micEnabled" class="status-icon muted">mic_off</mat-icon>
+                    <mat-icon *ngIf="!participant.cameraEnabled" class="status-icon muted">videocam_off</mat-icon>
+                    <mat-icon *ngIf="participant.screenSharing" class="status-icon active">screen_share</mat-icon>
+                  </div>
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-sidenav>
+    </mat-sidenav-container>
+  </div>
+</div>

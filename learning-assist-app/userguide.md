@@ -1,7 +1,7 @@
 # Learning Assist Application - User Guide
 
-**Version:** 1.0  
-**Date:** July 31, 2025  
+**Version:** 1.1  
+**Date:** August 7, 2025  
 **Application:** Angular E-Learning Platform with AI-Driven Adaptive Learning
 
 ---
@@ -16,8 +16,9 @@
 7. [Module 5: Learning Progress Tracking](#module-5-learning-progress-tracking)
 8. [Module 6: Career Goals & Skill Mapping](#module-6-career-goals--skill-mapping)
 9. [Module 7: Resource Recommendation System](#module-7-resource-recommendation-system)
-10. [Tips and Best Practices](#tips-and-best-practices)
-11. [Troubleshooting](#troubleshooting)
+10. [Module 8: Interactive Learning Features](#module-8-interactive-learning-features)
+11. [Tips and Best Practices](#tips-and-best-practices)
+12. [Troubleshooting](#troubleshooting)
 12. [Support](#support)
 
 ---
@@ -50,7 +51,8 @@ The Learning Assist application uses a modular structure with dedicated sections
 - **Adaptive Learning:** `http://localhost:4200/adaptive-learning/*`
 - **Progress Tracking:** `http://localhost:4200/progress/*`
 - **Career Goals:** `http://localhost:4200/career-goals/*`
-- **Resource Recommendation:** `http://localhost:4200/resource-recommendation/*` ✨ **NEW**
+- **Resource Recommendation:** `http://localhost:4200/resource-recommendation/*`
+- **Interactive Learning:** `http://localhost:4200/interactive-learning/*` ✨ **NEW**
 
 ### Quick Access Menu
 The application features a responsive navigation menu that adapts to your device:
@@ -1544,3 +1546,119 @@ Career Goals Module: ✨ NEW
 **Last Updated:** August 6, 2025  
 **Next Review:** August 20, 2025  
 **Maintainer:** Learning Assist Development Team
+
+---
+
+## Module 8: Interactive Learning Features
+
+Module 8 provides comprehensive collaborative learning tools that enable students to engage with peers, participate in virtual classrooms, and work together on projects, fostering a dynamic interactive learning environment.
+
+### 8.1 Discussion Forums & Community
+
+**Access:** Navigate to `http://localhost:4200/interactive-learning/discussion-forums`
+
+#### Forum Categories
+The discussion forums are organized into specialized categories to facilitate focused conversations:
+- **General Discussion:** Open conversations about learning experiences and platform feedback
+- **Technical Help:** Get assistance with technical issues and course-related questions
+- **Project Announcements:** Stay updated on collaborative projects and team activities
+- **Study Groups:** Form and join study groups for specific topics or courses
+- **Career Advice:** Share and receive guidance on career development and professional growth
+
+#### Creating Topics and Engaging in Discussions
+- **New Topic Creation:** Click "New Topic" to start a discussion thread
+- **Topic Details:** Provide a clear title, select appropriate category, and add relevant tags
+- **Rich Text Editor:** Format your posts with text styling, links, and embedded content
+- **Reply System:** Engage in threaded conversations with nested replies
+- **Best Answer Selection:** Mark helpful replies as "best answers" to highlight valuable solutions
+
+#### Community Engagement Features
+- **Voting System:** Upvote/downvote posts to promote quality content
+- **User Reputation:** Build reputation through helpful contributions and quality posts
+- **Search & Filter:** Find specific discussions using keywords, categories, and date filters
+- **Real-time Activity:** See live updates when new posts and replies are added
+- **Moderation Tools:** Report inappropriate content and maintain community standards
+
+### 8.2 Virtual Classroom
+
+**Access:** Navigate to `http://localhost:4200/interactive-learning/virtual-classroom`
+
+#### Video Conferencing Environment
+- **Multi-Participant Video:** Join virtual classrooms with multiple participants
+- **Video Grid Layout:** View all participants in an organized grid format
+- **Camera Controls:** Enable/disable camera and adjust video settings
+- **Audio Management:** Mute/unmute microphone and control audio preferences
+- **Screen Sharing:** Share your screen or specific applications with other participants
+
+#### Interactive Whiteboard
+- **Drawing Tools:** Access pen, shapes, text, and eraser tools for collaborative drawing
+- **Real-time Collaboration:** See changes from all participants in real-time
+- **Canvas Management:** Save and restore whiteboard sessions for future reference
+- **Tool Customization:** Adjust brush sizes, colors, and drawing styles
+- **Shape Library:** Insert common shapes like rectangles, circles, and arrows
+
+#### Communication Features
+- **Real-time Chat:** Send text messages during virtual classroom sessions
+- **Message History:** Review previous chat messages and shared links
+- **File Sharing:** Share documents and resources directly in the chat
+- **Participant Management:** View list of active participants and their status
+- **Session Recording:** Record classroom sessions for later review (placeholder feature)
+
+### 8.3 Collaborative Projects
+
+**Access:** Navigate to `http://localhost:4200/interactive-learning/collaborative-projects`
+
+#### Project Management
+- **Project Creation:** Create new collaborative projects with clear objectives and timelines
+- **Project Templates:** Use predefined templates for common project types
+- **Scope Definition:** Define project requirements, deliverables, and success criteria
+- **Timeline Management:** Set milestones, deadlines, and track project progress
+- **Resource Library:** Share files, links, and materials within the project workspace
+
+#### Team Formation and Management
+- **Team Creation:** Form project teams based on skills, interests, and availability
+- **Role Assignment:** Assign specific roles to team members:
+  - **Leader:** Overall project coordination and decision-making
+  - **Member:** Active participation in project tasks and deliverables
+  - **Coordinator:** Communication facilitation and progress tracking
+  - **Specialist:** Subject matter expertise and technical guidance
+- **Team Communication:** Integrated messaging and discussion tools for team collaboration
+
+#### Progress Tracking and Evaluation
+- **Deliverable Management:** Track completion of project milestones and deliverables
+- **Progress Visualization:** View project progress through charts and progress bars
+- **Team Performance:** Monitor individual and team contributions
+- **Rubric-based Evaluation:** Use structured evaluation criteria for project assessment
+- **Peer Review System:** Facilitate peer evaluations and feedback within teams
+
+#### Project Collaboration Tools
+- **Shared Workspace:** Centralized area for all project-related activities and resources
+- **Version Control:** Track changes and maintain version history of project deliverables
+- **Integration Tools:** Connect with external tools and platforms for enhanced collaboration
+- **Notification System:** Stay updated on project activities and deadlines
+- **Analytics Dashboard:** View project metrics and team performance insights
+
+### 8.4 Best Practices for Interactive Learning
+
+#### Discussion Forum Engagement
+- **Be Constructive:** Provide helpful, specific feedback and suggestions
+- **Stay On Topic:** Keep discussions relevant to the category and original question
+- **Use Clear Titles:** Make your topic titles descriptive and searchable
+- **Cite Sources:** Reference materials and provide links when appropriate
+- **Follow Up:** Mark solutions as "best answers" and thank helpful contributors
+
+#### Virtual Classroom Participation
+- **Test Technology:** Check camera, microphone, and internet connection before sessions
+- **Minimize Distractions:** Use a quiet environment and close unnecessary applications
+- **Engage Actively:** Participate in discussions and use interactive tools
+- **Respect Others:** Mute when not speaking and be mindful of shared screen space
+- **Save Work:** Regularly save whiteboard content and session notes
+
+#### Collaborative Project Success
+- **Define Roles Clearly:** Ensure everyone understands their responsibilities and expectations
+- **Communicate Regularly:** Maintain frequent check-ins and status updates
+- **Set Realistic Goals:** Create achievable milestones with appropriate timelines
+- **Document Everything:** Keep detailed records of decisions, changes, and progress
+- **Embrace Feedback:** Use peer evaluations to improve individual and team performance
+
+---

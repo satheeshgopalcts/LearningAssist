@@ -1,0 +1,482 @@
+.virtual-classroom-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .classrooms-list-view {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .header-section {
+      margin-bottom: 24px;
+
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 8px 0;
+        color: #333;
+
+        mat-icon {
+          color: #1976d2;
+        }
+      }
+
+      .subtitle {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+      }
+    }
+
+    .create-classroom-card {
+      margin-bottom: 24px;
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        .full-width {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    .classrooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+
+      .classroom-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .classroom-description {
+          color: #666;
+          font-size: 14px;
+          margin-bottom: 16px;
+        }
+
+        .classroom-details {
+          margin-bottom: 16px;
+
+          .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+
+            mat-icon {
+              font-size: 16px;
+              width: 16px;
+              height: 16px;
+            }
+          }
+        }
+
+        .features-list {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 16px;
+
+          .feature-icon {
+            color: #4caf50;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .active-classroom-view {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    .classroom-toolbar {
+      background-color: #1976d2;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+
+      .classroom-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin-left: 16px;
+      }
+
+      .spacer {
+        flex: 1;
+      }
+
+      .media-controls {
+        display: flex;
+        gap: 8px;
+        margin-right: 16px;
+
+        button {
+          &.mat-mdc-icon-button {
+            color: white;
+            
+            &[color="accent"] {
+              background-color: rgba(76, 175, 80, 0.2);
+            }
+
+            &[color="warn"] {
+              background-color: rgba(244, 67, 54, 0.2);
+            }
+          }
+        }
+      }
+    }
+
+    .classroom-content {
+      flex: 1;
+
+      .main-content {
+        .classroom-tabs {
+          height: 100%;
+
+          .mat-mdc-tab-body-wrapper {
+            height: calc(100% - 48px);
+
+            .mat-mdc-tab-body {
+              height: 100%;
+
+              .mat-mdc-tab-body-content {
+                height: 100%;
+                padding: 16px;
+              }
+            }
+          }
+        }
+
+        .video-conference-section {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .main-video-area {
+            flex: 1;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: 16px;
+
+            .instructor-video {
+              background-color: #f5f5f5;
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .video-placeholder {
+                text-align: center;
+                color: #666;
+
+                mat-icon {
+                  font-size: 64px;
+                  width: 64px;
+                  height: 64px;
+                  margin-bottom: 8px;
+                }
+
+                p {
+                  font-size: 18px;
+                  margin: 0;
+                }
+              }
+            }
+
+            .participants-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+              gap: 8px;
+              max-height: 200px;
+              overflow-y: auto;
+
+              .participant-video {
+                background-color: #f5f5f5;
+                border-radius: 4px;
+                aspect-ratio: 4/3;
+                position: relative;
+
+                .video-placeholder {
+                  height: 100%;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+                  color: #666;
+                  padding: 8px;
+
+                  &.small {
+                    mat-icon {
+                      font-size: 32px;
+                      width: 32px;
+                      height: 32px;
+                    }
+
+                    p {
+                      font-size: 12px;
+                      margin: 4px 0 0 0;
+                    }
+                  }
+
+                  .participant-status {
+                    position: absolute;
+                    bottom: 4px;
+                    right: 4px;
+                    display: flex;
+                    gap: 2px;
+
+                    mat-icon {
+                      font-size: 16px;
+                      width: 16px;
+                      height: 16px;
+                      
+                      &.muted {
+                        color: #f44336;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .whiteboard-section {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .whiteboard-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 16px;
+
+            .color-picker,
+            .size-picker {
+              width: 80px;
+            }
+          }
+
+          .whiteboard-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+
+            .whiteboard-canvas {
+              background-color: white;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              cursor: crosshair;
+            }
+          }
+        }
+
+        .screen-share-section {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .no-screen-share,
+          .screen-share-display {
+            text-align: center;
+            color: #666;
+
+            mat-icon {
+              font-size: 64px;
+              width: 64px;
+              height: 64px;
+              margin-bottom: 16px;
+            }
+
+            p {
+              font-size: 18px;
+              margin-bottom: 16px;
+            }
+          }
+
+          .screen-share-display {
+            .screen-placeholder {
+              background-color: #f5f5f5;
+              padding: 40px;
+              border-radius: 8px;
+              border: 2px dashed #ccc;
+            }
+          }
+        }
+      }
+
+      .classroom-sidenav {
+        width: 350px;
+        border-left: 1px solid #e0e0e0;
+
+        .sidenav-tabs {
+          height: 100%;
+
+          .mat-mdc-tab-body-wrapper {
+            height: calc(100% - 48px);
+
+            .mat-mdc-tab-body {
+              height: 100%;
+
+              .mat-mdc-tab-body-content {
+                height: 100%;
+                padding: 0;
+              }
+            }
+          }
+        }
+
+        .chat-section {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+
+            .chat-message {
+              margin-bottom: 16px;
+
+              .message-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 4px;
+
+                .sender {
+                  font-weight: 500;
+                  color: #1976d2;
+                  font-size: 14px;
+                }
+
+                .timestamp {
+                  font-size: 12px;
+                  color: #666;
+                }
+              }
+
+              .message-content {
+                background-color: #f5f5f5;
+                padding: 8px 12px;
+                border-radius: 12px;
+                font-size: 14px;
+                line-height: 1.4;
+              }
+            }
+          }
+
+          .chat-input {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+
+            .message-input {
+              width: 100%;
+            }
+          }
+        }
+
+        .participants-section {
+          height: 100%;
+          overflow-y: auto;
+
+          .mat-mdc-list {
+            padding: 0;
+
+            .mat-mdc-list-item {
+              padding: 12px 16px;
+              
+              .participant-controls {
+                display: flex;
+                gap: 4px;
+                margin-left: auto;
+
+                .status-icon {
+                  font-size: 16px;
+                  width: 16px;
+                  height: 16px;
+
+                  &.muted {
+                    color: #f44336;
+                  }
+
+                  &.active {
+                    color: #4caf50;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Status colors
+  .status-primary mat-icon {
+    color: #1976d2;
+  }
+
+  .status-accent mat-icon {
+    color: #4caf50;
+  }
+
+  .status-warn mat-icon {
+    color: #f44336;
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .classrooms-list-view {
+      padding: 16px;
+
+      .create-classroom-card .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .classrooms-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .active-classroom-view {
+      .classroom-content {
+        .classroom-sidenav {
+          width: 100%;
+        }
+      }
+
+      .classroom-toolbar {
+        .media-controls {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+    }
+  }
+}

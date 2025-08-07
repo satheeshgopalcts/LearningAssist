@@ -1,0 +1,400 @@
+<div class="discussion-forums-container">
+  <!-- Forums List View -->
+  <div *ngIf="viewMode === 'forums'" class="forums-view">
+    <div class="header-section">
+      <h2>
+        <mat-icon>forum</mat-icon>
+        Discussion Forums
+      </h2>
+      <p class="subtitle">Connect with peers, ask questions, and share knowledge</p>
+      
+      <!-- Search and Filter -->
+      <div class="search-filter-section">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search forums...</mat-label>
+          <input matInput [(ngModel)]="searchQuery" placeholder="Search forums and topics">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="category-filter">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="selectedCategory">
+            <mat-option value="all">All Categories</mat-option>
+            <mat-option *ngFor="let category of forumCategories" [value]="category">
+              <mat-icon>{{ getCategoryIcon(category) }}</mat-icon>
+              {{ category | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Create New Forum -->
+    <mat-card class="create-forum-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>add</mat-icon>
+          Create New Forum
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Forum Title</mat-label>
+            <input matInput [(ngModel)]="newForumTitle" placeholder="Enter forum title">
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="newForumDescription" rows="3" placeholder="Describe what this forum is about"></textarea>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select [(ngModel)]="newForumCategory">
+              <mat-option *ngFor="let category of forumCategories" [value]="category">
+                <mat-icon>{{ getCategoryIcon(category) }}</mat-icon>
+                {{ category | titlecase }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="createForum()" [disabled]="!newForumTitle || !newForumDescription">
+          <mat-icon>add</mat-icon>
+          Create Forum
+        </button>
+        <button mat-button (click)="resetForumForm()">Reset</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Forums List -->
+    <div class="forums-grid">
+      <mat-card *ngFor="let forum of getFilteredForums() | async; trackBy: trackByForumId" 
+                class="forum-card" 
+                (click)="selectForum(forum)">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon [ngClass]="'category-' + getCategoryColor(forum.category)">
+              {{ getCategoryIcon(forum.category) }}
+            </mat-icon>
+          </div>
+          <mat-card-title>{{ forum.title }}</mat-card-title>
+          <mat-card-subtitle>
+            <mat-chip-listbox class="category-chip">
+              <mat-chip-option selected>{{ forum.category | titlecase }}</mat-chip-option>
+            </mat-chip-listbox>
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <p class="forum-description">{{ forum.description }}</p>
+          
+          <div class="forum-stats">
+            <div class="stat-item">
+              <mat-icon>topic</mat-icon>
+              <span>{{ forum.topics.length }} topics</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>people</mat-icon>
+              <span>{{ forum.participantCount }} participants</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(forum.lastActivity) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-button color="primary">
+            <mat-icon>arrow_forward</mat-icon>
+            Enter Forum
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="forumMenu" (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #forumMenu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>bookmark</mat-icon>
+              <span>Bookmark</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>notifications</mat-icon>
+              <span>Subscribe</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>report</mat-icon>
+              <span>Report</span>
+            </button>
+          </mat-menu>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Forum Topics View -->
+  <div *ngIf="viewMode === 'forum-topics' && selectedForum" class="topics-view">
+    <div class="header-section">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-content">
+        <h2>{{ selectedForum.title }}</h2>
+        <p class="subtitle">{{ selectedForum.description }}</p>
+      </div>
+    </div>
+
+    <!-- Create New Topic -->
+    <mat-card class="create-topic-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>add</mat-icon>
+          Start New Discussion
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Topic Title</mat-label>
+            <input matInput [(ngModel)]="newTopicTitle" placeholder="What would you like to discuss?">
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Content</mat-label>
+            <textarea matInput [(ngModel)]="newTopicContent" rows="4" placeholder="Provide details about your question or discussion topic"></textarea>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tags (comma-separated)</mat-label>
+            <input matInput [(ngModel)]="newTopicTags" placeholder="angular, typescript, components">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="createTopic()" [disabled]="!newTopicTitle || !newTopicContent">
+          <mat-icon>send</mat-icon>
+          Post Topic
+        </button>
+        <button mat-button (click)="resetTopicForm()">Reset</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Topics List -->
+    <div class="topics-list">
+      <mat-card *ngFor="let topic of getFilteredTopics(); trackBy: trackByTopicId" 
+                class="topic-card" 
+                (click)="selectTopic(topic)">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon [ngClass]="'status-' + getTopicStatusColor(topic.status)">
+              {{ getTopicStatusIcon(topic.status) }}
+            </mat-icon>
+          </div>
+          <mat-card-title>
+            <span class="topic-title">{{ topic.title }}</span>
+            <mat-icon *ngIf="topic.isPinned" class="pinned-icon">push_pin</mat-icon>
+          </mat-card-title>
+          <mat-card-subtitle>
+            by {{ topic.authorName }} • {{ formatDate(topic.createdAt) }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <p class="topic-content">{{ topic.content | slice:0:200 }}{{ topic.content.length > 200 ? '...' : '' }}</p>
+          
+          <div class="topic-tags" *ngIf="topic.tags.length > 0">
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let tag of getFirstThreeTags(topic.tags)">{{ tag }}</mat-chip-option>
+              <mat-chip-option *ngIf="topic.tags.length > 3">+{{ getRemainingTagsCount(topic.tags) }}</mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          
+          <div class="topic-stats">
+            <div class="stat-item">
+              <mat-icon>thumb_up</mat-icon>
+              <span>{{ topic.upvotes }}</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>comment</mat-icon>
+              <span>{{ topic.replies.length }}</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>visibility</mat-icon>
+              <span>{{ topic.views }}</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(topic.lastReplyAt) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-button color="primary">
+            <mat-icon>reply</mat-icon>
+            Reply ({{ topic.replies.length }})
+          </button>
+          <button mat-icon-button>
+            <mat-icon>thumb_up</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>bookmark</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Topic Detail View -->
+  <div *ngIf="viewMode === 'topic-detail' && selectedTopic" class="topic-detail-view">
+    <div class="header-section">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-content">
+        <h2>{{ selectedTopic.title }}</h2>
+        <p class="topic-meta">
+          by {{ selectedTopic.authorName }} • 
+          {{ formatDate(selectedTopic.createdAt) }} • 
+          {{ selectedTopic.views }} views
+        </p>
+      </div>
+    </div>
+
+    <!-- Original Topic -->
+    <mat-card class="original-topic-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon>person</mat-icon>
+        </div>
+        <mat-card-title>{{ selectedTopic.authorName }}</mat-card-title>
+        <mat-card-subtitle>{{ formatDate(selectedTopic.createdAt) }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="topic-content">{{ selectedTopic.content }}</div>
+        
+        <div class="topic-tags" *ngIf="selectedTopic.tags.length > 0">
+          <mat-chip-listbox>
+            <mat-chip-option *ngFor="let tag of selectedTopic.tags">{{ tag }}</mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-button (click)="upvoteTopic(selectedTopic)">
+          <mat-icon>thumb_up</mat-icon>
+          {{ selectedTopic.upvotes }}
+        </button>
+        <button mat-button (click)="downvoteTopic(selectedTopic)">
+          <mat-icon>thumb_down</mat-icon>
+          {{ selectedTopic.downvotes }}
+        </button>
+        <button mat-button (click)="startReply()">
+          <mat-icon>reply</mat-icon>
+          Reply
+        </button>
+        <button mat-button>
+          <mat-icon>bookmark</mat-icon>
+          Bookmark
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Replies -->
+    <div class="replies-section">
+      <h3>
+        <mat-icon>comment</mat-icon>
+        Replies ({{ selectedTopic.replies.length }})
+      </h3>
+      
+      <div class="replies-list">
+        <mat-card *ngFor="let reply of getRepliesForDisplay(); trackBy: trackByReplyId" 
+                  class="reply-card"
+                  [ngClass]="{'best-answer': reply.isBestAnswer}">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon *ngIf="!reply.isBestAnswer">person</mat-icon>
+              <mat-icon *ngIf="reply.isBestAnswer" class="best-answer-icon">verified</mat-icon>
+            </div>
+            <mat-card-title>
+              {{ reply.authorName }}
+              <mat-chip *ngIf="reply.isBestAnswer" class="best-answer-chip">
+                <mat-icon>check</mat-icon>
+                Best Answer
+              </mat-chip>
+            </mat-card-title>
+            <mat-card-subtitle>{{ formatDate(reply.createdAt) }}</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="reply-content">{{ reply.content }}</div>
+          </mat-card-content>
+          
+          <mat-card-actions>
+            <button mat-button (click)="upvoteReply(reply)">
+              <mat-icon>thumb_up</mat-icon>
+              {{ reply.upvotes }}
+            </button>
+            <button mat-button (click)="downvoteReply(reply)">
+              <mat-icon>thumb_down</mat-icon>
+              {{ reply.downvotes }}
+            </button>
+            <button mat-button (click)="startReply(reply.id)">
+              <mat-icon>reply</mat-icon>
+              Reply
+            </button>
+            <button mat-button *ngIf="!reply.isBestAnswer && selectedTopic.authorId === 'current-user'" 
+                    (click)="markBestAnswer(reply)">
+              <mat-icon>check_circle</mat-icon>
+              Mark as Best Answer
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Reply Form -->
+    <mat-card *ngIf="replyToId !== null" class="reply-form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>reply</mat-icon>
+          {{ replyToId ? 'Reply to Comment' : 'Reply to Topic' }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Your reply</mat-label>
+          <textarea matInput [(ngModel)]="newReplyContent" rows="4" placeholder="Share your thoughts..."></textarea>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="createReply(selectedTopic.id, replyToId)" 
+                [disabled]="!newReplyContent.trim()">
+          <mat-icon>send</mat-icon>
+          Post Reply
+        </button>
+        <button mat-button (click)="cancelReply()">Cancel</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Quick Reply Button -->
+    <button *ngIf="replyToId === null" 
+            mat-fab 
+            class="quick-reply-fab" 
+            color="primary" 
+            (click)="startReply()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
