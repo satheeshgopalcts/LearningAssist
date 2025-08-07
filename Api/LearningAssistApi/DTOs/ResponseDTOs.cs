@@ -71,4 +71,56 @@ namespace LearningAssistApi.DTOs
         public T? Data { get; set; }
         public List<string> Errors { get; set; } = new();
     }
+
+    public class ApiResponse<T>
+    {
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public T? Data { get; set; }
+        public List<string> Errors { get; set; } = new();
+        public int StatusCode { get; set; } = 200;
+
+        public static ApiResponse<T> Success(T data, string message = "Success")
+        {
+            return new ApiResponse<T>
+            {
+                IsSuccess = true,
+                Data = data,
+                Message = message,
+                StatusCode = 200
+            };
+        }
+
+        public static ApiResponse<T> Failure(string message, int statusCode = 400)
+        {
+            return new ApiResponse<T>
+            {
+                IsSuccess = false,
+                Message = message,
+                StatusCode = statusCode
+            };
+        }
+
+        public static ApiResponse<T> Failure(List<string> errors, string message = "Validation failed", int statusCode = 400)
+        {
+            return new ApiResponse<T>
+            {
+                IsSuccess = false,
+                Message = message,
+                Errors = errors,
+                StatusCode = statusCode
+            };
+        }
+    }
+
+    public class PaginatedResponse<T>
+    {
+        public List<T> Data { get; set; } = new();
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalItems { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool HasPreviousPage { get; set; }
+    }
 }

@@ -50,6 +50,7 @@ namespace LearningAssistApi.DTOs
         public List<string> CareerGoals { get; set; } = new();
         public List<string> Skills { get; set; } = new();
         public int CourseCount { get; set; }
+        public int TotalCourses { get; set; }
         public int EstimatedDurationDays { get; set; }
         public int EstimatedHours { get; set; }
         public double AverageRating { get; set; }
@@ -87,10 +88,12 @@ namespace LearningAssistApi.DTOs
 
         [Required]
         [MinLength(1, ErrorMessage = "At least one course is required")]
-        public List<CreateLearningPathCourseDto> Courses { get; set; } = new();
+        public List<string> CourseIds { get; set; } = new();
 
         public CreateLearningPathMetadataDto Metadata { get; set; } = new();
 
+        public int EstimatedDurationDays { get; set; }
+        public int EstimatedHours { get; set; }
         public bool IsPublic { get; set; } = true;
     }
 
@@ -116,9 +119,11 @@ namespace LearningAssistApi.DTOs
         public List<string>? CareerGoals { get; set; }
         public List<string>? Skills { get; set; }
 
-        public List<UpdateLearningPathCourseDto>? Courses { get; set; }
+        public List<string>? CourseIds { get; set; }
         public UpdateLearningPathMetadataDto? Metadata { get; set; }
 
+        public int? EstimatedDurationDays { get; set; }
+        public int? EstimatedHours { get; set; }
         public bool? IsPublic { get; set; }
         public bool? IsActive { get; set; }
     }
@@ -282,38 +287,7 @@ namespace LearningAssistApi.DTOs
         public string LearningPathId { get; set; } = string.Empty;
     }
 
-    public class CourseEnrollmentDto
-    {
-        public string Id { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public string CourseId { get; set; } = string.Empty;
-        public string CourseTitle { get; set; } = string.Empty;
-        public EnrollmentStatus Status { get; set; }
-        public DateTime EnrolledAt { get; set; }
-        public DateTime? StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime? CertificateIssuedAt { get; set; }
-        public DateTime LastAccessedAt { get; set; }
-        public EnrollmentProgressDto Progress { get; set; } = new();
-        public int TotalTimeSpentMinutes { get; set; }
-        public double OverallScore { get; set; }
-        public bool HasCertificate { get; set; }
-        public string? CertificateUrl { get; set; }
-        public string EnrollmentSource { get; set; } = string.Empty;
-        public string? LearningPathId { get; set; }
-    }
 
-    public class EnrollmentProgressDto
-    {
-        public int TotalModules { get; set; }
-        public int CompletedModules { get; set; }
-        public int TotalLessons { get; set; }
-        public int CompletedLessons { get; set; }
-        public int TotalAssessments { get; set; }
-        public int PassedAssessments { get; set; }
-        public double ProgressPercentage { get; set; }
-        public DateTime LastUpdated { get; set; }
-    }
 
     // Bulk operations
     public class BulkEnrollmentDto
@@ -341,5 +315,39 @@ namespace LearningAssistApi.DTOs
     {
         public string UserId { get; set; } = string.Empty;
         public string Error { get; set; } = string.Empty;
+    }
+
+    public class LearningPathEnrollmentDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string LearningPathId { get; set; } = string.Empty;
+        public string LearningPathTitle { get; set; } = string.Empty;
+        public EnrollmentStatus Status { get; set; }
+        public DateTime EnrolledAt { get; set; }
+        public DateTime? StartedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public DateTime LastAccessedAt { get; set; }
+        public LearningPathProgressDto Progress { get; set; } = new();
+        public List<LearningPathCourseProgressDto> CourseProgress { get; set; } = new();
+        public int TotalTimeSpentMinutes { get; set; }
+        public double OverallScore { get; set; }
+        public bool HasCertificate { get; set; }
+        public string? CertificateUrl { get; set; }
+    }
+
+
+
+    public class RateLearningPathDto
+    {
+        [Range(1, 5)]
+        public int Rating { get; set; } = 5;
+
+        [StringLength(1000)]
+        public string? Review { get; set; }
+
+        public bool IsPublic { get; set; } = true;
+        
+        public List<string> Tags { get; set; } = new();
     }
 }

@@ -262,11 +262,11 @@ namespace LearningAssistApi.DTOs
     // Supporting DTOs
     public class CourseMetadataDto
     {
-        public string Language { get; set; } = string.Empty;
+        public string Language { get; set; } = "en";
         public List<string> Subtitles { get; set; } = new();
         public string CertificateTemplate { get; set; } = string.Empty;
-        public bool HasCertificate { get; set; }
-        public int ContinuousEducationUnits { get; set; }
+        public bool HasCertificate { get; set; } = false;
+        public int ContinuousEducationUnits { get; set; } = 0;
         public List<string> TargetAudience { get; set; } = new();
         public List<string> Topics { get; set; } = new();
     }
@@ -295,15 +295,15 @@ namespace LearningAssistApi.DTOs
 
     public class CourseSettingsDto
     {
-        public bool AllowDiscussions { get; set; }
-        public bool AllowDownloads { get; set; }
-        public bool RequireSequentialProgress { get; set; }
-        public bool AllowSkipping { get; set; }
-        public bool ShowProgress { get; set; }
-        public bool AllowReAttempts { get; set; }
-        public int DaysToComplete { get; set; }
-        public bool IsPublic { get; set; }
-        public bool RequireApproval { get; set; }
+        public bool AllowDiscussions { get; set; } = true;
+        public bool AllowDownloads { get; set; } = false;
+        public bool RequireSequentialProgress { get; set; } = true;
+        public bool AllowSkipping { get; set; } = false;
+        public bool ShowProgress { get; set; } = true;
+        public bool AllowReAttempts { get; set; } = true;
+        public int DaysToComplete { get; set; } = 0;
+        public bool IsPublic { get; set; } = true;
+        public bool RequireApproval { get; set; } = false;
     }
 
     public class CreateCourseSettingsDto
@@ -334,13 +334,13 @@ namespace LearningAssistApi.DTOs
 
     public class CourseStatisticsDto
     {
-        public int TotalEnrollments { get; set; }
-        public int ActiveEnrollments { get; set; }
-        public int CompletedEnrollments { get; set; }
-        public double AverageRating { get; set; }
-        public int TotalRatings { get; set; }
-        public double CompletionRate { get; set; }
-        public int AverageCompletionDays { get; set; }
+        public int TotalEnrollments { get; set; } = 0;
+        public int ActiveEnrollments { get; set; } = 0;
+        public int CompletedEnrollments { get; set; } = 0;
+        public double AverageRating { get; set; } = 0.0;
+        public int TotalRatings { get; set; } = 0;
+        public double CompletionRate { get; set; } = 0.0;
+        public int AverageCompletionDays { get; set; } = 0;
         public DateTime? LastEnrollmentDate { get; set; }
         public DateTime? LastCompletionDate { get; set; }
     }
@@ -371,26 +371,31 @@ namespace LearningAssistApi.DTOs
     // Progress DTOs (these would be used when user is authenticated)
     public class UserProgressDto
     {
-        public double ProgressPercentage { get; set; }
-        public DateTime? StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
+        public double OverallProgress { get; set; }
+        public int CompletedModules { get; set; }
+        public int TotalModules { get; set; }
+        public int CompletedLessons { get; set; }
+        public int TotalLessons { get; set; }
+        public int TimeSpentMinutes { get; set; }
         public DateTime LastAccessedAt { get; set; }
-        public int TotalTimeSpentMinutes { get; set; }
-        public double OverallScore { get; set; }
-        public EnrollmentStatus Status { get; set; }
     }
 
     public class ModuleProgressDto
     {
+        public string ModuleId { get; set; } = string.Empty;
+        public string ModuleTitle { get; set; } = string.Empty;
         public ModuleStatus Status { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public int TimeSpentMinutes { get; set; }
         public double ProgressPercentage { get; set; }
+        public List<LessonProgressDto> LessonProgress { get; set; } = new();
     }
 
     public class LessonProgressDto
     {
+        public string LessonId { get; set; } = string.Empty;
+        public string LessonTitle { get; set; } = string.Empty;
         public LessonStatus Status { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
@@ -426,5 +431,113 @@ namespace LearningAssistApi.DTOs
         public string Text { get; set; } = string.Empty;
         public int OrderIndex { get; set; }
         // Note: IsCorrect is not included in public DTO for security
+    }
+    
+    // Course Enrollment DTOs
+    public class CourseEnrollmentDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string CourseId { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string CourseTitle { get; set; } = string.Empty;
+        public EnrollmentStatus Status { get; set; }
+        public DateTime EnrolledAt { get; set; }
+        public DateTime? StartedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public DateTime? CertificateIssuedAt { get; set; }
+        public DateTime LastAccessedAt { get; set; }
+        public EnrollmentProgressDto Progress { get; set; } = new();
+        public List<ModuleProgressDto> ModuleProgress { get; set; } = new();
+        public CourseRatingDto? Rating { get; set; }
+        public int TotalTimeSpentMinutes { get; set; }
+        public double OverallScore { get; set; }
+        public bool HasCertificate { get; set; }
+        public string? CertificateUrl { get; set; }
+        public string EnrollmentSource { get; set; } = string.Empty;
+        public string? LearningPathId { get; set; }
+    }
+
+    public class EnrollmentProgressDto
+    {
+        public int TotalModules { get; set; }
+        public int CompletedModules { get; set; }
+        public int TotalLessons { get; set; }
+        public int CompletedLessons { get; set; }
+        public int TotalAssessments { get; set; }
+        public int PassedAssessments { get; set; }
+        public double ProgressPercentage { get; set; }
+        public DateTime LastUpdated { get; set; }
+    }
+
+    public class UpdateProgressDto
+    {
+        public string ModuleId { get; set; } = string.Empty;
+        public string? LessonId { get; set; }
+        public ModuleStatus ModuleStatus { get; set; }
+        public LessonStatus? LessonStatus { get; set; }
+        public int TimeSpentMinutes { get; set; } = 0;
+        public int ProgressPercentage { get; set; } = 0;
+    }
+
+    public class CourseRatingDto
+    {
+        public int Rating { get; set; } = 5;
+        public string? Review { get; set; }
+        public DateTime RatedAt { get; set; }
+        public bool IsPublic { get; set; } = true;
+        public List<string> Tags { get; set; } = new();
+    }
+
+    public class RateCourseDto
+    {
+        [Range(1, 5)]
+        public int Rating { get; set; } = 5;
+
+        [StringLength(1000)]
+        public string? Review { get; set; }
+
+        public bool IsPublic { get; set; } = true;
+        
+        public List<string> Tags { get; set; } = new();
+    }
+
+    // Assessment Attempt DTOs
+    public class AssessmentAttemptDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string AssessmentId { get; set; } = string.Empty;
+        public string AssessmentTitle { get; set; } = string.Empty;
+        public int AttemptNumber { get; set; }
+        public DateTime StartedAt { get; set; }
+        public DateTime? SubmittedAt { get; set; }
+        public int TimeSpentMinutes { get; set; }
+        public double Score { get; set; }
+        public double MaxScore { get; set; }
+        public double Percentage { get; set; }
+        public bool HasPassed { get; set; }
+        public string? Feedback { get; set; }
+        public AttemptStatus Status { get; set; }
+    }
+
+    public class SubmitAssessmentDto
+    {
+        [Required]
+        public string AssessmentId { get; set; } = string.Empty;
+        
+        [Required]
+        public List<QuestionAnswerDto> Answers { get; set; } = new();
+        
+        public int TimeSpentMinutes { get; set; } = 0;
+    }
+
+    public class QuestionAnswerDto
+    {
+        [Required]
+        public string QuestionId { get; set; } = string.Empty;
+        
+        public List<string> SelectedAnswers { get; set; } = new();
+        
+        public string? TextAnswer { get; set; }
     }
 }

@@ -131,9 +131,14 @@ builder.Services.AddSingleton<LiteDB.ILiteDatabase>(provider =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ILearningPathRepository, LearningPathRepository>();
+builder.Services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ILearningPathService, LearningPathService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Add health checks
