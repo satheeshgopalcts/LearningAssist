@@ -52,5 +52,10 @@ export const routes: Routes = [
     loadChildren: () => import('./interactive-learning/interactive-learning.module').then(m => m.InteractiveLearningModule),
     canActivate: [authGuard]
   },
+  { 
+    path: 'assessment-evaluation', 
+    loadChildren: () => import('./assessment-evaluation/assessment-evaluation.module').then(m => m.AssessmentEvaluationModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];

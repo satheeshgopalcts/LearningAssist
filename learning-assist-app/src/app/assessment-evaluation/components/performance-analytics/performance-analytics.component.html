@@ -1,0 +1,304 @@
+<div class="performance-analytics-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>analytics</mat-icon>
+        Performance Analytics
+      </mat-card-title>
+      <mat-card-subtitle>
+        Detailed analysis of assessment performance and improvement recommendations
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Filters -->
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filters-form">
+        <mat-form-field>
+          <mat-label>Test Selection</mat-label>
+          <mat-select formControlName="testId">
+            <mat-option *ngFor="let test of testOptions" [value]="test.value">
+              {{ test.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="isLoading">
+          <mat-icon>refresh</mat-icon>
+          Update Analytics
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading performance analytics...</p>
+  </div>
+
+  <!-- Performance Data -->
+  <div *ngIf="performanceData && !isLoading">
+    <!-- Overall Performance Summary -->
+    <mat-card class="summary-card">
+      <mat-card-header>
+        <mat-card-title>Overall Performance Summary</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="summary-stats">
+          <div class="stat-item main-score">
+            <div class="score-circle">
+              <span class="score">{{ performanceData.overallScore }}%</span>
+              <span class="grade">{{ getOverallGrade() }}</span>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <mat-icon>quiz</mat-icon>
+              <div>
+                <strong>{{ performanceData.questionsAttempted }}</strong>
+                <span>Questions Attempted</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <mat-icon>check_circle</mat-icon>
+              <div>
+                <strong>{{ performanceData.questionsCorrect }}</strong>
+                <span>Correct Answers</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <mat-icon>timer</mat-icon>
+              <div>
+                <strong>{{ formatTime(performanceData.timeSpent) }}</strong>
+                <span>Time Spent</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <mat-icon>speed</mat-icon>
+              <div>
+                <strong>{{ (performanceData.questionsCorrect / performanceData.questionsAttempted * 100) | number:'1.0-0' }}%</strong>
+                <span>Accuracy Rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-tab-group>
+      <!-- Category Performance Tab -->
+      <mat-tab label="Category Breakdown">
+        <div class="tab-content">
+          <div class="categories-grid">
+            <mat-card 
+              *ngFor="let category of performanceData.categoryPerformance; trackBy: trackByCategory"
+              class="category-card">
+              <mat-card-header>
+                <mat-card-title>{{ category.category }}</mat-card-title>
+                <mat-card-subtitle>{{ category.questionsAttempted }} questions</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="category-score">
+                  <div class="score-display">
+                    <span class="percentage">{{ category.percentage }}%</span>
+                    <span class="points">{{ category.score }}/{{ category.maxScore }}</span>
+                  </div>
+                  <mat-progress-bar 
+                    mode="determinate" 
+                    [value]="category.percentage"
+                    [color]="category.percentage >= 80 ? 'primary' : category.percentage >= 60 ? 'accent' : 'warn'">
+                  </mat-progress-bar>
+                </div>
+
+                <div class="category-details">
+                  <div class="detail-row">
+                    <mat-icon [color]="getStrengthColor(category.strengthLevel)">
+                      {{ getStrengthIcon(category.strengthLevel) }}
+                    </mat-icon>
+                    <span>{{ category.strengthLevel | titlecase }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon>avg_time</mat-icon>
+                    <span>{{ category.averageTime }}s avg/question</span>
+                  </div>
+                </div>
+
+                <mat-chip 
+                  [style.background-color]="getStrengthColor(category.strengthLevel)"
+                  [style.color]="'white'">
+                  {{ category.strengthLevel | titlecase }}
+                </mat-chip>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Learning Gains Tab -->
+      <mat-tab label="Progress Tracking">
+        <div class="tab-content">
+          <mat-card class="learning-gains-card">
+            <mat-card-header>
+              <mat-card-title>Learning Gains Over Time</mat-card-title>
+              <mat-card-subtitle>Improvement in different subject areas</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="gains-grid">
+                <div 
+                  *ngFor="let gain of performanceData.learningGains; trackBy: trackByCategory"
+                  class="gain-item">
+                  <div class="gain-header">
+                    <h4>{{ gain.category }}</h4>
+                    <mat-chip 
+                      [color]="gain.significance === 'significant' || gain.significance === 'highly_significant' ? 'primary' : 'accent'">
+                      {{ gain.significance | titlecase | replace:'_':' ' }}
+                    </mat-chip>
+                  </div>
+                  
+                  <div class="gain-stats">
+                    <div class="before-after">
+                      <div class="stat">
+                        <span class="label">Before</span>
+                        <span class="value">{{ gain.preTestScore }}%</span>
+                      </div>
+                      <mat-icon>arrow_forward</mat-icon>
+                      <div class="stat">
+                        <span class="label">After</span>
+                        <span class="value improved">{{ gain.postTestScore }}%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="improvement">
+                      <mat-icon color="primary">trending_up</mat-icon>
+                      <span class="improvement-text">
+                        +{{ gain.improvement }} points ({{ gain.improvementPercentage | number:'1.1-1' }}% improvement)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Recommendations Tab -->
+      <mat-tab label="Recommendations">
+        <div class="tab-content">
+          <div class="recommendations-grid">
+            <mat-card 
+              *ngFor="let rec of performanceData.recommendations; trackBy: trackByRecommendationTitle"
+              class="recommendation-card"
+              [class]="'priority-' + rec.priority">
+              <mat-card-header>
+                <div class="rec-header">
+                  <mat-icon [color]="getPriorityColor(rec.priority)">
+                    {{ getRecommendationIcon(rec.type) }}
+                  </mat-icon>
+                  <div>
+                    <mat-card-title>{{ rec.title }}</mat-card-title>
+                    <mat-card-subtitle>{{ rec.category }}</mat-card-subtitle>
+                  </div>
+                  <mat-chip [style.background-color]="getPriorityColor(rec.priority)" [style.color]="'white'">
+                    {{ rec.priority | titlecase }}
+                  </mat-chip>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ rec.description }}</p>
+                
+                <div class="action-items" *ngIf="rec.actionItems.length > 0">
+                  <h4>Action Items:</h4>
+                  <ul>
+                    <li *ngFor="let action of rec.actionItems">{{ action }}</li>
+                  </ul>
+                </div>
+
+                <div class="rec-footer">
+                  <div class="time-estimate">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ rec.estimatedTimeToImprove }} days to improve</span>
+                  </div>
+                  <div class="resources-count" *ngIf="rec.resources.length > 0">
+                    <mat-icon>library_books</mat-icon>
+                    <span>{{ rec.resources.length }} resource(s) available</span>
+                  </div>
+                </div>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button color="primary">View Resources</button>
+                <button mat-button>Mark as Done</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Benchmarking Tab -->
+      <mat-tab label="Benchmarks">
+        <div class="tab-content">
+          <div class="benchmarks-grid">
+            <mat-card 
+              *ngFor="let benchmark of benchmarkData; trackBy: trackByBenchmarkCategory"
+              class="benchmark-card">
+              <mat-card-header>
+                <mat-card-title>{{ benchmark.category }}</mat-card-title>
+                <mat-card-subtitle>
+                  <mat-icon>{{ getBenchmarkIcon(benchmark.comparisonGroup) }}</mat-icon>
+                  {{ benchmark.comparisonGroup | titlecase | replace:'_':' ' }}
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="benchmark-scores">
+                  <div class="score-comparison">
+                    <div class="score-item your-score">
+                      <span class="label">Your Score</span>
+                      <span class="value">{{ benchmark.userScore }}%</span>
+                    </div>
+                    <div class="score-item peer-average">
+                      <span class="label">Peer Average</span>
+                      <span class="value">{{ benchmark.peerAverage }}%</span>
+                    </div>
+                    <div class="score-item industry-average">
+                      <span class="label">Industry Average</span>
+                      <span class="value">{{ benchmark.industryAverage }}%</span>
+                    </div>
+                  </div>
+
+                  <div class="percentile-info">
+                    <div class="percentile-display">
+                      <span class="percentile" [style.color]="getPercentileColor(benchmark.userPercentileRank)">
+                        {{ benchmark.userPercentileRank }}th
+                      </span>
+                      <span class="percentile-label">percentile</span>
+                    </div>
+                    <p class="percentile-description">
+                      You scored better than {{ benchmark.userPercentileRank }}% of test takers
+                    </p>
+                  </div>
+
+                  <div class="benchmark-details">
+                    <div class="detail-item">
+                      <mat-icon>group</mat-icon>
+                      <span>Sample size: {{ benchmark.sampleSize | number }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <mat-icon>emoji_events</mat-icon>
+                      <span>Top percentile: {{ benchmark.topPercentile }}%</span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

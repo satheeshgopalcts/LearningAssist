@@ -1,0 +1,387 @@
+<div class="automated-grading-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>auto_fix_high</mat-icon>
+        Automated Grading System
+      </mat-card-title>
+      <mat-card-subtitle>
+        AI-powered grading for multiple choice, essays, and code submissions
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <mat-tab-group>
+    <!-- Text/Essay Grading Tab -->
+    <mat-tab label="Text & Essay Grading">
+      <div class="tab-content">
+        <div class="grading-layout">
+          <div class="question-section">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Select Question</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="question-selector">
+                  <mat-card 
+                    *ngFor="let question of sampleQuestions; trackBy: trackByQuestionId"
+                    [class.selected]="selectedQuestion.id === question.id"
+                    class="question-card clickable"
+                    (click)="selectQuestion(question)">
+                    <mat-card-content>
+                      <div class="question-header">
+                        <mat-chip>{{ question.type | titlecase }}</mat-chip>
+                        <span class="question-id">{{ question.id }}</span>
+                      </div>
+                      <p>{{ question.text }}</p>
+                      <div *ngIf="question.expectedKeywords" class="keywords">
+                        <strong>Expected Keywords:</strong>
+                        <mat-chip *ngFor="let keyword of question.expectedKeywords">
+                          {{ keyword }}
+                        </mat-chip>
+                      </div>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card *ngIf="selectedQuestion.type === 'essay'">
+              <mat-card-header>
+                <mat-card-title>Student Response</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <form [formGroup]="textGradingForm" (ngSubmit)="gradeTextResponse()">
+                  <mat-form-field class="full-width">
+                    <mat-label>Student's Answer</mat-label>
+                    <textarea 
+                      matInput 
+                      formControlName="studentResponse"
+                      rows="8"
+                      placeholder="Enter the student's response here...">
+                    </textarea>
+                    <mat-hint>Minimum 50 characters required</mat-hint>
+                  </mat-form-field>
+
+                  <mat-form-field class="full-width">
+                    <mat-label>Grading Method</mat-label>
+                    <mat-select formControlName="gradingMethod">
+                      <mat-option value="exact_match">
+                        <mat-icon>search</mat-icon>
+                        Exact Match
+                      </mat-option>
+                      <mat-option value="pattern_matching">
+                        <mat-icon>pattern</mat-icon>
+                        Pattern Matching
+                      </mat-option>
+                      <mat-option value="semantic_analysis">
+                        <mat-icon>psychology</mat-icon>
+                        Semantic Analysis
+                      </mat-option>
+                      <mat-option value="rubric_based">
+                        <mat-icon>rule</mat-icon>
+                        Rubric Based
+                      </mat-option>
+                      <mat-option value="ml_classification">
+                        <mat-icon>smart_toy</mat-icon>
+                        ML Classification
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="form-actions">
+                    <button 
+                      mat-raised-button 
+                      color="primary" 
+                      type="submit"
+                      [disabled]="textGradingForm.invalid || isLoading">
+                      <mat-icon>auto_fix_high</mat-icon>
+                      Grade Response
+                    </button>
+                  </div>
+                </form>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="results-section" *ngIf="gradingResult">
+            <mat-card class="results-card">
+              <mat-card-header>
+                <mat-card-title>Grading Results</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="score-display">
+                  <div class="score-circle" [ngStyle]="{'color': getScoreColor(gradingResult.score, gradingResult.maxScore)}">
+                    <span class="score">{{ gradingResult.score }}</span>
+                    <span class="max-score">/ {{ gradingResult.maxScore }}</span>
+                  </div>
+                  <div class="percentage">
+                    {{ (gradingResult.score / gradingResult.maxScore * 100) | number:'1.0-0' }}%
+                  </div>
+                </div>
+
+                <div class="grading-details">
+                  <div class="detail-row">
+                    <mat-icon>{{ getGradingMethodIcon(gradingResult.gradingMethod) }}</mat-icon>
+                    <span><strong>Method:</strong> {{ gradingResult.gradingMethod | titlecase | replace:'_':' ' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon [color]="getConfidenceColor(gradingResult.confidence)">verified</mat-icon>
+                    <span><strong>Confidence:</strong> {{ gradingResult.confidence | percent:'1.1-1' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon>schedule</mat-icon>
+                    <span><strong>Graded:</strong> {{ gradingResult.timestamp | date:'medium' }}</span>
+                  </div>
+                </div>
+
+                <div class="feedback-section">
+                  <h4>Feedback</h4>
+                  <p>{{ gradingResult.feedback }}</p>
+                </div>
+
+                <div class="analysis-section" *ngIf="gradingResult.detailedAnalysis">
+                  <h4>Detailed Analysis</h4>
+                  <div class="analysis-grid">
+                    <div class="analysis-item" *ngIf="gradingResult.detailedAnalysis.keywordsFound.length > 0">
+                      <mat-icon color="primary">check_circle</mat-icon>
+                      <div>
+                        <strong>Keywords Found</strong>
+                        <div class="keywords">
+                          <mat-chip *ngFor="let keyword of gradingResult.detailedAnalysis.keywordsFound">
+                            {{ keyword }}
+                          </mat-chip>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="analysis-item" *ngIf="gradingResult.detailedAnalysis.keywordsMissing.length > 0">
+                      <mat-icon color="warn">info</mat-icon>
+                      <div>
+                        <strong>Keywords Missing</strong>
+                        <div class="keywords">
+                          <mat-chip *ngFor="let keyword of gradingResult.detailedAnalysis.keywordsMissing">
+                            {{ keyword }}
+                          </mat-chip>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="analysis-item">
+                      <mat-icon>trending_up</mat-icon>
+                      <div>
+                        <strong>Readability Score</strong>
+                        <p>{{ gradingResult.detailedAnalysis.readabilityScore | number:'1.1-1' }}/10</p>
+                      </div>
+                    </div>
+
+                    <div class="analysis-item">
+                      <mat-icon>topic</mat-icon>
+                      <div>
+                        <strong>Topic Relevance</strong>
+                        <p>{{ gradingResult.detailedAnalysis.topicRelevance | percent:'1.0-0' }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Code Grading Tab -->
+    <mat-tab label="Code Grading">
+      <div class="tab-content">
+        <div class="grading-layout">
+          <div class="question-section">
+            <mat-card *ngIf="selectedQuestion.type === 'coding' || selectedQuestion.id === 'q2'">
+              <mat-card-header>
+                <mat-card-title>Code Submission</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <form [formGroup]="codeGradingForm" (ngSubmit)="gradeCodeResponse()">
+                  <mat-form-field class="full-width">
+                    <mat-label>Programming Language</mat-label>
+                    <mat-select formControlName="language">
+                      <mat-option value="javascript">JavaScript</mat-option>
+                      <mat-option value="python">Python</mat-option>
+                      <mat-option value="java">Java</mat-option>
+                      <mat-option value="csharp">C#</mat-option>
+                      <mat-option value="cpp">C++</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="full-width">
+                    <mat-label>Student's Code</mat-label>
+                    <textarea 
+                      matInput 
+                      formControlName="codeResponse"
+                      rows="12"
+                      placeholder="Paste the student's code here..."
+                      class="code-editor">
+                    </textarea>
+                  </mat-form-field>
+
+                  <div class="form-actions">
+                    <button 
+                      mat-raised-button 
+                      color="primary" 
+                      type="submit"
+                      [disabled]="codeGradingForm.invalid || isLoading">
+                      <mat-icon>code</mat-icon>
+                      Execute & Grade Code
+                    </button>
+                  </div>
+                </form>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="results-section" *ngIf="gradingResult && gradingResult.detailedAnalysis?.codeMetrics">
+            <mat-card class="results-card">
+              <mat-card-header>
+                <mat-card-title>Code Execution Results</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="score-display">
+                  <div class="score-circle" [ngStyle]="{'color': getScoreColor(gradingResult.score, gradingResult.maxScore)}">
+                    <span class="score">{{ gradingResult.score }}</span>
+                    <span class="max-score">/ {{ gradingResult.maxScore }}</span>
+                  </div>
+                </div>
+
+                <div class="code-metrics">
+                  <div class="metrics-grid">
+                    <div class="metric-item">
+                      <mat-icon color="primary">check_circle</mat-icon>
+                      <div>
+                        <strong>Tests Passed</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.testCasesPassed || 0 }}</p>
+                      </div>
+                    </div>
+                    
+                    <div class="metric-item">
+                      <mat-icon color="warn">cancel</mat-icon>
+                      <div>
+                        <strong>Tests Failed</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.testCasesFailed || 0 }}</p>
+                      </div>
+                    </div>
+
+                    <div class="metric-item">
+                      <mat-icon>timer</mat-icon>
+                      <div>
+                        <strong>Execution Time</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.executionTime || 0 }}ms</p>
+                      </div>
+                    </div>
+
+                    <div class="metric-item">
+                      <mat-icon>memory</mat-icon>
+                      <div>
+                        <strong>Memory Usage</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.memoryUsage | number }} KB</p>
+                      </div>
+                    </div>
+
+                    <div class="metric-item">
+                      <mat-icon>analytics</mat-icon>
+                      <div>
+                        <strong>Complexity</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.codeComplexity | number:'1.1-1' }}</p>
+                      </div>
+                    </div>
+
+                    <div class="metric-item">
+                      <mat-icon>code</mat-icon>
+                      <div>
+                        <strong>Style Score</strong>
+                        <p>{{ gradingResult.detailedAnalysis?.codeMetrics?.codeStyle?.overallScore | number:'1.1-1' }}/10</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="suggestions" *ngIf="gradingResult.detailedAnalysis?.codeMetrics?.codeStyle?.suggestions && ((gradingResult.detailedAnalysis?.codeMetrics?.codeStyle?.suggestions?.length || 0) > 0)">
+                    <h4>Improvement Suggestions</h4>
+                    <ul>
+                      <li *ngFor="let suggestion of (gradingResult.detailedAnalysis?.codeMetrics?.codeStyle?.suggestions || [])">
+                        {{ suggestion }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Rubric Management Tab -->
+    <mat-tab label="Grading Rubrics">
+      <div class="tab-content">
+        <div class="rubric-layout">
+          <mat-card class="create-rubric">
+            <mat-card-header>
+              <mat-card-title>Create New Rubric</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="rubricForm" (ngSubmit)="createRubric()">
+                <mat-form-field class="full-width">
+                  <mat-label>Rubric Name</mat-label>
+                  <input matInput formControlName="name" placeholder="e.g., Essay Grading Rubric">
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput formControlName="description" rows="3"></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <mat-label>Total Points</mat-label>
+                  <input matInput type="number" formControlName="totalPoints" min="1">
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button 
+                    mat-raised-button 
+                    color="primary" 
+                    type="submit"
+                    [disabled]="rubricForm.invalid || isLoading">
+                    <mat-icon>add</mat-icon>
+                    Create Rubric
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <div class="existing-rubrics">
+            <h3>Existing Rubrics</h3>
+            <mat-card *ngFor="let rubric of gradingRubrics; trackBy: trackByRubricId" class="rubric-card">
+              <mat-card-header>
+                <mat-card-title>{{ rubric.name }}</mat-card-title>
+                <mat-card-subtitle>{{ rubric.totalPoints }} points total</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ rubric.description }}</p>
+                <div class="rubric-details">
+                  <mat-chip [color]="rubric.isActive ? 'primary' : 'accent'">
+                    {{ rubric.isActive ? 'Active' : 'Inactive' }}
+                  </mat-chip>
+                  <span class="criteria-count">{{ rubric.criteria.length }} criteria</span>
+                </div>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button>Edit</button>
+                <button mat-button color="warn">Delete</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

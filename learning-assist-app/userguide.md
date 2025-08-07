@@ -17,9 +17,10 @@
 8. [Module 6: Career Goals & Skill Mapping](#module-6-career-goals--skill-mapping)
 9. [Module 7: Resource Recommendation System](#module-7-resource-recommendation-system)
 10. [Module 8: Interactive Learning Features](#module-8-interactive-learning-features)
-11. [Tips and Best Practices](#tips-and-best-practices)
-12. [Troubleshooting](#troubleshooting)
-12. [Support](#support)
+11. [Module 9: Assessment & Evaluation](#module-9-assessment--evaluation)
+12. [Tips and Best Practices](#tips-and-best-practices)
+13. [Troubleshooting](#troubleshooting)
+14. [Support](#support)
 
 ---
 
@@ -52,7 +53,8 @@ The Learning Assist application uses a modular structure with dedicated sections
 - **Progress Tracking:** `http://localhost:4200/progress/*`
 - **Career Goals:** `http://localhost:4200/career-goals/*`
 - **Resource Recommendation:** `http://localhost:4200/resource-recommendation/*`
-- **Interactive Learning:** `http://localhost:4200/interactive-learning/*` ✨ **NEW**
+- **Interactive Learning:** `http://localhost:4200/interactive-learning/*`
+- **Assessment & Evaluation:** `http://localhost:4200/assessment-evaluation/*` ✨ **NEW**
 
 ### Quick Access Menu
 The application features a responsive navigation menu that adapts to your device:
@@ -1660,5 +1662,140 @@ The discussion forums are organized into specialized categories to facilitate fo
 - **Set Realistic Goals:** Create achievable milestones with appropriate timelines
 - **Document Everything:** Keep detailed records of decisions, changes, and progress
 - **Embrace Feedback:** Use peer evaluations to improve individual and team performance
+
+---
+
+## Module 9: Assessment & Evaluation
+
+**Access URL:** `http://localhost:4200/assessment-evaluation`
+
+The Assessment & Evaluation module provides comprehensive testing and performance analysis tools, featuring adaptive testing, automated grading, and detailed analytics.
+
+### 9.1 Adaptive Testing Engine
+
+The Adaptive Testing Engine creates personalized assessments that adapt to your skill level in real-time.
+
+#### Accessing Adaptive Tests
+1. Navigate to **Assessment & Evaluation** → **Adaptive Testing**
+2. Browse available test categories or subjects
+3. Select a test and review the description and estimated duration
+4. Click **Start Test** to begin the adaptive assessment
+
+#### Taking an Adaptive Test
+- **Dynamic Questions:** Questions adapt based on your previous answers
+- **Difficulty Adjustment:** Test becomes harder or easier based on performance
+- **Progress Tracking:** Real-time display of test progress and confidence level
+- **Time Management:** Built-in timer with optional time warnings
+
+#### Key Features
+- **Computer Adaptive Testing (CAT):** Uses Item Response Theory for optimal question selection
+- **Comprehensive Question Bank:** Extensive library of questions across multiple subjects
+- **Anti-Cheating Measures:** Session monitoring and security features
+- **Confidence Tracking:** Real-time assessment of your knowledge certainty
+
+### 9.2 Automated Grading System
+
+The Automated Grading System provides instant feedback on various assessment types.
+
+#### Supported Assessment Types
+- **Multiple Choice Questions:** Instant scoring with detailed explanations
+- **Essay Questions:** Natural Language Processing for content analysis
+- **Code Submissions:** Automated testing and execution with performance metrics
+
+#### Grading Process
+1. Complete your assessment or submit your work
+2. The system automatically processes your submission
+3. Receive instant results with detailed feedback
+4. Review grading criteria and improvement suggestions
+
+#### Grading Features
+- **Rubric-Based Evaluation:** Structured scoring criteria for fair assessment
+- **Code Execution Testing:** Automated testing of programming assignments
+- **Keyword Analysis:** Intelligent detection of key concepts in text responses
+- **Readability Analysis:** Assessment of writing clarity and structure
+
+### 9.3 Performance Analytics
+
+The Performance Analytics dashboard provides comprehensive insights into your learning progress and performance trends.
+
+#### Analytics Overview
+1. Navigate to **Assessment & Evaluation** → **Performance Analytics**
+2. View your overall performance summary
+3. Explore detailed breakdowns by subject, skill, or time period
+4. Access personalized recommendations for improvement
+
+#### Key Analytics Features
+
+##### Performance Summary
+- **Overall Score:** Your cumulative performance across all assessments
+- **Subject Breakdown:** Performance analysis by academic subject
+- **Skill Analysis:** Competency levels in different skill areas
+- **Progress Trends:** Historical performance tracking with visual charts
+
+##### Learning Gains Analysis
+- **Progress Tracking:** Measurement of improvement over time
+- **Statistical Significance:** Confidence in your learning progress
+- **Comparison Metrics:** Performance relative to starting point
+- **Achievement Recognition:** Milestones and significant improvements
+
+##### Benchmarking
+- **Peer Comparison:** Performance relative to similar learners
+- **Cohort Analysis:** Comparison with your learning group
+- **Industry Standards:** Benchmarking against professional requirements
+- **Grade Level Comparison:** Performance relative to academic standards
+
+##### Personalized Recommendations
+- **Study Suggestions:** Targeted areas for improvement
+- **Resource Recommendations:** Suggested materials and content
+- **Learning Path Adjustments:** Adaptive modifications to your learning plan
+- **Skill Development Focus:** Priority areas for development
+
+### 9.4 Assessment Security Features
+
+#### Anti-Cheating Measures
+- **Session Monitoring:** Detection of suspicious behavior patterns
+- **Time Tracking:** Analysis of response times and patterns
+- **Browser Security:** Restrictions on external resource access
+- **Identity Verification:** User authentication throughout assessment
+
+#### Data Privacy
+- **Secure Storage:** Encrypted storage of assessment results
+- **Access Control:** Role-based permissions for viewing results
+- **Audit Trail:** Complete history of assessment activities
+- **Compliance:** Adherence to educational privacy standards
+
+### 9.5 Tips for Effective Assessment Use
+
+#### Preparing for Adaptive Tests
+- **Review Prerequisites:** Ensure you understand required concepts
+- **Practice Regularly:** Use practice modes to familiarize yourself with the interface
+- **Manage Time:** Understand the test duration and pace yourself accordingly
+- **Stay Focused:** Minimize distractions during test sessions
+
+#### Maximizing Grading Benefits
+- **Read Instructions Carefully:** Understand assessment criteria before starting
+- **Provide Complete Answers:** Include all required components in responses
+- **Review Feedback:** Study detailed feedback to understand mistakes
+- **Use Improvement Suggestions:** Follow recommendations for better performance
+
+#### Understanding Analytics
+- **Regular Review:** Check analytics regularly to track progress
+- **Focus on Trends:** Look for patterns rather than individual scores
+- **Set Goals:** Use benchmarking data to set realistic improvement targets
+- **Act on Recommendations:** Implement suggested learning strategies
+
+### 9.6 Troubleshooting Assessment Issues
+
+#### Common Technical Issues
+- **Test Not Loading:** Check internet connection and refresh the browser
+- **Submission Errors:** Ensure all required fields are completed before submitting
+- **Grading Delays:** Allow time for system processing, especially for code submissions
+- **Analytics Not Updating:** Results may take time to appear in analytics dashboard
+
+#### Getting Help
+- **Contact Support:** Use the help system for technical issues
+- **Academic Support:** Consult instructors for content-related questions
+- **Peer Discussion:** Use discussion forums for study group formation
+- **Documentation:** Refer to this guide for detailed feature explanations
 
 ---

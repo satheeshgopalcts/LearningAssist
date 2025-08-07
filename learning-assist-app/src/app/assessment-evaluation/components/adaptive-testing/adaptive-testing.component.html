@@ -1,0 +1,323 @@
+<div class="adaptive-testing-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Test Selection View -->
+  <div *ngIf="!isTestInProgress && !showInstructions && !showResults && !isLoading" class="test-selection">
+    <mat-card class="header-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>psychology</mat-icon>
+          Adaptive Testing Engine
+        </mat-card-title>
+        <mat-card-subtitle>
+          Computer Adaptive Tests that adjust to your ability level
+        </mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <div class="tests-grid">
+      <mat-card 
+        *ngFor="let test of adaptiveTests; trackBy: trackByTestId" 
+        class="test-card clickable"
+        (click)="selectTest(test.id)">
+        <mat-card-header>
+          <mat-card-title>{{ test.name }}</mat-card-title>
+          <mat-card-subtitle>{{ test.subject }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ test.description }}</p>
+          <div class="test-details">
+            <div class="detail-item">
+              <mat-icon>quiz</mat-icon>
+              <span>{{ test.minQuestions }}-{{ test.maxQuestions }} questions</span>
+            </div>
+            <div class="detail-item" *ngIf="test.timeLimit">
+              <mat-icon>timer</mat-icon>
+              <span>{{ formatTime(test.timeLimit) }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon [color]="getDifficultyColor(test.targetDifficulty)">
+                {{ getDifficultyIcon(test.targetDifficulty) }}
+              </mat-icon>
+              <span>{{ test.targetDifficulty | titlecase }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>school</mat-icon>
+              <span>{{ test.passingScore }}% to pass</span>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary">
+            Start Test
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Test Instructions View -->
+  <div *ngIf="showInstructions && selectedTest" class="test-instructions">
+    <mat-card class="instructions-card">
+      <mat-card-header>
+        <mat-card-title>{{ selectedTest.name }} - Instructions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="instructions-content">
+          <h3>About This Adaptive Test</h3>
+          <p>{{ selectedTest.description }}</p>
+
+          <h3>Test Details</h3>
+          <ul>
+            <li>Questions: {{ selectedTest.minQuestions }} to {{ selectedTest.maxQuestions }}</li>
+            <li *ngIf="selectedTest.timeLimit">Time Limit: {{ formatTime(selectedTest.timeLimit) }}</li>
+            <li>Target Difficulty: {{ selectedTest.targetDifficulty | titlecase }}</li>
+            <li>Passing Score: {{ selectedTest.passingScore }}%</li>
+          </ul>
+
+          <h3>How Adaptive Testing Works</h3>
+          <ul>
+            <li><strong>Dynamic Difficulty:</strong> Questions adapt based on your performance</li>
+            <li><strong>Intelligent Selection:</strong> Each question is chosen to maximize information about your ability</li>
+            <li><strong>Early Termination:</strong> Test may end early when your ability is accurately estimated</li>
+            <li><strong>Precise Scoring:</strong> Your final score reflects your true ability level</li>
+          </ul>
+
+          <h3>Important Guidelines</h3>
+          <mat-card class="warning-card">
+            <mat-card-content>
+              <div class="warning-item">
+                <mat-icon color="warn">warning</mat-icon>
+                <span>Answer each question to the best of your ability</span>
+              </div>
+              <div class="warning-item">
+                <mat-icon color="warn">visibility</mat-icon>
+                <span>Stay focused - the system monitors for suspicious activity</span>
+              </div>
+              <div class="warning-item">
+                <mat-icon color="warn">timer</mat-icon>
+                <span>You cannot go back to previous questions</span>
+              </div>
+              <div class="warning-item">
+                <mat-icon color="warn">no_photography</mat-icon>
+                <span>No external help or resources allowed</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button (click)="selectNewTest()">Back to Tests</button>
+        <button mat-raised-button color="primary" (click)="startTest()">
+          Start Test Now
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Active Test View -->
+  <div *ngIf="isTestInProgress && currentQuestion" class="active-test">
+    <!-- Test Header -->
+    <mat-card class="test-header">
+      <div class="header-content">
+        <div class="test-info">
+          <h2>{{ selectedTest?.name }}</h2>
+          <p>Question {{ questionNumber }} of {{ selectedTest?.minQuestions }}-{{ selectedTest?.maxQuestions }}</p>
+        </div>
+        <div class="test-stats">
+          <div class="stat-item" *ngIf="timeRemaining > 0">
+            <mat-icon>timer</mat-icon>
+            <span>{{ formatTime(timeRemaining) }}</span>
+          </div>
+          <div class="stat-item">
+            <mat-icon>psychology</mat-icon>
+            <span>Ability: {{ currentSession?.estimatedAbility | number:'1.1-2' }}</span>
+          </div>
+        </div>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="estimatedProgress"></mat-progress-bar>
+    </mat-card>
+
+    <!-- Question Card -->
+    <mat-card class="question-card">
+      <mat-card-header>
+        <div class="question-header">
+          <mat-chip-listbox>
+            <mat-chip>{{ currentQuestion.category }}</mat-chip>
+            <mat-chip [color]="getDifficultyColor(currentQuestion.difficultyLevel)">
+              {{ currentQuestion.difficultyLevel | titlecase }}
+            </mat-chip>
+          </mat-chip-listbox>
+          <div class="question-points">
+            <mat-icon>star</mat-icon>
+            <span>{{ currentQuestion.points }} points</span>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="question-content">
+          <h3>{{ currentQuestion.text }}</h3>
+          
+          <!-- Multiple Choice Questions -->
+          <form [formGroup]="responseForm" *ngIf="currentQuestion.type === QuestionType.MULTIPLE_CHOICE">
+            <mat-radio-group formControlName="answer" class="answer-options">
+              <mat-radio-button 
+                *ngFor="let option of currentQuestion.options; trackBy: trackByOptionId" 
+                [value]="option.id"
+                class="answer-option">
+                {{ option.text }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </form>
+
+          <!-- True/False Questions -->
+          <form [formGroup]="responseForm" *ngIf="currentQuestion.type === QuestionType.TRUE_FALSE">
+            <mat-radio-group formControlName="answer" class="answer-options">
+              <mat-radio-button value="true" class="answer-option">True</mat-radio-button>
+              <mat-radio-button value="false" class="answer-option">False</mat-radio-button>
+            </mat-radio-group>
+          </form>
+
+          <!-- Short Answer Questions -->
+          <form [formGroup]="responseForm" *ngIf="currentQuestion.type === QuestionType.SHORT_ANSWER">
+            <mat-form-field class="full-width">
+              <mat-label>Your Answer</mat-label>
+              <textarea matInput formControlName="answer" rows="4" placeholder="Type your answer here..."></textarea>
+            </mat-form-field>
+          </form>
+
+          <!-- Coding Questions -->
+          <form [formGroup]="responseForm" *ngIf="currentQuestion.type === QuestionType.CODING">
+            <mat-form-field class="full-width">
+              <mat-label>Your Code</mat-label>
+              <textarea 
+                matInput 
+                formControlName="answer" 
+                rows="10" 
+                placeholder="Write your code here..."
+                class="code-editor">
+              </textarea>
+            </mat-form-field>
+            <div *ngIf="currentQuestion.codeTemplate" class="code-template">
+              <h4>Template:</h4>
+              <pre><code>{{ currentQuestion.codeTemplate }}</code></pre>
+            </div>
+          </form>
+
+          <!-- Confidence Slider -->
+          <div class="confidence-section" [formGroup]="responseForm">
+            <label>How confident are you in your answer?</label>
+            <mat-form-field class="full-width">
+              <mat-label>Confidence Level</mat-label>
+              <mat-select formControlName="confidence">
+                <mat-option [value]="1">1 - Not Confident</mat-option>
+                <mat-option [value]="2">2 - Slightly Confident</mat-option>
+                <mat-option [value]="3">3 - Moderately Confident</mat-option>
+                <mat-option [value]="4">4 - Very Confident</mat-option>
+                <mat-option [value]="5">5 - Extremely Confident</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="submitResponse()"
+          [disabled]="responseForm.invalid || isLoading">
+          Submit Answer
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Test Results View -->
+  <div *ngIf="showResults && testResults" class="test-results">
+    <mat-card class="results-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon [color]="getPassingStatusColor(testResults.passingStatus)">
+            {{ testResults.passingStatus === 'pass' ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          Test Completed
+        </mat-card-title>
+        <mat-card-subtitle>{{ selectedTest?.name }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="results-summary">
+          <div class="score-display">
+            <h2 [ngStyle]="{'color': getPassingStatusColor(testResults.passingStatus)}">
+              {{ testResults.percentage }}%
+            </h2>
+            <p>{{ testResults.totalPoints }} / {{ testResults.maxPoints }} points</p>
+          </div>
+
+          <div class="results-grid">
+            <div class="result-item">
+              <mat-icon>quiz</mat-icon>
+              <div>
+                <strong>Questions</strong>
+                <p>{{ questionNumber }} attempted</p>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <mat-icon>timer</mat-icon>
+              <div>
+                <strong>Time</strong>
+                <p>{{ formatTime(totalTimeSpent) }}</p>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <mat-icon>trending_up</mat-icon>
+              <div>
+                <strong>Ability Level</strong>
+                <p>{{ testResults.thetaScore | number:'1.1-2' }} ± {{ testResults.standardError | number:'1.1-2' }}</p>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <mat-icon>school</mat-icon>
+              <div>
+                <strong>Status</strong>
+                <p [ngStyle]="{'color': getPassingStatusColor(testResults.passingStatus)}">
+                  {{ testResults.passingStatus | titlecase | replace:'_':' ' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback-section" *ngIf="testResults.passingStatus === 'pass'">
+            <mat-card class="success-card">
+              <mat-card-content>
+                <mat-icon color="primary">celebration</mat-icon>
+                <p>Congratulations! You have successfully passed this adaptive test.</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="feedback-section" *ngIf="testResults.passingStatus === 'fail'">
+            <mat-card class="info-card">
+              <mat-card-content>
+                <mat-icon color="accent">info</mat-icon>
+                <p>Don't worry! Use this as a learning opportunity to identify areas for improvement.</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button (click)="selectNewTest()">Take Another Test</button>
+        <button mat-raised-button color="primary" (click)="retakeTest()">
+          Retake This Test
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
